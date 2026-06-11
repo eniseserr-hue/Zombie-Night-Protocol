@@ -734,6 +734,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
     private CancellationTokenSource? _clockCancellation;
     private CancellationTokenSource? _topMessageCancellation;
     private CancellationTokenSource? _periodicSaveCancellation;
+    private CancellationTokenSource? _voiceProgressCancellation;
     private readonly Queue<TopMessageViewModel> _topNotificationQueue = new();
     private bool _isTopNotificationWorkerRunning;
     private string _fullNarrative = "";
@@ -772,6 +773,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
     [ObservableProperty] private bool _isVoiceMessagePlaying;
     [ObservableProperty] private bool _isVoiceChoiceConfirmed;
     [ObservableProperty] private string _voiceMessageTimeText = "00:00 / --:--";
+    [ObservableProperty] private int _voiceProgress;
 
     public GameSessionViewModel(
         StoryEngine engine,
@@ -1138,6 +1140,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
         IsVoiceMessagePlaying = true;
         MarkVoiceMessageListened(SceneVoiceMessage);
         UpdateVoiceMessageTime();
+        StartVoiceProgressLoop();
     }
 
     [RelayCommand(CanExecute = nameof(CanPlayVoiceMessage))]
@@ -1146,6 +1149,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
         _audio.PauseVoice();
         IsVoiceMessagePlaying = false;
         UpdateVoiceMessageTime();
+        StopVoiceProgressLoop();
     }
 
     [RelayCommand(CanExecute = nameof(CanPlayVoiceMessage))]
@@ -1158,6 +1162,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
             MarkVoiceMessageListened(SceneVoiceMessage);
         }
         UpdateVoiceMessageTime();
+        StartVoiceProgressLoop();
     }
 
     [RelayCommand]
@@ -1248,6 +1253,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
         _clockCancellation?.Cancel();
         _topMessageCancellation?.Cancel();
         _periodicSaveCancellation?.Cancel();
+        StopVoiceProgressLoop();
         _topNotificationQueue.Clear();
         _isTopNotificationWorkerRunning = false;
     }
@@ -1277,10 +1283,12 @@ public sealed partial class GameSessionViewModel : ObservableObject
         var firstVisit = State.VisitedScenes.Add(Scene.Id);
         _audio.StopVoice();
         IsVoiceMessagePlaying = false;
+        StopVoiceProgressLoop();
         SceneVoiceMessage = Scene.VoiceMessage;
         IsVoiceChoiceConfirmed = false;
         IsVoiceTranscriptVisible = SceneVoiceMessage is not null && !CanPlayVoiceMessage;
         VoiceMessageTimeText = "00:00 / --:--";
+        VoiceProgress = 0;
         ActiveSceneImage = string.IsNullOrWhiteSpace(Scene.SceneImage) ? "images/scenes/fallback.webp" : Scene.SceneImage;
         SelectedChoice = null;
         Choices.Clear();
@@ -1360,6 +1368,33 @@ public sealed partial class GameSessionViewModel : ObservableObject
         VoiceMessageTimeText = duration is null
             ? $"{elapsed:mm\\:ss} / --:--"
             : $"{elapsed:mm\\:ss} / {duration.Value:mm\\:ss}";
+        VoiceProgress = duration is { TotalMilliseconds: > 0 }
+            ? (int)Math.Clamp(elapsed.TotalMilliseconds / duration.Value.TotalMilliseconds * 100, 0, 100)
+            : 0;
+    }
+
+    private async void StartVoiceProgressLoop()
+    {
+        _voiceProgressCancellation?.Cancel();
+        _voiceProgressCancellation = new CancellationTokenSource();
+        var token = _voiceProgressCancellation.Token;
+        try
+        {
+            while (!token.IsCancellationRequested && IsVoiceMessagePlaying)
+            {
+                UpdateVoiceMessageTime();
+                await Task.Delay(250, token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private void StopVoiceProgressLoop()
+    {
+        _voiceProgressCancellation?.Cancel();
+        _voiceProgressCancellation = null;
     }
 
     private async void StartTypewriter()

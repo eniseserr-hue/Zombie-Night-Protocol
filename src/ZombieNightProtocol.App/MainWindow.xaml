@@ -1190,6 +1190,7 @@
                                         <Button Style="{StaticResource CompactButton}" Command="{Binding PauseVoiceMessageCommand}" Content="Duraklat" />
                                         <Button Style="{StaticResource CompactButton}" Command="{Binding RestartVoiceMessageCommand}" Content="Kaydı Tekrar Dinle" />
                                     </StackPanel>
+                                    <ProgressBar Margin="4,10,4,0" Height="7" Maximum="100" Value="{Binding VoiceProgress, Mode=OneWay}" />
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -1303,7 +1304,7 @@
         <Grid Margin="110,70" Visibility="{Binding IsUpdateRequired, Converter={StaticResource BoolToVisibility}}">
             <Border Width="720" HorizontalAlignment="Center" Style="{StaticResource Panel}">
                 <StackPanel>
-                    <TextBlock Foreground="{StaticResource WarningBrush}" Style="{StaticResource SectionTitle}" Text="ZORUNLU GÜNCELLEME KONTROLÜ" />
+                    <TextBlock Foreground="{StaticResource WarningBrush}" Style="{StaticResource SectionTitle}" Text="YENİ PROTOKOL SÜRÜMÜ HAZIR" />
                     <TextBlock Margin="0,10,0,5" FontSize="20" Foreground="{StaticResource MutedTextBrush}" Text="{Binding VersionText, StringFormat=Mevcut {0}}" />
                     <TextBlock Margin="0,0,0,18" FontSize="36" Text="{Binding RequiredUpdate.Version, StringFormat=Yeni sürüm {0}}" />
                     <TextBlock FontSize="17" Text="{Binding UpdateReleaseNotes}" />
