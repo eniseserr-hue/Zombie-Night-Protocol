@@ -19,6 +19,7 @@ public enum AppScreen
     Saves,
     Settings,
     Help,
+    Report,
     Game,
     Ending,
     UpdateRequired,
@@ -59,6 +60,9 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool _isSettingsToastVisible;
     [ObservableProperty] private string _settingsToastText = "";
     [ObservableProperty] private bool _isSettingsDirty;
+    [ObservableProperty] private string _reportCategory = "Bug / Hata";
+    [ObservableProperty] private string _reportBody = "";
+    [ObservableProperty] private string _reportStatus = "";
 
     public MainViewModel(
         IStoryRepository storyRepository,
@@ -89,6 +93,7 @@ public sealed partial class MainViewModel : ObservableObject
     public IReadOnlyList<string> TextAnimationModes { get; } = ["Anında", "Daktilo", "Satır Satır", "Yumuşak Belirme", "Kelime Kelime"];
     public IReadOnlyList<string> Resolutions { get; } = ["1024x768", "1280x800", "1600x900", "1920x1080"];
     public IReadOnlyList<string> Languages { get; } = ["Türkçe"];
+    public IReadOnlyList<string> ReportCategories { get; } = ["Bug / Hata", "Yanlış Metin", "Kötü Hissettiren Yer", "Ses / Müzik", "Görsel / UI", "Diğer"];
     public string VersionText => $"Sürüm {GameConstants.Version}";
     public string InstagramIconPath => "images/ui/social/instagram_icon.png";
     public string ContinueText => HasSave ? "➦  Kaldığın Yerden Devam Et" : "➦  Devam Et";
@@ -101,6 +106,7 @@ public sealed partial class MainViewModel : ObservableObject
     public bool IsSaves => Screen == AppScreen.Saves;
     public bool IsSettings => Screen == AppScreen.Settings;
     public bool IsHelp => Screen == AppScreen.Help;
+    public bool IsReport => Screen == AppScreen.Report;
     public bool IsGame => Screen == AppScreen.Game;
     public bool IsEnding => Screen == AppScreen.Ending;
     public bool IsUpdateRequired => Screen == AppScreen.UpdateRequired;
@@ -122,6 +128,7 @@ public sealed partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(IsSaves));
         OnPropertyChanged(nameof(IsSettings));
         OnPropertyChanged(nameof(IsHelp));
+        OnPropertyChanged(nameof(IsReport));
         OnPropertyChanged(nameof(IsGame));
         OnPropertyChanged(nameof(IsEnding));
         OnPropertyChanged(nameof(IsUpdateRequired));
@@ -129,6 +136,8 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     partial void OnIsIntroMutedChanged(bool value) => OnPropertyChanged(nameof(IntroMuteText));
+
+    partial void OnReportBodyChanged(string value) => SendReportCommand.NotifyCanExecuteChanged();
 
     partial void OnRequiredUpdateChanged(UpdateManifest? value) =>
         OnRequiredUpdateChangedCore();
@@ -454,6 +463,13 @@ public sealed partial class MainViewModel : ObservableObject
     private void ShowHelp() => Screen = AppScreen.Help;
 
     [RelayCommand]
+    private void ShowReport()
+    {
+        ReportStatus = "";
+        Screen = AppScreen.Report;
+    }
+
+    [RelayCommand]
     private void OpenSaveFolder() => OpenFolder(_settingsService.SavesFolder);
 
     [RelayCommand]
@@ -462,6 +478,57 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void OpenInstagram() => Process.Start(new ProcessStartInfo(
         "https://www.instagram.com/bullukespor/") { UseShellExecute = true });
+
+    [RelayCommand(CanExecute = nameof(CanSendReport))]
+    private void SendReport()
+    {
+        var body = BuildReportBody();
+        var subject = $"Zombie Night Protocol Raporu - {ReportCategory} - {GameConstants.Version}";
+        var mailto = $"mailto:eniseserr@gmail.com?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
+            ReportStatus = "Mail uygulaması açıldı. Gönder'e basmayı unutma.";
+        }
+        catch (Exception exception)
+        {
+            _diagnostics.Error(exception.ToString());
+            try
+            {
+                Clipboard.SetText(body);
+                ReportStatus = "Mail uygulaması açılamadı. Rapor panoya kopyalandı; eniseserr@gmail.com adresine yapıştırıp gönderebilirsin.";
+            }
+            catch (Exception clipboardException)
+            {
+                _diagnostics.Error(clipboardException.ToString());
+                ReportStatus = "Mail uygulaması açılamadı. Ayrıntılar log dosyasına yazıldı.";
+            }
+        }
+    }
+
+    private bool CanSendReport() => !string.IsNullOrWhiteSpace(ReportBody);
+
+    private string BuildReportBody()
+    {
+        var activeScene = Game?.Scene?.Title ?? "Menüde / bilinmiyor";
+        var selectedCharacter = Game?.PlayerDefinition.Name ?? SelectedCharacter?.Name ?? "Seçilmedi";
+        return string.Join(Environment.NewLine, [
+            "Zombie Night Protocol Oyuncu Raporu",
+            "",
+            $"Kategori: {ReportCategory}",
+            $"Sürüm: {GameConstants.Version}",
+            $"Karakter: {selectedCharacter}",
+            $"Ekran: {Screen}",
+            $"Sahne: {activeScene}",
+            $"Tarih: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}",
+            "",
+            "Oyuncu notu:",
+            ReportBody.Trim(),
+            "",
+            "İstersen ekran görüntüsü de ekleyebilirsin."
+        ]);
+    }
 
     [RelayCommand]
     private void Exit() => Application.Current.Shutdown();

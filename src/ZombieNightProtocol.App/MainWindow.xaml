@@ -114,6 +114,7 @@
                 <Button Style="{StaticResource MenuButton}" Command="{Binding ShowPlayMenuCommand}" Content="➦  Oyna" />
                 <Button Style="{StaticResource MenuButton}" Command="{Binding ShowSettingsCommand}" Content="➦  Ayarlar" />
                 <Button Style="{StaticResource MenuButton}" Command="{Binding ShowHelpCommand}" Content="➦  Yardım" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ShowReportCommand}" Content="➦  Rapor Gönder" />
                 <Button Style="{StaticResource MenuButton}" Command="{Binding ExitCommand}" Content="➦  Çıkış" />
             </StackPanel>
             <Button Width="235" Height="48" Margin="28" HorizontalAlignment="Left" VerticalAlignment="Bottom"
@@ -564,7 +565,78 @@
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
-            <Button Grid.Row="2" Width="220" HorizontalAlignment="Left" Style="{StaticResource MenuButton}" Command="{Binding ShowMainMenuCommand}" Content="➦  Ana Menüye Dön" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Width="220" Style="{StaticResource MenuButton}" Command="{Binding ShowMainMenuCommand}" Content="➦  Ana Menüye Dön" />
+                <Button Width="220" Margin="18,3,0,3" Style="{StaticResource MenuButton}" Command="{Binding ShowReportCommand}" Content="➦  Rapor Gönder" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Report -->
+        <Grid Margin="105,55" Visibility="{Binding IsReport, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="GERİ BİLDİRİM" />
+                <TextBlock Style="{StaticResource Headline}" Text="RAPOR GÖNDER" />
+                <TextBlock Width="760" Margin="0,10,0,0" HorizontalAlignment="Left"
+                           Foreground="{StaticResource MutedTextBrush}"
+                           Text="Bug, yazım hatası, kötü hissettiren bir sahne, bozuk ses veya yanlış görünen herhangi bir şeyi yaz. Gönder dediğinde mail uygulaman hazır raporla açılır." />
+            </StackPanel>
+
+            <Border Grid.Row="1" Width="860" Margin="0,28,0,20" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource Panel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="260" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.ColumnSpan="2" Style="{StaticResource SectionTitle}" Text="RAPOR DETAYI" />
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,18,22,0">
+                        <TextBlock Style="{StaticResource SmallLabel}" Text="Kategori" />
+                        <ComboBox Margin="0,8,0,0"
+                                  ItemsSource="{Binding ReportCategories}"
+                                  SelectedItem="{Binding ReportCategory}" />
+                        <TextBlock Margin="0,22,0,0" Style="{StaticResource SmallLabel}" Text="Gönderilecek adres" />
+                        <TextBlock Margin="0,8,0,0" Foreground="{StaticResource AccentBrightBrush}" Text="eniseserr@gmail.com" />
+                        <TextBlock Margin="0,22,0,0" Foreground="{StaticResource MutedTextBrush}" LineHeight="21"
+                                   Text="Not: Oyun mail şifresi saklamaz. Mail senin cihazındaki varsayılan mail uygulamasıyla açılır." />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,18,0,0">
+                        <TextBlock Style="{StaticResource SmallLabel}" Text="Ne yanlış, bozuk veya kötü geldi?" />
+                        <TextBox Margin="0,8,0,0"
+                                 MinHeight="260"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding ReportBody, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Margin="0,10,0,0"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   Text="İstersen sahneyi, seçtiğin karakteri ve ekran görüntüsü bilgisini yaz. Sürüm ve aktif ekran otomatik eklenecek." />
+                    </StackPanel>
+
+                    <Border Grid.Row="3" Grid.ColumnSpan="2" Margin="0,22,0,0" Padding="14"
+                            Background="#161012" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="6"
+                            Visibility="{Binding ReportStatus, Converter={StaticResource StringToVisibility}}">
+                        <TextBlock Foreground="{StaticResource TextBrush}" Text="{Binding ReportStatus}" />
+                    </Border>
+                </Grid>
+            </Border>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Width="220" Style="{StaticResource MenuButton}" Command="{Binding SendReportCommand}" Content="➦  Maili Hazırla" />
+                <Button Width="220" Margin="18,3,0,3" Style="{StaticResource MenuButton}" Command="{Binding ShowMainMenuCommand}" Content="➦  Ana Menüye Dön" />
+            </StackPanel>
         </Grid>
 
         <!-- Game -->
