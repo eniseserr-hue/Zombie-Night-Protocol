@@ -7,9 +7,9 @@ namespace ZombieNightProtocol.Infrastructure;
 
 public sealed class UpdateConfiguration
 {
-    public string Owner { get; init; } = "OWNER_NAME";
-    public string Repository { get; init; } = "REPOSITORY_NAME";
-    public string ManifestUrl { get; init; } = "https://raw.githubusercontent.com/OWNER_NAME/REPOSITORY_NAME/main/content/updates/manifest.json";
+    public string Owner { get; init; } = "eniseserr-hue";
+    public string Repository { get; init; } = "Zombie-Night-Protocol";
+    public string ManifestUrl { get; init; } = "https://raw.githubusercontent.com/eniseserr-hue/Zombie-Night-Protocol/main/content/updates/manifest.json";
     public string Channel { get; init; } = "stable";
     public int TimeoutSeconds { get; init; } = 8;
 }

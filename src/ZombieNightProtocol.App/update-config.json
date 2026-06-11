@@ -1,7 +1,7 @@
 {
-  "owner": "OWNER_NAME",
-  "repository": "REPOSITORY_NAME",
-  "manifestUrl": "https://raw.githubusercontent.com/OWNER_NAME/REPOSITORY_NAME/main/content/updates/manifest.json",
+  "owner": "eniseserr-hue",
+  "repository": "Zombie-Night-Protocol",
+  "manifestUrl": "https://raw.githubusercontent.com/eniseserr-hue/Zombie-Night-Protocol/main/content/updates/manifest.json",
   "channel": "stable",
   "timeoutSeconds": 8
 }

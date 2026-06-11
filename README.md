@@ -41,7 +41,7 @@ Self-contained Windows x64 çıktısı `release/` altında oluşur. İçerik ve 
 
 ## GitHub Güncelleme Ayarı
 
-Şu iki dosyada `OWNER_NAME` ve `REPOSITORY_NAME` değerlerini değiştir:
+GitHub güncelleme bağlantıları şu iki dosyada yapılandırılır:
 
 - `src/ZombieNightProtocol.App/update-config.json`
 - `content/updates/manifest.json`
