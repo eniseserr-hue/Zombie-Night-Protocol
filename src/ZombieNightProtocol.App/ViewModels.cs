@@ -126,6 +126,9 @@ public sealed partial class MainViewModel : ObservableObject
 
     partial void OnIsIntroMutedChanged(bool value) => OnPropertyChanged(nameof(IntroMuteText));
 
+    partial void OnRequiredUpdateChanged(UpdateManifest? value) =>
+        DownloadUpdateCommand.NotifyCanExecuteChanged();
+
     public async Task InitializeAsync()
     {
         var loadingTimeline = RunLoadingTimelineAsync();

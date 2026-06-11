@@ -5,7 +5,7 @@ namespace ZombieNightProtocol.Core;
 public static class GameConstants
 {
     public const string ApplicationName = "Zombie Night Protocol";
-    public const string Version = "1.0.0";
+    public const string Version = "1.0.1";
     public const int SaveSlotCount = 3;
 }
 
