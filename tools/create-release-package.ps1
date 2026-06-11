@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "1.0.1",
+    [string]$Version = "1.0.2",
     [string]$Runtime = "win-x64"
 )
 
@@ -32,6 +32,7 @@ $manifest = [ordered]@{
     version = $Version
     mandatory = $true
     releaseNotes = @(
+        "Oyun simgesi eklendi; exe, pencere ve gorev cubugu artik ZNP ikonunu kullanir."
         "Bölüm sonu credits yazısı yenilendi ve sesli anlatım progress barı iyileştirildi."
         "Ayarlar ekranındaki dropdown ve kilitli çözünürlük görünümü düzeltildi."
         "Radyo ve rüzgar ambiyansları sahnelere bağlandı."

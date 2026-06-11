@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\app-icon.ico" />
     <Content Include="..\..\content\**\*" Exclude="..\..\content\images\zombie-splash.png;..\..\content\images\loading-skull.png">
       <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -33,10 +34,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon />
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.1</Version>
+    <ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.2</Version>
     <AssemblyName>ZombieNightProtocol</AssemblyName>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
