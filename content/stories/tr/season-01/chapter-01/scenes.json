@@ -919,6 +919,7 @@
       "title": "İstanbul'un Sessizliği",
       "text": "Dışarı çıktığında şehir ilk kez geniş şekilde görünür. Terk edilmiş otobüsler, açık kalan dükkanlar, yarım bırakılmış polis barikatları ve yanan bir bina vardır. En rahatsız edici şey gürültü değil, sessizliktir. Uzaktan bir araba alarmı çalar; farklı sokaklardan onlarca enfekte sese doğru koşar. Sürü davranışını ilk kez görürsün. Sağlık merkezinde yaptığın gürültü, sokağın ne kadar sakin kalacağını belirler.",
       "sceneImage": "images/story/season01/main/s01_scene06_silent_istanbul.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -1042,6 +1043,7 @@
       "title": "İlk Sığınak",
       "text": "Yakındaki bir apartmana sığınırsın. İçeride insanların yakın zamanda yaşadığı anlaşılır: yarım yenmiş yemekler, duvarda işaretlenmiş tarihler, boş su şişeleri ve aceleyle toplanmış battaniyeler. Fakat kimse yoktur. Üst kattan bir telsiz sesi gelir. Telsizin başında Yesking'i bulursun. Binaya enfekte çekmiş olabileceğini düşünüp sinirlenir: Kapıyı arkandan kapattın mı, yoksa bütün mahalleyi davet mi ettin?",
       "sceneImage": "images/story/season01/main/s01_scene07_first_shelter_yesking.webp",
+      "ambientAudio": "audio/ambient/radio.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -1161,6 +1163,7 @@
       "title": "Anteni Çalıştırmak",
       "text": "Yesking yayının son parçasını çözebilmek için çatıdaki antene güç verilmesi gerektiğini söyler. Bunun için apartmanın girişindeki elektrik odasına inmek gerekir. Mecburen birlikte hareket edersiniz. Güveni düşükse kendisini riske atmayı reddeder: Beni aşağı gönderip sen yukarıda bekleyeceksen o iş yaş. Güveni yüksekse kapıyı tutmanı ister ve hurdayı uyandıracağını söyler.",
       "sceneImage": "images/story/season01/main/s01_scene08_power_antenna.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -1302,6 +1305,7 @@
       "title": "Derya'dan Kalan Kayıt",
       "text": "Anten çalışınca kayıt netleşir. Derya'nın sesi parazitlerin arasından duyulur. Ardından silah sesi gelir ve bağlantı kopar. Derya'ya ulaşamazsın; sadece birkaç saat önce yaşadığına dair kanıt elde edersin.",
       "sceneImage": "images/story/season01/main/s01_scene09_derya_recording.webp",
+      "ambientAudio": "audio/ambient/radio.mp3",
       "directorRules": {
         "allowDirectorEvents": false,
         "forceNoMajorEvent": true,
@@ -1407,6 +1411,7 @@
       "title": "Apartmanın Düşüşü",
       "text": "Yayın sırasında anten ve jeneratör gürültü çıkarır. Enfekteler binaya yönelir. Alt katlardan cam kırılma sesleri gelir. Önünde sınırlı süreli bir karar vardır. Hakan hayattaysa onu almak için geri dönmek mümkündür; Yesking ise seçimine göre sana katılabilir, tek başına ayrılabilir ya da istemeden birlikte kalabilir.",
       "sceneImage": "images/story/season01/main/s01_scene10_apartment_fall.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -1587,6 +1592,7 @@
       "title": "Bedo'nun Gelişi",
       "text": "Çatılardan ya da ara sokaktan kaçarken uzakta birinin binalar arasında hızlı ilerlediğini görürsün. Bu kişi Bedo'dur. Önce seni takip eden enfekteleri fark eder ve bir süre uzaktan izler. Sessiz ve akıllı ilerlediysen aşağı bir ip atar; çok gürültülüysen sinirli biçimde bağırır: Peşine bütün mahalleyi takmışsın lan! Hızlı çık! Bedo da kuzey kapısındaki kırmızı işaretleri takip etmektedir.",
       "sceneImage": "images/story/season01/main/s01_scene11_bedo_arrives.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -1718,6 +1724,7 @@
       "title": "Küçük Ekibin İlk Gecesi",
       "text": "Sen, Yesking ve Bedo terk edilmiş bir terzi atölyesinde geceyi geçirmek zorunda kalırsınız. Hakan hayattaysa sizinledir. Çatışmasız ama ağır bir andır; kimse birbirini tam tanımaz. Yesking sana güvenmez, Bedo burada uzun süre kalmak istemez, Hakan yarası yüzünden yük olduğunu düşünür. Henüz kimse seni lider olarak kabul etmez.",
       "sceneImage": "images/story/season01/main/s01_scene12_tailor_workshop_night.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -1854,6 +1861,7 @@
       "title": "İlk Kaynak Görevi",
       "text": "Su ve yiyecek azdır. Yakındaki küçük markete gitmek gerekir. Yanına yalnızca bir kişiyi alabilirsin. Yesking alarm sistemini kapatabilir ama fiziksel çatışmada zayıftır. Bedo arka pencereden sessiz girebilir ama değerli gördüğü bir şeyi gizlice alabilir. Hakan yavaş ilerler fakat eski polis telsiz frekansını tanır. Markette yalnızca enfekteler yoktur; rafların arasından başka biri sizi izler.",
       "sceneImage": "images/story/season01/main/s01_scene13_market_supply_run.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": true,
         "allowedEventTags": [
@@ -2235,6 +2243,7 @@
       "title": "Bölüm Finali",
       "text": "Bölüm sonunda Derya'yı ya da ana grubu bulamazsın. Sadece küçük, kırılgan bir ekip oluşur: sen, Yesking, Bedo ve koşullara göre Büşra ile Hakan. Gece sona yaklaşırken kuzey tarafında büyük bir yangın görünür. Yesking bunun otogar yönünde olduğunu söyler. Bedo kırmızı işaretlerin oraya devam ettiğini fark eder. Bilinmeyen bir frekanstan son bir kayıt düşer.",
       "sceneImage": "images/story/season01/main/s01_scene15_chapter_finale.webp",
+      "ambientAudio": "audio/ambient/radio.mp3",
       "directorRules": {
         "allowDirectorEvents": false,
         "forceNoMajorEvent": true,
@@ -2415,6 +2424,7 @@
       "title": "Bölüm Sonu",
       "text": "Bölüm sonu kaydı hazır. Devam etmeden önce dinleyebilirsin.",
       "sceneImage": "images/story/season01/main/s01_ending_narration.webp",
+      "ambientAudio": "audio/ambient/wind.mp3",
       "directorRules": {
         "allowDirectorEvents": false,
         "forceNoMajorEvent": true,

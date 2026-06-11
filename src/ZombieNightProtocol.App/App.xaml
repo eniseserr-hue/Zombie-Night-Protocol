@@ -313,6 +313,9 @@
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <ToggleButton x:Name="Toggle"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          Padding="{TemplateBinding Padding}"
                                           ClickMode="Press"
                                           Focusable="False"
                                           IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
@@ -326,7 +329,10 @@
                                                 CornerRadius="6"
                                                 Padding="{TemplateBinding Padding}">
                                             <Grid>
-                                                <ContentPresenter Margin="0,0,28,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                                <ContentPresenter Margin="0,0,28,0"
+                                                                  VerticalAlignment="Center"
+                                                                  HorizontalAlignment="Left"
+                                                                  TextElement.Foreground="{StaticResource TextBrush}" />
                                                 <Path HorizontalAlignment="Right"
                                                       VerticalAlignment="Center"
                                                       Data="M 0 0 L 7 7 L 14 0"
@@ -342,6 +348,11 @@
                                             <Trigger Property="IsChecked" Value="True">
                                                 <Setter TargetName="ToggleBorder" Property="Background" Value="#2B2523" />
                                                 <Setter TargetName="ToggleBorder" Property="BorderBrush" Value="{StaticResource AccentBrightBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="ToggleBorder" Property="Background" Value="#252528" />
+                                                <Setter TargetName="ToggleBorder" Property="BorderBrush" Value="#6A4A4D" />
+                                                <Setter Property="Opacity" Value="0.72" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -369,6 +380,21 @@
                                 </Border>
                             </Popup>
                         </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#242428" />
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentBrightBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter Property="BorderBrush" Value="#D0A05C" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#D6C7BF" />
+                                <Setter Property="Background" Value="#2B2B30" />
+                                <Setter Property="BorderBrush" Value="#7B4C52" />
+                                <Setter Property="Opacity" Value="0.82" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

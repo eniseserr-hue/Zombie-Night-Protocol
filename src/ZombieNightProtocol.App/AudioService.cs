@@ -48,7 +48,7 @@ public sealed class AudioService
         _settings = settings;
         _menuMusic.Volume = MusicVolume;
         _sceneMusic.Volume = MusicVolume;
-        _ambient.Volume = AmbientVolume;
+        _ambient.Volume = AmbientVolume * AmbientMultiplier(_ambientPath);
         foreach (var player in _oneShots)
         {
             player.Volume = EffectsVolume;
@@ -106,7 +106,7 @@ public sealed class AudioService
             return;
         }
         StartLoop(_sceneMusic, scene.BackgroundMusic, ref _sceneMusicPath, MusicVolume, token);
-        StartLoop(_ambient, scene.AmbientAudio, ref _ambientPath, AmbientVolume, token);
+        StartLoop(_ambient, scene.AmbientAudio, ref _ambientPath, AmbientVolume * AmbientMultiplier(scene.AmbientAudio), token);
         foreach (var sound in scene.OneShotSounds)
         {
             PlayEffect(sound);
@@ -412,6 +412,19 @@ public sealed class AudioService
     private double VoiceVolume => Master * Math.Clamp(_settings.VoiceVolume / 100d, 0, 1);
     private double NotificationVolume => EffectsVolume * Math.Clamp(_settings.NotificationVolume / 100d, 0, 1);
     private double UiClickVolume => EffectsVolume * 0.55;
+
+    private static double AmbientMultiplier(string relativePath)
+    {
+        if (relativePath.Contains("radio", StringComparison.OrdinalIgnoreCase))
+        {
+            return 0.42;
+        }
+        if (relativePath.Contains("wind", StringComparison.OrdinalIgnoreCase))
+        {
+            return 0.48;
+        }
+        return 1;
+    }
 
     private double VolumeFor(AudioChannel channel) => channel switch
     {

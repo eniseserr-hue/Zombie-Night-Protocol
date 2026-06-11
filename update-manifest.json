@@ -2,12 +2,13 @@
     "version":  "1.0.1",
     "mandatory":  true,
     "releaseNotes":  [
-                         "BÃ¶lÃ¼m sonu sinematik ekranÄ± ve sesli anlatÄ±m dÃ¼zenlendi.",
-                         "Ekip mesajlarÄ±, gÃ¶revler ve ayarlar iyileÅŸtirildi.",
-                         "ZIP tabanlÄ± gÃ¼venli gÃ¼ncelleme sistemi eklendi."
+                         "BÃ¶lÃ¼m sonu credits yazÄ±sÄ± yenilendi ve sesli anlatÄ±m progress barÄ± iyileÅŸtirildi.",
+                         "Ayarlar ekranÄ±ndaki dropdown ve kilitli Ã§Ã¶zÃ¼nÃ¼rlÃ¼k gÃ¶rÃ¼nÃ¼mÃ¼ dÃ¼zeltildi.",
+                         "Radyo ve rÃ¼zgar ambiyanslarÄ± sahnelere baÄŸlandÄ±.",
+                         "ZIP tabanlÄ± gÃ¼venli gÃ¼ncelleme sistemi gÃ¼ncel paket hash\u0027iyle hazÄ±rlandÄ±."
                      ],
     "downloadUrl":  "https://github.com/eniseserr-hue/Zombie-Night-Protocol/releases/download/v1.0.1/ZombieNightProtocol-1.0.1-win-x64.zip",
-    "sha256":  "877fff6706b7187d4ee0da1315887706bc78c3c2cdbb5e33f17748f95e97a466",
-    "packageSize":  584020597,
-    "publishedAt":  "2026-06-11T19:17:03.9064867+03:00"
+    "sha256":  "122c946eee61f39336f9d3856f7f246a3928a0f39b0a856b049aeb86c03eb188",
+    "packageSize":  586998353,
+    "publishedAt":  "2026-06-11T19:41:16.9509025+03:00"
 }

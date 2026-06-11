@@ -32,9 +32,10 @@ $manifest = [ordered]@{
     version = $Version
     mandatory = $true
     releaseNotes = @(
-        "Bölüm sonu sinematik ekranı ve sesli anlatım düzenlendi."
-        "Ekip mesajları, görevler ve ayarlar iyileştirildi."
-        "ZIP tabanlı güvenli güncelleme sistemi eklendi."
+        "Bölüm sonu credits yazısı yenilendi ve sesli anlatım progress barı iyileştirildi."
+        "Ayarlar ekranındaki dropdown ve kilitli çözünürlük görünümü düzeltildi."
+        "Radyo ve rüzgar ambiyansları sahnelere bağlandı."
+        "ZIP tabanlı güvenli güncelleme sistemi güncel paket hash'iyle hazırlandı."
     )
     downloadUrl = "https://github.com/eniseserr-hue/Zombie-Night-Protocol/releases/download/v$Version/ZombieNightProtocol-$Version-$Runtime.zip"
     sha256 = $hash
@@ -48,10 +49,10 @@ Copy-Item -LiteralPath $manifestPath -Destination $publishedManifest -Force
 # Zombie Night Protocol v$Version
 
 ## Değişiklikler
-- Bölüm sonuna özel sinematik ekran ve kayan jenerik
+- Bölüm sonu credits metni ve ses progress barı
+- Ayarlar dropdown renkleri ve kilitli çözünürlük görünümü
+- Radyo/rüzgar ambiyansları
 - Ekip üyeliğine göre mesaj filtreleme ve tekrar engeli
-- Sahne ilerlemesine bağlı görev paneli
-- Ayar ve sosyal bağlantı iyileştirmeleri
 - SHA-256 doğrulamalı ZIP güncelleme ve rollback
 
 Paket: ZombieNightProtocol-$Version-$Runtime.zip

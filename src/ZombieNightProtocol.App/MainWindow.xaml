@@ -1198,26 +1198,36 @@
                 </Border>
                 <Border Grid.Column="1" Margin="12,0,0,0" Style="{StaticResource Panel}" ClipToBounds="True">
                     <Grid>
-                        <StackPanel HorizontalAlignment="Center" TextBlock.TextAlignment="Center">
-                            <StackPanel.RenderTransform><TranslateTransform Y="360" /></StackPanel.RenderTransform>
+                        <StackPanel Margin="24,0" HorizontalAlignment="Center" TextBlock.TextAlignment="Center">
+                            <StackPanel.RenderTransform><TranslateTransform Y="-980" /></StackPanel.RenderTransform>
                             <StackPanel.Triggers>
                                 <EventTrigger RoutedEvent="Loaded">
                                     <BeginStoryboard>
                                         <Storyboard RepeatBehavior="Forever">
                                             <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                                             From="360" To="-420" Duration="0:0:30" />
+                                                             From="-980" To="430" Duration="0:0:58" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
                             </StackPanel.Triggers>
-                            <TextBlock FontSize="20" Margin="0,18" Text="Bizi dinlediğiniz için teşekkürler." />
-                            <TextBlock Margin="0,12" Text="Verdiğin her karar, bu gecenin izini değiştirdi." />
-                            <TextBlock Margin="0,12" Text="Derya hâlâ uzakta." />
-                            <TextBlock Margin="0,12" Text="İstanbul hâlâ karanlık." />
-                            <TextBlock Margin="0,12" Text="Ve yol henüz bitmedi." />
-                            <TextBlock Margin="0,38,0,8" FontSize="27" FontWeight="Bold" Text="Zombie Night Protocol" />
-                            <TextBlock Margin="0,24,0,8" Foreground="{StaticResource MutedTextBrush}" Text="Yapımcı" />
-                            <TextBlock FontSize="30" FontWeight="SemiBold" Foreground="{StaticResource AccentBrightBrush}" Text="Bedirhan Eser" />
+                            <TextBlock FontSize="22" FontWeight="Bold" Foreground="#F0E7D8" Margin="0,20" Text="Bizi dinlediğiniz için teşekkürler." />
+                            <TextBlock FontSize="16" FontStyle="Italic" Foreground="#B9B6AD" Margin="0,14" Text="Bu gece yalnız başlamıştı." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#D8D1C5" Margin="0,8" Text="Soğuk bir odada, yarım kalmış bir ses kaydıyla, kimin yaşadığını bile bilmeden gözlerini açtın." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#CFC7BA" Margin="0,18,0,8" Text="Her kapı bir risk, her ses bir ihtimaldi." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#C8B9A7" Margin="0,8" Text="Kimi zaman sessiz kaldın, kimi zaman koşmak zorunda kaldın." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#C8B9A7" Margin="0,8" Text="Bazen birini yanında götürdün, bazen geride bırakmanın ağırlığını taşıdın." />
+                            <TextBlock FontSize="17" FontWeight="SemiBold" Foreground="#C96A70" Margin="0,22,0,8" Text="Derya hâlâ uzakta." />
+                            <TextBlock FontSize="15" Foreground="#9FAEC1" Margin="0,8" Text="Mert’in ne sakladığı hâlâ bilinmiyor." />
+                            <TextBlock FontSize="15" Foreground="#B78B5E" Margin="0,8" Text="Kuzey yolu hâlâ karanlık." />
+                            <TextBlock FontSize="15" Foreground="#D3CCC0" Margin="0,8" Text="Ve İstanbul artık eskisi gibi değil." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#CFC7BA" Margin="0,22,0,8" Text="Ama bu geceden geriye sadece korku kalmadı." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#D8C196" Margin="0,8" Text="Bir telsiz sesi, kırmızı bir işaret, yarım bir umut ve henüz tam güvenmeyen birkaç insan kaldı." />
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Foreground="#F0E7D8" Margin="0,24,0,8" Text="Verdiğin her karar bu hikâyenin izini değiştirdi." />
+                            <TextBlock FontSize="15" LineHeight="23" Foreground="#B9B6AD" Margin="0,8" Text="Kimin yanında durduğun, kime yardım ettiğin, kimi susturduğun ve neyi feda ettiğin sonraki bölümde seni takip edecek." />
+                            <TextBlock FontSize="18" FontStyle="Italic" Foreground="#C96A70" Margin="0,28,0,12" Text="Bu sadece ilk geceydi." />
+                            <TextBlock FontSize="30" FontWeight="Bold" Foreground="#F3EDE1" Margin="0,36,0,8" Text="Zombie Night Protocol" />
+                            <TextBlock FontSize="16" FontWeight="SemiBold" Foreground="#D8C196" Margin="0,20,0,6" Text="Sezon 1 / Bölüm 15" />
+                            <TextBlock FontSize="24" FontWeight="SemiBold" Foreground="#C96A70" Text="Öldüğünü Sandılar" />
                         </StackPanel>
                         <StackPanel VerticalAlignment="Bottom">
                             <Button Style="{StaticResource MenuButton}" Command="{Binding ReturnFromChapterEndingCommand}" Content="➦  Ana Menüye Dön" />
