@@ -1,0 +1,17 @@
+{
+  "version": "1.0.1",
+  "isRequired": true,
+  "downloadSize": 19373,
+  "releaseNotes": "Yeni hikâye sahneleri ve hata düzeltmeleri.",
+  "files": [
+    {
+      "path": "content/stories/prototype-tr/story.json",
+      "size": 19373,
+      "sha256": "2ff9068ef42cbda5b4da700731e5d0ddd477ff1c055237bc8cb643431f6a0b41",
+      "version": "1.0.1",
+      "downloadUrl": "https://github.com/OWNER_NAME/REPOSITORY_NAME/releases/download/v1.0.1/story.json",
+      "isRequired": true,
+      "delete": false
+    }
+  ]
+}

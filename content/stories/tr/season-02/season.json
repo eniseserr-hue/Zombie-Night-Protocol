@@ -1,0 +1,37 @@
+{
+  "id": "season-02",
+  "title": "Sezon 2",
+  "description": "Kullanıcı tarafından daha sonra doldurulacak sezon içeriği.",
+  "order": 2,
+  "language": "tr",
+  "startChapterId": "chapter-01",
+  "chapters": [
+    {
+      "id": "chapter-01",
+      "title": "Bölüm 1",
+      "order": 1,
+      "chapterPath": "chapter-01/chapter.json"
+    }
+  ],
+  "sharedCharactersPath": "shared/characters.json",
+  "sharedDirectorRulesPath": "shared/director-rules.json",
+  "carryOverRules": {
+    "mainCharacter": true,
+    "characterLifeState": true,
+    "trustValues": true,
+    "injuries": true,
+    "infection": true,
+    "inventory": true,
+    "tasks": true,
+    "playerStyle": true,
+    "importantChoices": true,
+    "promises": true,
+    "groups": true,
+    "listenedVoiceMessages": true,
+    "messageHistory": true,
+    "vehicleState": true,
+    "routeSelections": true,
+    "nightDirectorHistory": true
+  },
+  "isPrototype": false
+}

@@ -1,0 +1,38 @@
+{
+  "id": "season-01",
+  "title": "Sezon 1",
+  "description": "İstanbul'da salgının ilk gecelerinden sonra Derya'nın izini arayan ana karakterin kırılgan bir ekiple hayatta kalma hikayesi.",
+  "order": 1,
+  "language": "tr",
+  "startChapterId": "chapter-01",
+  "chapters": [
+    {
+      "id": "chapter-01",
+      "title": "Öldüğünü Sandılar",
+      "order": 1,
+      "chapterPath": "chapter-01/chapter.json"
+    }
+  ],
+  "sharedCharactersPath": "shared/characters.json",
+  "sharedDirectorRulesPath": "shared/director-rules.json",
+  "carryOverRules": {
+    "mainCharacter": true,
+    "characterLifeState": true,
+    "trustValues": true,
+    "injuries": true,
+    "infection": true,
+    "inventory": true,
+    "tasks": true,
+    "playerStyle": true,
+    "importantChoices": true,
+    "promises": true,
+    "groups": true,
+    "listenedVoiceMessages": true,
+    "messageHistory": true,
+    "vehicleState": true,
+    "routeSelections": true,
+    "nightDirectorHistory": true
+  },
+  "isPrototype": false,
+  "isDemo": false
+}

@@ -1,0 +1,13 @@
+{
+  "scenes": [
+    {
+      "id": "scene-001",
+      "chapterId": "chapter-01",
+      "title": "Geçici Sezon 2 Başlangıcı",
+      "text": "Bu sahne yalnızca Sezon 2 altyapı testi içindir. Nihai hikâye kullanıcı tarafından daha sonra verilecek.",
+      "sceneImage": null,
+      "voiceMessage": null,
+      "choices": []
+    }
+  ]
+}

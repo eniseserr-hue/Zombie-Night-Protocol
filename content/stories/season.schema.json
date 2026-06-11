@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zombienightprotocol.local/schemas/season.schema.json",
+  "title": "Zombie Night Protocol Season Package",
+  "type": "object",
+  "required": ["id", "title", "order", "language", "startChapterId", "chapters"],
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "order": { "type": "integer" },
+    "language": { "type": "string" },
+    "startChapterId": { "type": "string" },
+    "chapters": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/chapterReference" }
+    },
+    "sharedCharactersPath": { "type": "string" },
+    "sharedDirectorRulesPath": { "type": "string" },
+    "carryOverRules": { "type": "object" },
+    "isPrototype": { "type": "boolean" },
+    "isDemo": { "type": "boolean" }
+  },
+  "$defs": {
+    "chapterReference": {
+      "type": "object",
+      "required": ["id", "title", "order"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "order": { "type": "integer" },
+        "chapterPath": { "type": "string" }
+      }
+    }
+  }
+}

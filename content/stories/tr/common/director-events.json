@@ -1,0 +1,97 @@
+[
+  {
+    "id": "distant_alarm",
+    "title": "Uzak Araç Alarmı",
+    "description": "Uzakta bir aracın alarmı dar sokaklarda yankılanıyor.",
+    "tags": [ "urban", "outdoor", "noise" ],
+    "minimumNoise": 0,
+    "maximumNoise": 70,
+    "minimumTension": 20,
+    "maximumTension": 75,
+    "minimumThreat": 10,
+    "maximumThreat": 80,
+    "cooldownScenes": 5,
+    "maxOccurrences": 2,
+    "weight": 20,
+    "isMajor": false,
+    "isMinor": true,
+    "effects": [
+      { "type": "changeThreat", "amount": 8 },
+      { "type": "changeTension", "amount": 5 },
+      { "type": "addRegionalNoise", "target": "nearby_street", "amount": 30 }
+    ],
+    "eventText": "Uzakta bir aracın alarmı çalmaya başladı. Ses dar sokaklarda yankılanıyor."
+  },
+  {
+    "id": "distant_infected_groan",
+    "title": "Uzak İnleme",
+    "description": "Karanlığın içinden zayıf bir enfekte sesi geliyor.",
+    "tags": [ "infected", "night" ],
+    "minimumTension": 10,
+    "maximumTension": 70,
+    "requiresNight": true,
+    "cooldownScenes": 3,
+    "maxOccurrences": 3,
+    "weight": 16,
+    "isMajor": false,
+    "isMinor": true,
+    "effects": [
+      { "type": "changeTension", "amount": 4 },
+      { "type": "changeInfectedEstimate", "amount": 4 }
+    ],
+    "eventText": "Uzaklardan gelen inleme bir süre sonra kesiliyor."
+  },
+  {
+    "id": "radio_static",
+    "title": "Radyo Paraziti",
+    "description": "Telsiz kısa süreliğine cızırtıyla canlanıyor.",
+    "tags": [ "radio", "indoor" ],
+    "minimumTension": 0,
+    "maximumTension": 65,
+    "cooldownScenes": 4,
+    "maxOccurrences": 2,
+    "weight": 12,
+    "isMajor": false,
+    "isMinor": true,
+    "effects": [
+      { "type": "changeTension", "amount": 3 },
+      { "type": "addFlag", "value": "heard_radio_static" }
+    ],
+    "eventText": "Telsizden kısa bir parazit yükseliyor, sonra tekrar susuyor."
+  },
+  {
+    "id": "sudden_silence",
+    "title": "Ani Sessizlik",
+    "description": "Çevredeki küçük sesler bir anda kesiliyor.",
+    "tags": [ "pacing", "silence" ],
+    "minimumTension": 35,
+    "maximumTension": 85,
+    "cooldownScenes": 5,
+    "maxOccurrences": 2,
+    "weight": 14,
+    "isMajor": false,
+    "isMinor": true,
+    "effects": [
+      { "type": "changeTension", "amount": 6 }
+    ],
+    "eventText": "Bir anlığına her şey susuyor. Bu sessizlik iyiye işaret değil."
+  },
+  {
+    "id": "blocked_path_hint",
+    "title": "Kapanan Yol",
+    "description": "Yakındaki geçidin kullanılamaz hale gelmiş olabileceğine dair izler var.",
+    "tags": [ "route", "hint" ],
+    "minimumThreat": 10,
+    "maximumThreat": 75,
+    "cooldownScenes": 6,
+    "maxOccurrences": 1,
+    "weight": 10,
+    "isMajor": false,
+    "isMinor": true,
+    "effects": [
+      { "type": "addTaskHint", "value": "Yakındaki alternatif geçitleri kontrol et." },
+      { "type": "changeTension", "amount": 4 }
+    ],
+    "eventText": "İlerideki yolun kapalı olabileceğini gösteren taze izler fark ediyorsun."
+  }
+]

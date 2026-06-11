@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zombienightprotocol.local/schemas/chapter.schema.json",
+  "title": "Zombie Night Protocol Chapter",
+  "type": "object",
+  "required": ["id", "seasonId", "title", "order", "startSceneId", "sceneFile"],
+  "properties": {
+    "id": { "type": "string" },
+    "seasonId": { "type": "string" },
+    "title": { "type": "string" },
+    "order": { "type": "integer" },
+    "startSceneId": { "type": "string" },
+    "sceneFile": { "type": "string" },
+    "summary": { "type": "string" },
+    "availableIf": { "type": "array" },
+    "defaultCheckpointId": { "type": "string" }
+  }
+}

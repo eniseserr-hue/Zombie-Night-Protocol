@@ -1,0 +1,11 @@
+{
+  "id": "chapter-01",
+  "seasonId": "season-01",
+  "title": "Öldüğünü Sandılar",
+  "order": 1,
+  "startSceneId": "s01c01_scene01_wakeup",
+  "sceneFile": "scenes.json",
+  "summary": "Ana karakter Esenler'de terk edilmiş bir sağlık merkezinde uyanır, Derya'nın yaşadığına dair ilk güçlü izi bulur ve kırılgan bir ekibin ilk parçalarını toplar.",
+  "availableIf": [],
+  "defaultCheckpointId": "checkpoint-wakeup"
+}

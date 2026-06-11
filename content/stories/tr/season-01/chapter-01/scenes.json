@@ -1,0 +1,2477 @@
+{
+  "scenes": [
+    {
+      "id": "s01c01_scene01_wakeup",
+      "chapterId": "chapter-01",
+      "title": "Uyanış",
+      "text": "Esenler'de küçük bir özel sağlık merkezinin karanlık hasta odasında gözlerini açarsın. Başının arkasında keskin bir ağrı, sol kolunda kurumuş kan ve yanında sökülmüş bir serum hortumu vardır. Elektrik yoktur. Koridorun sonundaki acil çıkış ışığı birkaç saniyede bir yanıp söner. Telefonunun şarjı yüzde ikidir. Ekranda Derya'dan kalmış, gönderilememiş bir sesli mesaj görünür.",
+      "sceneImage": "images/story/season01/main/s01_scene01_wakeup.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "minimumTension": 5,
+        "maximumTension": 35
+      },
+      "checkpointId": "checkpoint-wakeup",
+      "tags": [
+        "clinic",
+        "indoor",
+        "dark",
+        "intro"
+      ],
+      "location": "Esenler Sağlık Merkezi / Hasta Odası",
+      "timeOfDay": "night",
+      "threatHint": "Düşük",
+      "noiseBase": 4,
+      "infectedDensityHint": 8,
+      "lightingHint": "dark",
+      "lightLevel": 15,
+      "choices": [
+        {
+          "id": "s01c01_choice_search_quietly",
+          "text": "➦ Dolapları sessizce araştır.",
+          "targetSceneId": "s01c01_scene02_clinic_corridor",
+          "summary": "Sağlık dolabını yoklar, sessizce işe yarar bir sargı bulursun.",
+          "noiseChange": 2,
+          "threatChange": 0,
+          "tensionChange": 3,
+          "playerStyleEffects": {
+            "Silent": 2,
+            "Resourceful": 2,
+            "RiskTaker": -1
+          },
+          "directorFlags": [
+            "chapter1.searchedRoomQuietly"
+          ],
+          "effects": [
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "bandage",
+                "name": "Temiz Bandaj",
+                "description": "Sağlık dolabında kalmış temiz sargı. Kanamayı durdurmak için kullanılabilir.",
+                "category": "Health",
+                "quantity": 1,
+                "weight": 0.1,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": true,
+                "damage": 0,
+                "healing": 18,
+                "durability": 100,
+                "storyTag": "medical"
+              }
+            },
+            {
+              "type": "SetFlag",
+              "value": "inventory.bandage"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.roomLootedQuietly"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene01_choice_search_cabinets.webp"
+        },
+        {
+          "id": "s01c01_choice_listen_corridor",
+          "text": "➦ Koridordaki sesi dinle.",
+          "targetSceneId": "s01c01_scene02_clinic_corridor",
+          "summary": "Önce çevreyi anlamaya çalışırsın.",
+          "noiseChange": 0,
+          "threatChange": -1,
+          "tensionChange": 4,
+          "playerStyleEffects": {
+            "Silent": 1,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.listenedBeforeLeaving"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "threatKnowledge.firstInfectedHeard"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.ambushAvoided"
+            },
+            {
+              "type": "ChangeThreat",
+              "amount": -2
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene01_choice_listen_corridor.webp"
+        },
+        {
+          "id": "s01c01_choice_window",
+          "text": "➦ Pencereye yaklaşıp dışarı bak.",
+          "targetSceneId": "s01c01_scene02_clinic_corridor",
+          "summary": "Şehrin sessizliğini ilk kez görürsün.",
+          "noiseChange": 1,
+          "threatChange": 1,
+          "tensionChange": 5,
+          "playerStyleEffects": {
+            "RiskTaker": 1,
+            "Avoidant": -1
+          },
+          "directorFlags": [
+            "chapter1.sawSilentCity"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "map.streetPreviewUnlocked"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.oppositeWindowSawMovement"
+            },
+            {
+              "type": "ChangeThreat",
+              "amount": 5
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene01_choice_look_window.webp"
+        },
+        {
+          "id": "s01c01_choice_save_battery",
+          "text": "➦ Telefonu kapatıp kalan şarjı koru.",
+          "targetSceneId": "s01c01_scene02_clinic_corridor",
+          "summary": "Derya'nın kaydını sonra dinlemek üzere telefonu kapatırsın.",
+          "noiseChange": 0,
+          "threatChange": 0,
+          "tensionChange": 2,
+          "playerStyleEffects": {
+            "Resourceful": 2,
+            "Protective": 1
+          },
+          "directorFlags": [
+            "chapter1.savedPhoneBattery"
+          ],
+          "effects": [
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "phone_charge",
+                "name": "Korunan Telefon Şarjı",
+                "description": "Telefonu kapatarak koruduğun son şarj; ileride kısa süreli güç kaynağı olabilir.",
+                "category": "Quest",
+                "quantity": 1,
+                "weight": 0,
+                "isUsable": true,
+                "isQuestItem": true,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "phoneCharge"
+              }
+            },
+            {
+              "type": "SetFlag",
+              "value": "inventory.phoneCharge"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaMessageNotFullyHeard"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene01_choice_save_phone.webp"
+        }
+      ],
+      "voiceMessage": {
+        "id": "s01_scene01_uyanis",
+        "speakerId": "Derya",
+        "title": "Derya'dan Kalan Ses",
+        "audioPath": "audio/voices/season-01/s01_scene01_uyanis.mp3",
+        "transcript": "",
+        "autoPlay": false,
+        "requiredToContinue": false,
+        "radioFilter": false,
+        "phoneFilter": true,
+        "volumeMultiplier": 1,
+        "rememberAsListened": true,
+        "addToMessageHistory": false
+      }
+    },
+    {
+      "id": "s01c01_scene02_clinic_corridor",
+      "chapterId": "chapter-01",
+      "title": "Sağlık Merkezi",
+      "text": "Koridora çıktığında buranın yalnızca terk edilmediğini anlarsın. Duvarlarda tırnak izleri, bekleme salonunda kapının önüne yığılmış sandalyeler ve resepsiyonun arkasında kurumuş kan vardır. Ceset yoktur. Koridorun sonunda metal bir şey yere sürtünür. Enfekteleri henüz görmezsin; sadece seslerini duyarsın. Seçtiğin karakterin uzmanlığı burada küçük bir avantaj sağlayabilir ama hiçbir rota tamamen güvenli değildir.",
+      "sceneImage": "images/story/season01/main/s01_scene02_clinic_corridor.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "tensionChange": 3
+      },
+      "tags": [
+        "clinic",
+        "indoor",
+        "blood",
+        "tutorial"
+      ],
+      "location": "Esenler Sağlık Merkezi / Koridor",
+      "timeOfDay": "night",
+      "threatHint": "Düşük",
+      "noiseBase": 8,
+      "infectedDensityHint": 16,
+      "lightingHint": "flicker",
+      "lightLevel": 20,
+      "choices": [
+        {
+          "id": "s01c01_choice_force_fire_door",
+          "text": "➦ Sıkışmış yangın kapısını zorla.",
+          "targetSceneId": "s01c01_scene03_first_infected",
+          "summary": "Güç kullanırsın; kapı açılır ama metal sesi yayılır.",
+          "noiseSource": "door_break",
+          "noiseChange": 26,
+          "threatChange": 7,
+          "tensionChange": 8,
+          "playerStyleEffects": {
+            "Aggressive": 2,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.usedForceInClinic"
+          ],
+          "effects": [
+            {
+              "type": "ChangeHealth",
+              "amount": -4
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.exitDoorDamaged"
+            },
+            {
+              "type": "SetFlag",
+              "value": "route.frontDoorRiskHigh"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene02_choice_check_emergency_exit.webp"
+        },
+        {
+          "id": "s01c01_choice_restore_power",
+          "text": "➦ Elektriği kısa süreliğine geri getirmeyi dene.",
+          "targetSceneId": "s01c01_scene03_first_infected",
+          "summary": "Işıklar bir an yanar; binanın içinde ne kadar yalnız olmadığını görürsün.",
+          "noiseSource": "generator",
+          "noiseChange": 16,
+          "threatChange": 4,
+          "tensionChange": 6,
+          "playerStyleEffects": {
+            "Resourceful": 2,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.powerFlickered"
+          ],
+          "effects": [
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "radio_cable",
+                "name": "Kısa Radyo Kablosu",
+                "description": "Elektrik panosundan sökülen kısa kablo; anten veya telsiz bağlantısında işe yarayabilir.",
+                "category": "Tool",
+                "quantity": 1,
+                "weight": 0.1,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "wire"
+              }
+            },
+            {
+              "type": "SetFlag",
+              "value": "inventory.radioCable"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaRecordingQualityPossible"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_check_traces",
+          "text": "➦ Kan ve kimyasal izlerini incele.",
+          "targetSceneId": "s01c01_scene03_first_infected",
+          "summary": "Burada yaşananların panikten daha kötü olduğunu anlarsın.",
+          "noiseChange": 3,
+          "threatChange": -1,
+          "tensionChange": 5,
+          "playerStyleEffects": {
+            "Silent": 1,
+            "Resourceful": 1,
+            "Leader": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaVisitedClinic"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "clinic_note",
+                "name": "Hasta Kayıt Notu",
+                "description": "Derya'nın sağlık merkezine uğradığını kanıtlayan yırtık kayıt satırı.",
+                "category": "Quest",
+                "quantity": 1,
+                "weight": 0,
+                "isUsable": true,
+                "isQuestItem": true,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "deryaRecord"
+              }
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_use_vent",
+          "text": "➦ Havalandırma boşluğundan ilerle.",
+          "targetSceneId": "s01c01_scene03_first_infected",
+          "summary": "Sessiz ilerlersin ama çıkış noktası seni ilaç deposuna yaklaştırır.",
+          "noiseChange": 5,
+          "threatChange": 1,
+          "tensionChange": 7,
+          "playerStyleEffects": {
+            "Silent": 2,
+            "RiskTaker": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "route.rooftopKnowledge"
+            },
+            {
+              "type": "ChangeHealth",
+              "amount": -2
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_medical_supplies",
+          "text": "➦ Kullanılabilir medikal malzemeleri ayır.",
+          "targetSceneId": "s01c01_scene03_first_infected",
+          "summary": "Yanına işe yarar birkaç malzeme alırsın.",
+          "noiseChange": 4,
+          "threatChange": 0,
+          "tensionChange": 4,
+          "playerStyleEffects": {
+            "Protective": 2,
+            "Resourceful": 2
+          },
+          "inventoryEffects": [
+            {
+              "type": "quantity",
+              "itemId": "bandage",
+              "amount": 1
+            }
+          ],
+          "directorFlags": [
+            "chapter1.hasBasicMedicalSupplies"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "inventory.medicalSupplies"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "painkiller",
+                "name": "Ağrı Kesici",
+                "description": "Yaralı birini kısa süre ayakta tutabilecek ilaç.",
+                "category": "Health",
+                "quantity": 1,
+                "weight": 0.05,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": true,
+                "damage": 0,
+                "healing": 12,
+                "durability": 100,
+                "storyTag": "medical"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene02_choice_go_medicine_storage.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene03_first_infected",
+      "chapterId": "chapter-01",
+      "title": "İlk Enfekte",
+      "text": "İlaç deposunun önünde ilk enfekteyle karşılaşırsın. Eskiden burada çalışan biri olmalı. Bir bacağı kırılmıştır ama yerde sürünerek şaşırtıcı derecede hızlı yaklaşır. Enfektelerin kurallarını ilk kez anlarsın: hızlıdırlar, sese tepki verirler, görmeseler bile gürültünün geldiği yere yönelirler ve gece daha saldırgandırlar. Onu öldürmek zorunda değilsin.",
+      "sceneImage": "images/story/season01/main/s01_scene03_first_infected.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "tensionChange": 10
+      },
+      "tags": [
+        "clinic",
+        "infected",
+        "tutorial",
+        "danger"
+      ],
+      "location": "Esenler Sağlık Merkezi / İlaç Deposu",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 10,
+      "infectedDensityHint": 30,
+      "choices": [
+        {
+          "id": "s01c01_choice_retreat_silent",
+          "text": "➦ Sessizce arka odaya çekil.",
+          "targetSceneId": "s01c01_scene04_hidden_stranger",
+          "summary": "Çatışmadan kaçınır ve ses çıkarmadan mesafe alırsın.",
+          "noiseChange": 3,
+          "threatChange": -3,
+          "tensionChange": 4,
+          "playerStyleEffects": {
+            "Silent": 2,
+            "Avoidant": 1
+          },
+          "directorFlags": [
+            "chapter1.sparedFirstInfected"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.firstInfectedAlive"
+            },
+            {
+              "type": "SetFlag",
+              "value": "route.quietClinicExit"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene03_choice_retreat_quietly.webp"
+        },
+        {
+          "id": "s01c01_choice_throw_tray",
+          "text": "➦ Metal tepsiyi uzağa fırlatıp dikkatini dağıt.",
+          "targetSceneId": "s01c01_scene04_hidden_stranger",
+          "summary": "Enfekte sese yönelir ama binanın başka katlarından cevap sesleri gelir.",
+          "noiseSource": "distraction_throw",
+          "noiseLocation": "medicine_storage_far_end",
+          "createsDistraction": true,
+          "distractionLocation": "medicine_storage_far_end",
+          "distractionStrength": 32,
+          "noiseChange": 18,
+          "threatChange": 3,
+          "tensionChange": 7,
+          "playerStyleEffects": {
+            "Resourceful": 2,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.usedDistraction"
+          ],
+          "effects": [
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "metal_tray",
+                "name": "Eğilmiş Metal Tepsi",
+                "description": "Dikkat dağıtmak için kullanılabilecek gürültülü bir tepsi.",
+                "category": "Tool",
+                "quantity": 1,
+                "weight": 0.4,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "distraction"
+              }
+            },
+            {
+              "type": "SetFlag",
+              "value": "inventory.metalTray"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.otherFloorsAnswered"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene03_choice_throw_metal_tray.webp"
+        },
+        {
+          "id": "s01c01_choice_attack_infected",
+          "text": "➦ Bulduğun eşyayla saldır.",
+          "targetSceneId": "s01c01_scene04_hidden_stranger",
+          "summary": "Onu durdurursun fakat boğuşma sesi koridora yayılır.",
+          "noiseSource": "metal_drop",
+          "noiseChange": 34,
+          "threatChange": 8,
+          "tensionChange": 10,
+          "playerStyleEffects": {
+            "Aggressive": 3,
+            "RiskTaker": 2,
+            "Silent": -1
+          },
+          "directorFlags": [
+            "chapter1.killedFirstInfected"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.firstInfectedKilled"
+            },
+            {
+              "type": "ChangeItemQuantity",
+              "key": "folding_knife",
+              "amount": -1
+            },
+            {
+              "type": "ChangeHealth",
+              "amount": -6
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.firstImpressionBlood"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene03_choice_attack_with_item.webp"
+        },
+        {
+          "id": "s01c01_choice_block_door",
+          "text": "➦ Kapıyı kapatıp geçişi engelle.",
+          "targetSceneId": "s01c01_scene04_hidden_stranger",
+          "summary": "Kapı titrer ama birkaç saniye kazanırsın.",
+          "noiseSource": "door_break",
+          "noiseChange": 16,
+          "threatChange": 2,
+          "tensionChange": 6,
+          "playerStyleEffects": {
+            "Resourceful": 1,
+            "Protective": 1
+          },
+          "directorFlags": [
+            "chapter1.blockedFirstInfected"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.firstInfectedBlocked"
+            },
+            {
+              "type": "SetFlag",
+              "value": "route.blockedDoorFutureRisk"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene03_choice_block_door.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene04_hidden_stranger",
+      "chapterId": "chapter-01",
+      "title": "Saklanan Yabancı",
+      "text": "Kilitli bir muayene odasından nefes sesi duyarsın. İçeride Hakan adında yaralı bir adam vardır. Ana ekipten değildir; salgından beri tek başına saklanmaktadır ve sana güvenmez. Kapı açılır açılmaz boş olma ihtimali yüksek bir tabancayı sana doğrultur: Bir adım daha atarsan tetiğe basarım. Boş olduğunu ikimiz de bilmiyoruz.",
+      "sceneImage": "images/story/season01/main/s01_scene04_hidden_stranger_hakan.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "tensionChange": 8
+      },
+      "tags": [
+        "clinic",
+        "survivor",
+        "hakan",
+        "trust"
+      ],
+      "location": "Esenler Sağlık Merkezi / Muayene Odası",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 8,
+      "infectedDensityHint": 24,
+      "choices": [
+        {
+          "id": "s01c01_choice_calm_hakan",
+          "text": "➦ Ellerini gösterip sakin konuş.",
+          "targetSceneId": "s01c01_scene05_exit_together",
+          "summary": "Hakan silahı indirmez ama seni dinlemeye başlar.",
+          "noiseChange": 1,
+          "threatChange": -2,
+          "tensionChange": -4,
+          "characterTrustEffects": {
+            "hakan": 12
+          },
+          "playerStyleEffects": {
+            "Leader": 2,
+            "Protective": 1
+          },
+          "directorFlags": [
+            "chapter1.hakanCalmed"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.met"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.trust.openedUp"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.bayrampasaLeadFromHakan"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene04_choice_calm_hakan.webp"
+        },
+        {
+          "id": "s01c01_choice_treat_hakan",
+          "text": "➦ Hakan'ın yarasını kontrol etmeyi teklif et.",
+          "targetSceneId": "s01c01_scene05_exit_together",
+          "summary": "Yardım teklifin güven oluşturur ama zaman kaybettirir.",
+          "noiseChange": 2,
+          "threatChange": 1,
+          "tensionChange": -2,
+          "characterTrustEffects": {
+            "hakan": 16
+          },
+          "playerStyleEffects": {
+            "Protective": 3,
+            "Loyal": 1
+          },
+          "directorFlags": [
+            "chapter1.helpedHakanWound"
+          ],
+          "effects": [
+            {
+              "type": "ChangeItemQuantity",
+              "key": "bandage",
+              "amount": -1
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.met"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.injuryStabilized"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.trust.medicalHelp"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene04_choice_treat_hakan_wound.webp"
+        },
+        {
+          "id": "s01c01_choice_call_bluff",
+          "text": "➦ Silahın boş olduğunu söyleyerek blöfünü boz.",
+          "targetSceneId": "s01c01_scene05_exit_together",
+          "summary": "Hakan geri adım atar ama sana kinlenir.",
+          "noiseChange": 6,
+          "threatChange": 1,
+          "tensionChange": 4,
+          "characterTrustEffects": {
+            "hakan": -8
+          },
+          "playerStyleEffects": {
+            "Aggressive": 1,
+            "RiskTaker": 1,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.calledHakanBluff"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.met"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.trust.resentful"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.delayedHelpRisk"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene04_choice_call_hakan_bluff.webp"
+        },
+        {
+          "id": "s01c01_choice_leave_hakan_room",
+          "text": "➦ Kapıyı kapatıp onu orada bırak.",
+          "targetSceneId": "s01c01_scene05_exit_together",
+          "summary": "Daha hızlı ilerlersin ama Hakan bunu unutmayacak.",
+          "noiseChange": 4,
+          "threatChange": -1,
+          "tensionChange": 5,
+          "characterTrustEffects": {
+            "hakan": -18
+          },
+          "playerStyleEffects": {
+            "Selfish": 3,
+            "Avoidant": 1,
+            "Protective": -2
+          },
+          "directorFlags": [
+            "chapter1.leftHakanInRoom"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.leftBehind"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.promiseGiven.false"
+            },
+            {
+              "type": "SetFlag",
+              "value": "future.hakanMayReturnHostile"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene04_choice_leave_hakan.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene05_exit_together",
+      "chapterId": "chapter-01",
+      "title": "Birlikte Çıkış",
+      "text": "Hakan yaralıdır ve hızlı hareket edemez. Sağlık merkezinden çıkmak için üç ihtimal vardır: ön kapı hızlı ama ölümcüldür; bodrum servisi karanlıktır ve jeneratör odasından düzenli vurma sesleri gelir; çatıdan yan binaya geçmek mümkündür ama Hakan'ın yarası buna uygun değildir. İlk gerçek zor karar önündedir.",
+      "sceneImage": "images/story/season01/main/s01_scene05_escape_clinic.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "tensionChange": 6
+      },
+      "tags": [
+        "clinic",
+        "escape",
+        "hakan",
+        "choice"
+      ],
+      "location": "Esenler Sağlık Merkezi / Çıkış Koridoru",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 12,
+      "infectedDensityHint": 34,
+      "choices": [
+        {
+          "id": "s01c01_choice_take_hakan",
+          "text": "➦ Hakan'ı yanında götür.",
+          "targetSceneId": "s01c01_scene06_silent_istanbul",
+          "summary": "Yavaşlarsın ama şehir hakkında önemli bilgiler alırsın.",
+          "noiseChange": 8,
+          "threatChange": 4,
+          "tensionChange": 6,
+          "characterTrustEffects": {
+            "hakan": 14
+          },
+          "playerStyleEffects": {
+            "Protective": 3,
+            "Loyal": 2
+          },
+          "directorFlags": [
+            "chapter1.hakanWithPlayer"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.withPlayer"
+            },
+            {
+              "type": "SetFlag",
+              "value": "party.hakanPresent"
+            },
+            {
+              "type": "ChangeItemQuantity",
+              "key": "water",
+              "amount": -1
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_safer_route_for_hakan",
+          "text": "➦ Hakan için daha tehlikeli ama uygun rotayı seç.",
+          "targetSceneId": "s01c01_scene06_silent_istanbul",
+          "summary": "Onu hayatta tutmak için kendini daha fazla riske atarsın.",
+          "noiseSource": "running",
+          "noiseChange": 14,
+          "threatChange": 8,
+          "tensionChange": 10,
+          "characterTrustEffects": {
+            "hakan": 20
+          },
+          "playerStyleEffects": {
+            "Protective": 4,
+            "RiskTaker": 2,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.riskedForHakan",
+            "chapter1.hakanWithPlayer"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.withPlayer"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.injuryStableButSlow"
+            },
+            {
+              "type": "ChangeHealth",
+              "amount": -5
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_promise_hakan",
+          "text": "➦ Onu geçici olarak bırakıp yardım getirmeyi vadet.",
+          "targetSceneId": "s01c01_scene06_silent_istanbul",
+          "summary": "Hakan kalır. Sözün ileride peşinden gelebilir.",
+          "noiseChange": 4,
+          "threatChange": -2,
+          "tensionChange": 7,
+          "characterTrustEffects": {
+            "hakan": 4
+          },
+          "playerStyleEffects": {
+            "Leader": 1,
+            "Avoidant": 1
+          },
+          "directorFlags": [
+            "chapter1.promisedHakanReturn"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.waiting"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.promiseGiven"
+            },
+            {
+              "type": "SetFlag",
+              "value": "future.hakanPromiseDebt"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_abandon_hakan",
+          "text": "➦ Hakan'ı tamamen terk et.",
+          "targetSceneId": "s01c01_scene06_silent_istanbul",
+          "summary": "Daha kolay çıkarsın ama bu karar ileride ağırlaşabilir.",
+          "noiseChange": 3,
+          "threatChange": -4,
+          "tensionChange": 8,
+          "characterTrustEffects": {
+            "hakan": -30
+          },
+          "playerStyleEffects": {
+            "Selfish": 4,
+            "Untrustworthy": 2,
+            "Protective": -3
+          },
+          "directorFlags": [
+            "chapter1.abandonedHakan"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.abandoned"
+            },
+            {
+              "type": "SetFlag",
+              "value": "future.hakanMayReturnInfected"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "bedo",
+              "amount": -4
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "busra",
+              "amount": -4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene06_silent_istanbul",
+      "chapterId": "chapter-01",
+      "title": "İstanbul'un Sessizliği",
+      "text": "Dışarı çıktığında şehir ilk kez geniş şekilde görünür. Terk edilmiş otobüsler, açık kalan dükkanlar, yarım bırakılmış polis barikatları ve yanan bir bina vardır. En rahatsız edici şey gürültü değil, sessizliktir. Uzaktan bir araba alarmı çalar; farklı sokaklardan onlarca enfekte sese doğru koşar. Sürü davranışını ilk kez görürsün. Sağlık merkezinde yaptığın gürültü, sokağın ne kadar sakin kalacağını belirler.",
+      "sceneImage": "images/story/season01/main/s01_scene06_silent_istanbul.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "urban",
+          "outdoor",
+          "noise",
+          "infected"
+        ],
+        "forceNoMajorEvent": true,
+        "tensionChange": 10
+      },
+      "tags": [
+        "urban",
+        "outdoor",
+        "street",
+        "horde"
+      ],
+      "location": "Esenler Sokakları",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 18,
+      "infectedDensityHint": 48,
+      "choices": [
+        {
+          "id": "s01c01_choice_move_silent_street",
+          "text": "➦ Otobüslerin arasından sessiz ilerle.",
+          "targetSceneId": "s01c01_scene07_first_shelter",
+          "summary": "Sürü alarmın olduğu yöne akarken aralarından sıyrılırsın.",
+          "noiseChange": 5,
+          "threatChange": -4,
+          "tensionChange": 5,
+          "playerStyleEffects": {
+            "Silent": 2,
+            "Leader": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "route.quietStreets"
+            },
+            {
+              "type": "SetFlag",
+              "value": "bedo.meetChanceHigh"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene06_choice_back_alleys.webp"
+        },
+        {
+          "id": "s01c01_choice_run_to_apartment",
+          "text": "➦ Yakındaki apartmana koş.",
+          "targetSceneId": "s01c01_scene07_first_shelter",
+          "summary": "Hız kazanırsın ama adımların boş sokakta yankılanır.",
+          "noiseSource": "running",
+          "noiseChange": 20,
+          "threatChange": 6,
+          "tensionChange": 8,
+          "playerStyleEffects": {
+            "RiskTaker": 2,
+            "Avoidant": 1
+          },
+          "effects": [
+            {
+              "type": "ChangeHealth",
+              "amount": -3
+            },
+            {
+              "type": "SetFlag",
+              "value": "street.hordeNoticedPlayer"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_follow_red_marks",
+          "text": "➦ Duvarlardaki kırmızı işaretleri takip et.",
+          "targetSceneId": "s01c01_scene07_first_shelter",
+          "summary": "İşaretler seni yakın bir apartmana yönlendirir.",
+          "noiseChange": 6,
+          "threatChange": 1,
+          "tensionChange": 6,
+          "playerStyleEffects": {
+            "Resourceful": 2,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.followedRedMarks"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.redMarksFound"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.redMarksKnown"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "red_mark_note",
+                "name": "Kırmızı İşaret Notu",
+                "description": "Kuzey kapısına yönelen kırmızı işaretlere dair çizilmiş küçük not.",
+                "category": "Quest",
+                "quantity": 1,
+                "weight": 0,
+                "isUsable": true,
+                "isQuestItem": true,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "redMarks"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene07_first_shelter",
+      "chapterId": "chapter-01",
+      "title": "İlk Sığınak",
+      "text": "Yakındaki bir apartmana sığınırsın. İçeride insanların yakın zamanda yaşadığı anlaşılır: yarım yenmiş yemekler, duvarda işaretlenmiş tarihler, boş su şişeleri ve aceleyle toplanmış battaniyeler. Fakat kimse yoktur. Üst kattan bir telsiz sesi gelir. Telsizin başında Yesking'i bulursun. Binaya enfekte çekmiş olabileceğini düşünüp sinirlenir: Kapıyı arkandan kapattın mı, yoksa bütün mahalleyi davet mi ettin?",
+      "sceneImage": "images/story/season01/main/s01_scene07_first_shelter_yesking.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "radio",
+          "indoor",
+          "pacing"
+        ],
+        "forceNoMajorEvent": true,
+        "tensionChange": 5
+      },
+      "tags": [
+        "apartment",
+        "indoor",
+        "radio",
+        "yesking"
+      ],
+      "location": "Esenler Apartmanı / Üst Kat",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 10,
+      "infectedDensityHint": 35,
+      "choices": [
+        {
+          "id": "s01c01_choice_tell_truth_yesking",
+          "text": "➦ Yesking'e dürüstçe ne olduğunu anlat.",
+          "targetSceneId": "s01c01_scene08_power_antenna",
+          "summary": "Temkinli de olsa seni dinlemeye başlar.",
+          "noiseChange": 1,
+          "threatChange": -1,
+          "tensionChange": -2,
+          "characterTrustEffects": {
+            "yesking": 12
+          },
+          "playerStyleEffects": {
+            "Loyal": 2,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.toldTruthToYesking"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "yesking.trust.truth"
+            },
+            {
+              "type": "SetFlag",
+              "value": "yesking.joinCandidate"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene07_choice_tell_truth.webp"
+        },
+        {
+          "id": "s01c01_choice_lie_yesking",
+          "text": "➦ Gürültü çıkarmadığını söyleyerek yalan söyle.",
+          "targetSceneId": "s01c01_scene08_power_antenna",
+          "summary": "Yesking şüphelenir. Tehdit yüksekse yalanın kısa sürede ortaya çıkabilir.",
+          "noiseChange": 0,
+          "threatChange": 2,
+          "tensionChange": 5,
+          "characterTrustEffects": {
+            "yesking": -10
+          },
+          "playerStyleEffects": {
+            "Untrustworthy": 3,
+            "Selfish": 1
+          },
+          "directorFlags": [
+            "chapter1.liedToYesking"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "yesking.trust.liedTo"
+            },
+            {
+              "type": "SetFlag",
+              "value": "future.yeskingMayExposeLie"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_ask_derya_recording",
+          "text": "➦ Derya ve Bayrampaşa yayını hakkında soru sor.",
+          "targetSceneId": "s01c01_scene08_power_antenna",
+          "summary": "Yesking kaydın son parçasını çözmek için antene güç gerektiğini söyler.",
+          "noiseChange": 1,
+          "threatChange": 0,
+          "tensionChange": 3,
+          "characterTrustEffects": {
+            "yesking": 4
+          },
+          "playerStyleEffects": {
+            "Protective": 2,
+            "Resourceful": 1
+          },
+          "directorFlags": [
+            "chapter1.askedAboutDerya"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaLeadFromYesking"
+            },
+            {
+              "type": "SetFlag",
+              "value": "yesking.joinCandidate"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene07_choice_ask_derya.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene08_power_antenna",
+      "chapterId": "chapter-01",
+      "title": "Anteni Çalıştırmak",
+      "text": "Yesking yayının son parçasını çözebilmek için çatıdaki antene güç verilmesi gerektiğini söyler. Bunun için apartmanın girişindeki elektrik odasına inmek gerekir. Mecburen birlikte hareket edersiniz. Güveni düşükse kendisini riske atmayı reddeder: Beni aşağı gönderip sen yukarıda bekleyeceksen o iş yaş. Güveni yüksekse kapıyı tutmanı ister ve hurdayı uyandıracağını söyler.",
+      "sceneImage": "images/story/season01/main/s01_scene08_power_antenna.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "indoor",
+          "radio",
+          "noise"
+        ],
+        "tensionChange": 8
+      },
+      "tags": [
+        "apartment",
+        "generator",
+        "radio",
+        "yesking"
+      ],
+      "location": "Esenler Apartmanı / Elektrik Odası",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 14,
+      "infectedDensityHint": 38,
+      "choices": [
+        {
+          "id": "s01c01_choice_protect_yesking",
+          "text": "➦ Yesking'i koruyarak elektrik odasına ilerle.",
+          "targetSceneId": "s01c01_scene09_derya_recording",
+          "summary": "Kapıyı tutarsın; Yesking sistemi kısa süreliğine canlandırır.",
+          "noiseSource": "generator",
+          "noiseChange": 22,
+          "threatChange": 5,
+          "tensionChange": 7,
+          "characterTrustEffects": {
+            "yesking": 12
+          },
+          "playerStyleEffects": {
+            "Protective": 2,
+            "Leader": 2
+          },
+          "directorFlags": [
+            "chapter1.yeskingPoweredAntenna"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "yesking.joined"
+            },
+            {
+              "type": "SetFlag",
+              "value": "party.yeskingPresent"
+            },
+            {
+              "type": "ChangeHealth",
+              "amount": -4
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene08_choice_protect_yesking.webp"
+        },
+        {
+          "id": "s01c01_choice_manual_fuse",
+          "text": "➦ Gürültü çıkarmamak için sigorta kutusunu elle aç.",
+          "targetSceneId": "s01c01_scene09_derya_recording",
+          "summary": "Riskli ama daha sessiz bir çözüm denersin.",
+          "noiseChange": 7,
+          "threatChange": -2,
+          "tensionChange": 8,
+          "characterTrustEffects": {
+            "yesking": 6
+          },
+          "playerStyleEffects": {
+            "Silent": 2,
+            "Resourceful": 2,
+            "RiskTaker": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaRecordingQuality.high"
+            },
+            {
+              "type": "SetFlag",
+              "value": "yesking.respectsCarefulWork"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "battery",
+                "name": "Sağlam Pil",
+                "description": "Anten gücünü kısa süre dengeleyebilecek sağlam pil.",
+                "category": "Tool",
+                "quantity": 1,
+                "weight": 0.1,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "battery"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene08_choice_open_fuse_box.webp"
+        },
+        {
+          "id": "s01c01_choice_lure_to_flat",
+          "text": "➦ Enfekteleri başka daireye yönlendirmek için dikkat dağıt.",
+          "targetSceneId": "s01c01_scene09_derya_recording",
+          "summary": "Ses başka daireye akar ama apartmanın içindeki hareket artar.",
+          "noiseSource": "distraction_throw",
+          "createsDistraction": true,
+          "distractionLocation": "empty_flat",
+          "distractionStrength": 34,
+          "noiseChange": 18,
+          "threatChange": 2,
+          "tensionChange": 8,
+          "characterTrustEffects": {
+            "yesking": 4
+          },
+          "playerStyleEffects": {
+            "Resourceful": 2,
+            "RiskTaker": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.distractionEndangeredFlat"
+            },
+            {
+              "type": "SetFlag",
+              "value": "future.someoneMayBlamePlayer"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene08_choice_distract_infected.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene09_derya_recording",
+      "chapterId": "chapter-01",
+      "title": "Derya'dan Kalan Kayıt",
+      "text": "Anten çalışınca kayıt netleşir. Derya'nın sesi parazitlerin arasından duyulur. Ardından silah sesi gelir ve bağlantı kopar. Derya'ya ulaşamazsın; sadece birkaç saat önce yaşadığına dair kanıt elde edersin.",
+      "sceneImage": "images/story/season01/main/s01_scene09_derya_recording.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "tensionChange": 12
+      },
+      "tags": [
+        "radio",
+        "derya",
+        "objective",
+        "apartment"
+      ],
+      "location": "Esenler Apartmanı / Çatı Anteni",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 16,
+      "infectedDensityHint": 40,
+      "choices": [
+        {
+          "id": "s01c01_choice_follow_derya_signal",
+          "text": "➦ Kuzey kapısındaki kırmızı işaretleri takip etmeye karar ver.",
+          "targetSceneId": "s01c01_scene10_apartment_fall",
+          "summary": "Yeni hedef bellidir: otogar ve kuzey kapısı.",
+          "noiseChange": 4,
+          "threatChange": 1,
+          "tensionChange": 8,
+          "playerStyleEffects": {
+            "Protective": 3,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.deryaProofFound"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaRecordingHeard"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.redMarksKnown"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaProofStrong"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_replay_signal",
+          "text": "➦ Kaydı bir kez daha çözmeye çalış.",
+          "targetSceneId": "s01c01_scene10_apartment_fall",
+          "summary": "Birkaç kelime daha yakalarsın ama gürültü uzar.",
+          "noiseSource": "radio_broadcast",
+          "noiseChange": 18,
+          "threatChange": 4,
+          "tensionChange": 7,
+          "characterTrustEffects": {
+            "yesking": 4
+          },
+          "playerStyleEffects": {
+            "Resourceful": 2,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.replayedDeryaSignal"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaRecordingHeard"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaRecordingReplay"
+            },
+            {
+              "type": "ChangeItemQuantity",
+              "key": "phone_charge",
+              "amount": -1
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene09_choice_replay_recording.webp"
+        }
+      ],
+      "voiceMessage": {
+        "id": "s01_scene09_derya_kayit",
+        "speakerId": "Derya",
+        "title": "Derya'dan Kalan Kayıt",
+        "audioPath": "audio/voices/season-01/s01_scene09_derya_kayit.mp3",
+        "transcript": "",
+        "autoPlay": false,
+        "requiredToContinue": false,
+        "radioFilter": false,
+        "phoneFilter": true,
+        "volumeMultiplier": 1,
+        "rememberAsListened": true,
+        "addToMessageHistory": false
+      }
+    },
+    {
+      "id": "s01c01_scene10_apartment_fall",
+      "chapterId": "chapter-01",
+      "title": "Apartmanın Düşüşü",
+      "text": "Yayın sırasında anten ve jeneratör gürültü çıkarır. Enfekteler binaya yönelir. Alt katlardan cam kırılma sesleri gelir. Önünde sınırlı süreli bir karar vardır. Hakan hayattaysa onu almak için geri dönmek mümkündür; Yesking ise seçimine göre sana katılabilir, tek başına ayrılabilir ya da istemeden birlikte kalabilir.",
+      "sceneImage": "images/story/season01/main/s01_scene10_apartment_fall.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "infected",
+          "noise",
+          "urban"
+        ],
+        "minimumTension": 45,
+        "eventWeightMultiplier": 1.2
+      },
+      "tags": [
+        "apartment",
+        "escape",
+        "timed",
+        "horde"
+      ],
+      "location": "Esenler Apartmanı / Merdivenler",
+      "timeOfDay": "night",
+      "threatHint": "Yüksek",
+      "noiseBase": 28,
+      "infectedDensityHint": 65,
+      "choices": [
+        {
+          "id": "s01c01_choice_rooftop_escape",
+          "text": "➦ Çatıdan yan binaya geç.",
+          "targetSceneId": "s01c01_scene11_bedo_arrives",
+          "summary": "Yükseklik risklidir ama sürüden uzaklaşırsın.",
+          "noiseChange": 12,
+          "threatChange": 1,
+          "tensionChange": 8,
+          "characterTrustEffects": {
+            "yesking": 6
+          },
+          "playerStyleEffects": {
+            "RiskTaker": 2,
+            "Silent": 1
+          },
+          "lockRollback": true,
+          "directorFlags": [
+            "chapter1.escapedByRoof"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "route.rooftopEscape"
+            },
+            {
+              "type": "SetFlag",
+              "value": "bedo.meetChanceHigh"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "hakan",
+              "amount": -3
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene10_choice_rooftop_escape.webp"
+        },
+        {
+          "id": "s01c01_choice_service_exit",
+          "text": "➦ Alt kattaki servis çıkışını kullan.",
+          "targetSceneId": "s01c01_scene11_bedo_arrives",
+          "summary": "Kısa yol seçersin ama enfektelere daha yakın geçersin.",
+          "noiseSource": "running",
+          "noiseChange": 24,
+          "threatChange": 8,
+          "tensionChange": 10,
+          "playerStyleEffects": {
+            "RiskTaker": 2,
+            "Aggressive": 1
+          },
+          "lockRollback": true,
+          "directorFlags": [
+            "chapter1.escapedByServiceExit"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "route.serviceExit"
+            },
+            {
+              "type": "InjureCharacter",
+              "target": "yesking",
+              "value": "Kol sıyrığı"
+            },
+            {
+              "type": "SetFlag",
+              "value": "yesking.injured"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene10_choice_service_exit.webp"
+        },
+        {
+          "id": "s01c01_choice_move_noise_source",
+          "text": "➦ Gürültü kaynağını başka daireye taşı.",
+          "targetSceneId": "s01c01_scene11_bedo_arrives",
+          "summary": "Sürünün yönünü kırarsın ama birkaç saniye kaybedersin.",
+          "noiseSource": "speaker",
+          "createsDistraction": true,
+          "distractionLocation": "neighbor_flat",
+          "distractionStrength": 55,
+          "noiseChange": 22,
+          "threatChange": -4,
+          "tensionChange": 9,
+          "characterTrustEffects": {
+            "yesking": 8
+          },
+          "playerStyleEffects": {
+            "Resourceful": 3,
+            "Leader": 1
+          },
+          "lockRollback": true,
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.movedNoiseToFlat"
+            },
+            {
+              "type": "SetFlag",
+              "value": "future.flatSurvivorRisk"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "yesking",
+              "amount": 4
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene10_choice_move_noise_source.webp"
+        },
+        {
+          "id": "s01c01_choice_go_back_hakan",
+          "text": "➦ Hakan geride kaldıysa onu almak için geri dön.",
+          "targetSceneId": "s01c01_scene11_bedo_arrives",
+          "summary": "Çok tehlikeli bir geri dönüş yaparsın.",
+          "noiseSource": "running",
+          "noiseChange": 28,
+          "threatChange": 10,
+          "tensionChange": 12,
+          "characterTrustEffects": {
+            "hakan": 20,
+            "yesking": 2
+          },
+          "playerStyleEffects": {
+            "Protective": 4,
+            "Loyal": 2,
+            "RiskTaker": 2
+          },
+          "lockRollback": true,
+          "directorFlags": [
+            "chapter1.returnedForHakan"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "hakan.status.rescued"
+            },
+            {
+              "type": "SetFlag",
+              "value": "party.hakanPresent"
+            },
+            {
+              "type": "InjureCharacter",
+              "target": "yesking",
+              "value": "Omuz incinmesi"
+            },
+            {
+              "type": "SetFlag",
+              "value": "yesking.injuredSavingHakan"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene10_choice_save_hakan.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene11_bedo_arrives",
+      "chapterId": "chapter-01",
+      "title": "Bedo'nun Gelişi",
+      "text": "Çatılardan ya da ara sokaktan kaçarken uzakta birinin binalar arasında hızlı ilerlediğini görürsün. Bu kişi Bedo'dur. Önce seni takip eden enfekteleri fark eder ve bir süre uzaktan izler. Sessiz ve akıllı ilerlediysen aşağı bir ip atar; çok gürültülüysen sinirli biçimde bağırır: Peşine bütün mahalleyi takmışsın lan! Hızlı çık! Bedo da kuzey kapısındaki kırmızı işaretleri takip etmektedir.",
+      "sceneImage": "images/story/season01/main/s01_scene11_bedo_arrives.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "urban",
+          "outdoor",
+          "infected"
+        ],
+        "forceNoMajorEvent": true,
+        "tensionChange": 7
+      },
+      "tags": [
+        "bedo",
+        "rooftop",
+        "urban",
+        "ally"
+      ],
+      "location": "Esenler Çatıları",
+      "timeOfDay": "night",
+      "threatHint": "Orta",
+      "noiseBase": 16,
+      "infectedDensityHint": 45,
+      "choices": [
+        {
+          "id": "s01c01_choice_take_bedo_rope",
+          "text": "➦ Bedo'nun attığı ipe güven.",
+          "targetSceneId": "s01c01_scene12_first_night_team",
+          "summary": "Bedo seni yukarı çeker. Şakacı ama mesafeli davranır.",
+          "noiseChange": 10,
+          "threatChange": -2,
+          "tensionChange": 4,
+          "characterTrustEffects": {
+            "bedo": 10
+          },
+          "playerStyleEffects": {
+            "Loyal": 1,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.metBedo"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "bedo.joined"
+            },
+            {
+              "type": "SetFlag",
+              "value": "party.bedoPresent"
+            },
+            {
+              "type": "SetFlag",
+              "value": "bedo.trust.ropeAccepted"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_question_bedo",
+          "text": "➦ Derya'nın grubunu görüp görmediğini sor.",
+          "targetSceneId": "s01c01_scene12_first_night_team",
+          "summary": "Bedo bir kadın, silahlı bir adam, yaşlı bir erkek ve küçük bir araç gördüğünü söyler.",
+          "noiseChange": 6,
+          "threatChange": 0,
+          "tensionChange": 5,
+          "characterTrustEffects": {
+            "bedo": 4
+          },
+          "playerStyleEffects": {
+            "Protective": 2,
+            "Resourceful": 1
+          },
+          "directorFlags": [
+            "chapter1.bedoSawDeryaGroup"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.bedoSawDeryaGroup"
+            },
+            {
+              "type": "SetFlag",
+              "value": "bedo.joinCandidate"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.redMarksConfirmedByBedo"
+            }
+          ]
+        },
+        {
+          "id": "s01c01_choice_rush_bedo",
+          "text": "➦ Tartışmayı bırakıp hemen uzaklaş.",
+          "targetSceneId": "s01c01_scene12_first_night_team",
+          "summary": "Bedo hızını sever ama sana tam güvenmez.",
+          "noiseSource": "running",
+          "noiseChange": 18,
+          "threatChange": 3,
+          "tensionChange": 5,
+          "characterTrustEffects": {
+            "bedo": 2
+          },
+          "playerStyleEffects": {
+            "Avoidant": 1,
+            "RiskTaker": 2
+          },
+          "directorFlags": [
+            "chapter1.metBedo"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "bedo.joinedReluctant"
+            },
+            {
+              "type": "SetFlag",
+              "value": "party.bedoPresent"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "bedo",
+              "amount": -3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene12_first_night_team",
+      "chapterId": "chapter-01",
+      "title": "Küçük Ekibin İlk Gecesi",
+      "text": "Sen, Yesking ve Bedo terk edilmiş bir terzi atölyesinde geceyi geçirmek zorunda kalırsınız. Hakan hayattaysa sizinledir. Çatışmasız ama ağır bir andır; kimse birbirini tam tanımaz. Yesking sana güvenmez, Bedo burada uzun süre kalmak istemez, Hakan yarası yüzünden yük olduğunu düşünür. Henüz kimse seni lider olarak kabul etmez.",
+      "sceneImage": "images/story/season01/main/s01_scene12_tailor_workshop_night.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "pacing",
+          "silence",
+          "radio"
+        ],
+        "forceNoMajorEvent": true,
+        "forceCalm": true,
+        "tensionChange": -8
+      },
+      "tags": [
+        "safehouse",
+        "team",
+        "night",
+        "dialogue"
+      ],
+      "location": "Terk Edilmiş Terzi Atölyesi",
+      "timeOfDay": "night",
+      "threatHint": "Düşük",
+      "noiseBase": 4,
+      "infectedDensityHint": 18,
+      "choices": [
+        {
+          "id": "s01c01_choice_rest_here",
+          "text": "➦ Geceyi burada geçir.",
+          "targetSceneId": "s01c01_scene13_first_supply_run",
+          "summary": "Gruba nefes aldırırsın.",
+          "noiseChange": 0,
+          "threatChange": -6,
+          "tensionChange": -8,
+          "playerStyleEffects": {
+            "Leader": 2,
+            "Protective": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "team.rested"
+            },
+            {
+              "type": "ChangeHealth",
+              "amount": 8
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaTrailCooling"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene12_choice_stay_night.webp"
+        },
+        {
+          "id": "s01c01_choice_follow_derya_now",
+          "text": "➦ Derya'nın izini hemen takip et.",
+          "targetSceneId": "s01c01_scene13_first_supply_run",
+          "summary": "Grup yorgundur; aceleciliğin gerilim yaratır.",
+          "noiseSource": "running",
+          "noiseChange": 16,
+          "threatChange": 5,
+          "tensionChange": 8,
+          "characterTrustEffects": {
+            "yesking": -4,
+            "bedo": 2
+          },
+          "playerStyleEffects": {
+            "RiskTaker": 3,
+            "Protective": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.deryaTrailHot"
+            },
+            {
+              "type": "SetFlag",
+              "value": "team.exhausted"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "yesking",
+              "amount": -3
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "hakan",
+              "amount": -3
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene12_choice_follow_derya_now.webp"
+        },
+        {
+          "id": "s01c01_choice_find_food_water",
+          "text": "➦ Önce yiyecek ve su ara.",
+          "targetSceneId": "s01c01_scene13_first_supply_run",
+          "summary": "Sabaha çıkmak için kaynak gerektiğini kabul edersin.",
+          "noiseChange": 2,
+          "threatChange": 0,
+          "tensionChange": -2,
+          "playerStyleEffects": {
+            "Resourceful": 3,
+            "Leader": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.marketRunChosen"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "empty_bag",
+                "name": "Boş Bez Çanta",
+                "description": "Marketten kaynak taşımak için kullanılabilecek eski bez çanta.",
+                "category": "Tool",
+                "quantity": 1,
+                "weight": 0.2,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "bag"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene12_choice_find_food_water.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene13_first_supply_run",
+      "chapterId": "chapter-01",
+      "title": "İlk Kaynak Görevi",
+      "text": "Su ve yiyecek azdır. Yakındaki küçük markete gitmek gerekir. Yanına yalnızca bir kişiyi alabilirsin. Yesking alarm sistemini kapatabilir ama fiziksel çatışmada zayıftır. Bedo arka pencereden sessiz girebilir ama değerli gördüğü bir şeyi gizlice alabilir. Hakan yavaş ilerler fakat eski polis telsiz frekansını tanır. Markette yalnızca enfekteler yoktur; rafların arasından başka biri sizi izler.",
+      "sceneImage": "images/story/season01/main/s01_scene13_market_supply_run.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "urban",
+          "indoor",
+          "noise",
+          "route"
+        ],
+        "tensionChange": 7
+      },
+      "tags": [
+        "market",
+        "indoor",
+        "supplies",
+        "unknown"
+      ],
+      "location": "Esenler Küçük Market",
+      "timeOfDay": "dawn",
+      "threatHint": "Orta",
+      "noiseBase": 10,
+      "infectedDensityHint": 36,
+      "choices": [
+        {
+          "id": "s01c01_choice_take_yesking_market",
+          "text": "➦ Yesking'i yanında götür.",
+          "targetSceneId": "s01c01_scene14_meet_busra",
+          "summary": "Alarmı çözebilir ama onu koruman gerekir.",
+          "noiseChange": 7,
+          "threatChange": -1,
+          "tensionChange": 5,
+          "characterTrustEffects": {
+            "yesking": 6
+          },
+          "playerStyleEffects": {
+            "Leader": 1,
+            "Resourceful": 2
+          },
+          "directorFlags": [
+            "chapter1.marketCompanionYesking"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "market.companion.yesking"
+            },
+            {
+              "type": "SetFlag",
+              "value": "yesking.joined"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "security_tape_note",
+                "name": "Market Kamera Notu",
+                "description": "Kamera kayıtlarından Büşra'nın markete giriş zamanını gösteren not.",
+                "category": "Quest",
+                "quantity": 1,
+                "weight": 0,
+                "isUsable": true,
+                "isQuestItem": true,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "busraTrace"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene13_choice_go_with_yesking.webp"
+        },
+        {
+          "id": "s01c01_choice_take_bedo_market",
+          "text": "➦ Bedo'yu yanında götür.",
+          "targetSceneId": "s01c01_scene14_meet_busra",
+          "summary": "Arka pencereden sessiz girebilirsiniz.",
+          "noiseChange": 4,
+          "threatChange": -2,
+          "tensionChange": 5,
+          "characterTrustEffects": {
+            "bedo": 6
+          },
+          "playerStyleEffects": {
+            "Silent": 2,
+            "RiskTaker": 1
+          },
+          "directorFlags": [
+            "chapter1.marketCompanionBedo"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "market.companion.bedo"
+            },
+            {
+              "type": "SetFlag",
+              "value": "bedo.mayPocketItem"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "canned_food",
+                "name": "Konserve",
+                "description": "Aceleyle çantaya atılmış konserve.",
+                "category": "Food",
+                "quantity": 1,
+                "weight": 0.4,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": true,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "food"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene13_choice_go_with_bedo.webp"
+        },
+        {
+          "id": "s01c01_choice_take_hakan_market",
+          "text": "➦ Hakan'ı yanında götür.",
+          "targetSceneId": "s01c01_scene14_meet_busra",
+          "summary": "Yavaş ilerlersiniz ama telsiz frekansları konusunda ipucu verir.",
+          "noiseChange": 10,
+          "threatChange": 3,
+          "tensionChange": 6,
+          "characterTrustEffects": {
+            "hakan": 8
+          },
+          "playerStyleEffects": {
+            "Protective": 2,
+            "Loyal": 1
+          },
+          "directorFlags": [
+            "chapter1.marketCompanionHakan"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "market.companion.hakan"
+            },
+            {
+              "type": "SetFlag",
+              "value": "hakan.policeFrequencyKnown"
+            },
+            {
+              "type": "ChangeHealth",
+              "amount": -2
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene13_choice_go_with_hakan.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene14_meet_busra",
+      "chapterId": "chapter-01",
+      "title": "Büşra ile İlk Karşılaşma",
+      "text": "Markette saklanan kişi Büşra'dır. Ağır yaralı genç bir yan karakter için ilaç arıyordur. Kaynakları çalacağını düşünür ve hemen güvenmez. Elindeki ilaçlar hem senin ekibin hem de onun yaralısı için değerlidir. Büşra'nın ekibe katılması hemen gerçekleşmez; kararına göre destek isteyebilir ya da farklı bir rotadan ayrılabilir.",
+      "sceneImage": "images/story/season01/main/s01_scene14_busra_first_meeting.webp",
+      "directorRules": {
+        "allowDirectorEvents": true,
+        "allowedEventTags": [
+          "indoor",
+          "pacing"
+        ],
+        "forceNoMajorEvent": true,
+        "tensionChange": 6
+      },
+      "tags": [
+        "market",
+        "busra",
+        "medical",
+        "trust"
+      ],
+      "location": "Esenler Küçük Market / Eczane Rafı",
+      "timeOfDay": "dawn",
+      "threatHint": "Orta",
+      "noiseBase": 8,
+      "infectedDensityHint": 30,
+      "choices": [
+        {
+          "id": "s01c01_choice_leave_medicine_busra",
+          "text": "➦ İlacı Büşra'ya bırak.",
+          "targetSceneId": "s01c01_scene15_chapter_finale",
+          "summary": "Kendi ekibin zorlanır ama Büşra sana ilk kez gerçek gözle bakar.",
+          "noiseChange": 2,
+          "threatChange": 0,
+          "tensionChange": -3,
+          "characterTrustEffects": {
+            "busra": 18
+          },
+          "playerStyleEffects": {
+            "Protective": 4,
+            "Loyal": 2,
+            "Selfish": -2
+          },
+          "directorFlags": [
+            "chapter1.busraHelped"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "busra.encountered"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.injuredSurvivorStatus.stabilized"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.joinCandidate"
+            },
+            {
+              "type": "ChangeItemQuantity",
+              "key": "painkiller",
+              "amount": -1
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene14_choice_leave_medicine.webp"
+        },
+        {
+          "id": "s01c01_choice_share_medicine",
+          "text": "➦ İlaçları paylaşmayı öner.",
+          "targetSceneId": "s01c01_scene15_chapter_finale",
+          "summary": "Büşra temkinli de olsa anlaşmayı kabul eder.",
+          "noiseChange": 2,
+          "threatChange": 0,
+          "tensionChange": -4,
+          "characterTrustEffects": {
+            "busra": 12
+          },
+          "playerStyleEffects": {
+            "Leader": 2,
+            "Protective": 2,
+            "Resourceful": 1
+          },
+          "directorFlags": [
+            "chapter1.busraSharedMedicine"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "busra.encountered"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.injuredSurvivorStatus.helped"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.joinedLater"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "shared_medical_kit",
+                "name": "Paylaşılan Medikal Kit",
+                "description": "Büşra ile paylaşılan küçük medikal paket.",
+                "category": "Health",
+                "quantity": 1,
+                "weight": 0.3,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": true,
+                "damage": 0,
+                "healing": 24,
+                "durability": 100,
+                "storyTag": "medical"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene14_choice_share_medicine.webp"
+        },
+        {
+          "id": "s01c01_choice_prioritize_team",
+          "text": "➦ Kendi ekibinin ihtiyacını öne sür.",
+          "targetSceneId": "s01c01_scene15_chapter_finale",
+          "summary": "Büşra seni anlar ama mesafesini korur.",
+          "noiseChange": 3,
+          "threatChange": 0,
+          "tensionChange": 3,
+          "characterTrustEffects": {
+            "busra": -2
+          },
+          "playerStyleEffects": {
+            "Leader": 1,
+            "Selfish": 1
+          },
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "busra.encountered"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.trust.coldStart"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "canned_food",
+                "name": "Konserve",
+                "description": "Aceleyle çantaya atılmış konserve.",
+                "category": "Food",
+                "quantity": 1,
+                "weight": 0.4,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": true,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "food"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene14_choice_prioritize_team.webp"
+        },
+        {
+          "id": "s01c01_choice_force_medicine",
+          "text": "➦ İlaçları zorla almaya çalış.",
+          "targetSceneId": "s01c01_scene15_chapter_finale",
+          "summary": "Kaynağı alırsın ama Büşra bunu unutmaz.",
+          "noiseSource": "shouting",
+          "noiseChange": 24,
+          "threatChange": 8,
+          "tensionChange": 10,
+          "characterTrustEffects": {
+            "busra": -30
+          },
+          "playerStyleEffects": {
+            "Aggressive": 3,
+            "Selfish": 4,
+            "Untrustworthy": 2
+          },
+          "directorFlags": [
+            "chapter1.busraAlienated"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "busra.encountered"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.hostile"
+            },
+            {
+              "type": "SetFlag",
+              "value": "busra.injuredSurvivorStatus.diedRisk"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "stolen_medicine",
+                "name": "Zorla Alınan İlaç",
+                "description": "Büşra'dan zorla alınmış ilaç. Bedeli güven oldu.",
+                "category": "Health",
+                "quantity": 1,
+                "weight": 0.2,
+                "isUsable": true,
+                "isQuestItem": false,
+                "isConsumable": true,
+                "damage": 0,
+                "healing": 20,
+                "durability": 100,
+                "storyTag": "medical"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene14_choice_force_take_medicine.webp"
+        }
+      ]
+    },
+    {
+      "id": "s01c01_scene15_chapter_finale",
+      "chapterId": "chapter-01",
+      "title": "Bölüm Finali",
+      "text": "Bölüm sonunda Derya'yı ya da ana grubu bulamazsın. Sadece küçük, kırılgan bir ekip oluşur: sen, Yesking, Bedo ve koşullara göre Büşra ile Hakan. Gece sona yaklaşırken kuzey tarafında büyük bir yangın görünür. Yesking bunun otogar yönünde olduğunu söyler. Bedo kırmızı işaretlerin oraya devam ettiğini fark eder. Bilinmeyen bir frekanstan son bir kayıt düşer.",
+      "sceneImage": "images/story/season01/main/s01_scene15_chapter_finale.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "tensionChange": 12
+      },
+      "checkpointId": "checkpoint-finale",
+      "tags": [
+        "finale",
+        "radio",
+        "objective",
+        "team"
+      ],
+      "location": "Esenler / Kuzey Yolu Manzarası",
+      "timeOfDay": "dawn",
+      "threatHint": "Yüksek",
+      "noiseBase": 12,
+      "infectedDensityHint": 42,
+      "choices": [
+        {
+          "id": "s01c01_choice_go_otogar",
+          "text": "➦ Otogara gidip Derya'nın izini ara.",
+          "targetSceneId": "s01c01_scene16_ending_narration",
+          "summary": "Derya'ya en doğrudan rotayı seçersin.",
+          "noiseChange": 6,
+          "threatChange": 5,
+          "tensionChange": 8,
+          "playerStyleEffects": {
+            "Protective": 3,
+            "RiskTaker": 2,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.finalChoiceOtogar"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.finalChoice.otogar"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter2.opening.otogarDirect"
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene15_choice_search_derya_at_otogar.webp"
+        },
+        {
+          "id": "s01c01_choice_secure_busra_wounded",
+          "text": "➦ Önce Büşra'nın yaralısını güvene al.",
+          "targetSceneId": "s01c01_scene16_ending_narration",
+          "summary": "Derya'nın izini geciktirir ama ekibin vicdanını güçlendirirsin.",
+          "noiseChange": 4,
+          "threatChange": 2,
+          "tensionChange": 4,
+          "characterTrustEffects": {
+            "busra": 10
+          },
+          "playerStyleEffects": {
+            "Protective": 4,
+            "Loyal": 2
+          },
+          "directorFlags": [
+            "chapter1.finalChoiceBusraWounded"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.finalChoice.busraWounded"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter2.opening.busraAid"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "busra",
+              "amount": 12
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene15_choice_help_busra_wounded.webp"
+        },
+        {
+          "id": "s01c01_choice_search_vehicles",
+          "text": "➦ Şehir dışına çıkan araçları araştır.",
+          "targetSceneId": "s01c01_scene16_ending_narration",
+          "summary": "Kaçış ihtimalini ve kuzey yolunu birlikte düşünürsün.",
+          "noiseChange": 5,
+          "threatChange": 3,
+          "tensionChange": 5,
+          "playerStyleEffects": {
+            "Resourceful": 3,
+            "Leader": 1
+          },
+          "directorFlags": [
+            "chapter1.finalChoiceVehicles"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.finalChoice.vehicles"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter2.opening.vehicleSearch"
+            },
+            {
+              "type": "AddItem",
+              "item": {
+                "id": "vehicle_route_note",
+                "name": "Araç Rotası Notu",
+                "description": "Şehir dışına çıkan araçlar için işaretlenmiş kısa rota notu.",
+                "category": "Quest",
+                "quantity": 1,
+                "weight": 0,
+                "isUsable": true,
+                "isQuestItem": true,
+                "isConsumable": false,
+                "damage": 0,
+                "healing": 0,
+                "durability": 100,
+                "storyTag": "vehicleRoute"
+              }
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene15_choice_search_vehicles.webp"
+        },
+        {
+          "id": "s01c01_choice_hide_until_morning",
+          "text": "➦ Gece bitene kadar saklan.",
+          "targetSceneId": "s01c01_scene16_ending_narration",
+          "summary": "Hayatta kalmayı önceliklendirirsin.",
+          "noiseChange": 0,
+          "threatChange": -5,
+          "tensionChange": -3,
+          "playerStyleEffects": {
+            "Avoidant": 2,
+            "Silent": 1
+          },
+          "directorFlags": [
+            "chapter1.finalChoiceHide"
+          ],
+          "effects": [
+            {
+              "type": "SetFlag",
+              "value": "chapter1.finalChoice.hide"
+            },
+            {
+              "type": "SetFlag",
+              "value": "chapter2.opening.lowThreatLateStart"
+            },
+            {
+              "type": "ChangeRelationship",
+              "target": "bedo",
+              "amount": -2
+            }
+          ],
+          "choicePreviewImage": "images/story/season01/choices/s01_scene15_choice_hide_until_morning.webp"
+        }
+      ],
+      "voiceMessage": {
+        "id": "s01_scene15_bolum_finali",
+        "speakerId": "Radyo",
+        "title": "Bilinmeyen Frekans",
+        "audioPath": "audio/voices/season-01/s01_scene15_bolum_finali.mp3",
+        "transcript": "",
+        "autoPlay": false,
+        "requiredToContinue": false,
+        "radioFilter": true,
+        "phoneFilter": false,
+        "volumeMultiplier": 1,
+        "rememberAsListened": true,
+        "addToMessageHistory": false
+      }
+    },
+    {
+      "id": "s01c01_scene16_ending_narration",
+      "chapterId": "chapter-01",
+      "title": "Bölüm Sonu",
+      "text": "Bölüm sonu kaydı hazır. Devam etmeden önce dinleyebilirsin.",
+      "sceneImage": "images/story/season01/main/s01_ending_narration.webp",
+      "directorRules": {
+        "allowDirectorEvents": false,
+        "forceNoMajorEvent": true,
+        "forceCalm": true,
+        "tensionChange": -10
+      },
+      "tags": [
+        "ending",
+        "chapter-complete",
+        "narration"
+      ],
+      "location": "Sezon 1 / Bölüm 1 Sonu",
+      "timeOfDay": "dawn",
+      "threatHint": "Düşük",
+      "choices": [],
+      "voiceMessage": {
+        "id": "s01_bolum_sonu_anlatim",
+        "speakerId": "Anlatıcı",
+        "title": "Bölüm Sonu Anlatımı",
+        "audioPath": "audio/voices/season-01/s01_bolum_sonu_anlatim.mp3",
+        "transcript": "",
+        "autoPlay": false,
+        "requiredToContinue": false,
+        "radioFilter": false,
+        "phoneFilter": false,
+        "volumeMultiplier": 1,
+        "rememberAsListened": true,
+        "addToMessageHistory": false
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "ending-chapter-01-complete",
+      "type": "chapterComplete",
+      "title": "Bölüm Sonu: Öldüğünü Sandılar",
+      "text": "Kuzey Kapısı'na giden yol açıldı. Derya'nın izi artık söylenti değil; kanıt.",
+      "isDeathEnding": false,
+      "checkpointToReturn": "checkpoint-finale",
+      "carryToNextChapter": true,
+      "carryToNextSeason": true
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "checkpoint-wakeup",
+      "sceneId": "s01c01_scene01_wakeup",
+      "title": "Uyanış",
+      "saveStateSnapshot": true,
+      "canReturnAfterDeath": true
+    },
+    {
+      "id": "checkpoint-finale",
+      "sceneId": "s01c01_scene15_chapter_finale",
+      "title": "Bölüm Finali",
+      "saveStateSnapshot": true,
+      "canReturnAfterDeath": true
+    }
+  ]
+}

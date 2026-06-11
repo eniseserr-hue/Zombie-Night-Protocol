@@ -1,0 +1,12 @@
+bin/
+obj/
+.vs/
+.idea/
+TestResults/
+release/
+.dotnet/
+*.user
+*.suo
+*.log
+artifacts/
+tmp/

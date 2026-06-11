@@ -1,0 +1,7 @@
+{
+  "menuMusic": "audio/music/Where_the_Iron_Holds.mp3",
+  "defaultAmbient": "audio/ambient/apartment_night.wav",
+  "uiClickSound": "audio/ui/ui_click.mp3",
+  "notificationSound": "audio/ui/notification.mp3",
+  "dangerSound": "audio/sfx/danger.wav"
+}

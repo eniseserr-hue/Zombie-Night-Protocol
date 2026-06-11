@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zombienightprotocol.local/schemas/story.schema.json",
+  "title": "Zombie Night Protocol Story Package",
+  "type": "object",
+  "required": ["id", "version", "startSceneId", "scenes"],
+  "properties": {
+    "id": {"type":"string","pattern":"^[a-z0-9][a-z0-9_-]*$"},
+    "version": {"type":"string"},
+    "startSceneId": {"type":"string"},
+    "scenes": {
+      "type":"array",
+      "minItems":1,
+      "items":{"$ref":"#/$defs/scene"}
+    }
+  },
+  "$defs": {
+    "scene": {
+      "type":"object",
+      "required":["id","title","content","choices"],
+      "properties":{
+        "id":{"type":"string"},
+        "title":{"type":"string"},
+        "sceneImage":{"type":"string"},
+        "backgroundSceneImage":{"type":"string"},
+        "ambientAudio":{"type":"string"},
+        "backgroundMusic":{"type":"string"},
+        "oneShotSounds":{"type":"array","items":{"type":"string"}},
+        "voiceMessage":{"$ref":"#/$defs/voiceMessage"},
+        "screenShakeIntensity":{"type":"number","minimum":0,"maximum":12},
+        "noiseIntensity":{"type":"number","minimum":0,"maximum":0.16},
+        "topMessages":{"type":"array","items":{"$ref":"#/$defs/topMessage"}},
+        "content":{"type":"array","items":{"$ref":"#/$defs/block"}},
+        "choices":{"type":"array","items":{"$ref":"#/$defs/choice"}}
+      }
+    },
+    "topMessage": {
+      "type":"object",
+      "required":["speaker","text"],
+      "properties":{
+        "speaker":{"type":"string"},
+        "text":{"type":"string"},
+        "tone":{"type":"string"}
+      }
+    },
+    "voiceMessage": {
+      "type":"object",
+      "required":["id","title"],
+      "properties":{
+        "id":{"type":"string"},
+        "speakerId":{"type":"string"},
+        "title":{"type":"string"},
+        "audioPath":{"type":"string"},
+        "transcript":{"type":"string"},
+        "autoPlay":{"type":"boolean"},
+        "requiredToContinue":{"type":"boolean"},
+        "radioFilter":{"type":"boolean"},
+        "phoneFilter":{"type":"boolean"},
+        "volumeMultiplier":{"type":"number","minimum":0,"maximum":2},
+        "rememberAsListened":{"type":"boolean"},
+        "addToMessageHistory":{"type":"boolean"}
+      }
+    },
+    "block": {
+      "type":"object",
+      "required":["type","text"],
+      "properties":{
+        "type":{"enum":["narration","dialogue"]},
+        "speaker":{"type":"string"},
+        "text":{"type":"string"},
+        "dialogueImage":{"type":"string"}
+      }
+    },
+    "choice": {
+      "type":"object",
+      "required":["id","text"],
+      "properties":{
+        "id":{"type":"string"},
+        "text":{"type":"string"},
+        "nextSceneId":{"type":["string","null"]},
+        "previewImage":{"type":"string"},
+        "selectionSummary":{"type":"string"},
+        "riskLevel":{"type":"string"},
+        "conditions":{"type":"array"},
+        "effects":{"type":"array"}
+      }
+    }
+  }
+}

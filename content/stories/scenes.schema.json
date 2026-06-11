@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zombienightprotocol.local/schemas/scenes.schema.json",
+  "title": "Zombie Night Protocol Scene Collection",
+  "type": "object",
+  "required": ["scenes"],
+  "properties": {
+    "scenes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/scene" }
+    },
+    "endings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ending" }
+    },
+    "checkpoints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/checkpoint" }
+    }
+  },
+  "$defs": {
+    "scene": {
+      "type": "object",
+      "required": ["id", "chapterId", "title", "text"],
+      "properties": {
+        "id": { "type": "string" },
+        "chapterId": { "type": "string" },
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "sceneImage": { "type": ["string", "null"] },
+        "voiceMessage": { "type": ["object", "null"] },
+        "choices": { "type": "array", "items": { "$ref": "#/$defs/choice" } },
+        "directorRules": { "type": "object" },
+        "checkpointId": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "location": { "type": "string" },
+        "timeOfDay": { "type": "string" },
+        "threatHint": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "choice": {
+      "type": "object",
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "targetSceneId": { "type": ["string", "null"] },
+        "choicePreviewImage": { "type": "string" },
+        "summary": { "type": "string" },
+        "requirements": { "type": "array" },
+        "effects": { "type": "array" },
+        "persistentChoiceId": { "type": "string" },
+        "noiseChange": { "type": "integer" },
+        "threatChange": { "type": "integer" },
+        "tensionChange": { "type": "integer" },
+        "characterTrustEffects": { "type": "object" },
+        "inventoryEffects": { "type": "array" },
+        "playerStyleEffects": { "type": "object" },
+        "isTimed": { "type": "boolean" },
+        "timeLimitSeconds": { "type": "integer" },
+        "lockRollback": { "type": "boolean" }
+      }
+    },
+    "ending": {
+      "type": "object",
+      "required": ["id", "title"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "text": { "type": "string" },
+        "isDeathEnding": { "type": "boolean" },
+        "checkpointToReturn": { "type": "string" },
+        "carryToNextChapter": { "type": "boolean" },
+        "carryToNextSeason": { "type": "boolean" }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "required": ["id", "sceneId", "title"],
+      "properties": {
+        "id": { "type": "string" },
+        "sceneId": { "type": "string" },
+        "title": { "type": "string" },
+        "saveStateSnapshot": { "type": "boolean" },
+        "canReturnAfterDeath": { "type": "boolean" }
+      }
+    }
+  }
+}

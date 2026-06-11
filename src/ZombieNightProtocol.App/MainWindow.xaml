@@ -1,0 +1,1261 @@
+<Window x:Class="ZombieNightProtocol.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:app="clr-namespace:ZombieNightProtocol.App"
+        xmlns:core="clr-namespace:ZombieNightProtocol.Core;assembly=ZombieNightProtocol.Core"
+        mc:Ignorable="d"
+        Title="Zombie Night Protocol"
+        Width="1280"
+        Height="800"
+        MinWidth="1000"
+        MinHeight="650"
+        WindowStartupLocation="CenterScreen">
+    <Grid x:Name="ScreenRoot">
+        <Grid.Background>
+            <RadialGradientBrush Center="0.2,0.25" GradientOrigin="0.2,0.25" RadiusX="0.9" RadiusY="0.9">
+                <GradientStop Color="#252529" Offset="0" />
+                <GradientStop Color="#111113" Offset="0.42" />
+                <GradientStop Color="#060607" Offset="1" />
+            </RadialGradientBrush>
+        </Grid.Background>
+
+        <Canvas IsHitTestVisible="False" Opacity="0.28">
+            <Canvas.Style>
+                <Style TargetType="Canvas">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMainMenu}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Canvas.Style>
+            <Line X1="0" Y1="110" X2="1600" Y2="110" Stroke="#6E3439" StrokeThickness="1" />
+            <Line X1="0" Y1="690" X2="1600" Y2="690" Stroke="#3B3B40" StrokeThickness="1" />
+            <Rectangle Canvas.Left="70" Canvas.Top="70" Width="4" Height="620" Fill="#71343A" />
+            <Line X1="74" Y1="70" X2="455" Y2="70" Stroke="#4A4A50" StrokeThickness="1" StrokeDashArray="3,7" />
+        </Canvas>
+
+        <!-- Loading -->
+        <Grid Background="Black" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Width="520" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Width="230" Height="265" HorizontalAlignment="Center"
+                       Source="/ZombieNightProtocol;component/Assets/loading-skull.png"
+                       Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                            <RotateTransform Angle="0" />
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                    <Image.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)">
+                                        <LinearDoubleKeyFrame KeyTime="0:0:0" Value="0" />
+                                        <LinearDoubleKeyFrame KeyTime="0:0:2" Value="360" />
+                                        <DiscreteDoubleKeyFrame KeyTime="0:0:5" Value="360" />
+                                    </DoubleAnimationUsingKeyFrames>
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                                                     From="0.995" To="1.01" Duration="0:0:3.2" AutoReverse="True" RepeatBehavior="Forever" />
+                                    <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                                     From="0.995" To="1.01" Duration="0:0:3.2" AutoReverse="True" RepeatBehavior="Forever" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Image.Triggers>
+                </Image>
+                <TextBlock Margin="0,22,0,12" HorizontalAlignment="Center" FontSize="16" FontWeight="Normal"
+                           Foreground="#E8E4DC" Text="{Binding LoadingStep}" />
+                <ProgressBar Height="12" Maximum="100" Foreground="#F0EEE8" Background="#171719"
+                             BorderBrush="#48484E" BorderThickness="1"
+                             Value="{Binding LoadingProgress, Mode=OneWay}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Main menu -->
+        <Grid Visibility="{Binding IsMainMenu, Converter={StaticResource BoolToVisibility}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="570" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.ColumnSpan="2" Source="{Binding Source=images/menu_infected.webp, Converter={StaticResource AssetImageConverter}}" Stretch="UniformToFill" Opacity="0.86"
+                   RenderTransformOrigin="0.5,0.5">
+                <Image.RenderTransform><ScaleTransform ScaleX="1.03" ScaleY="1.03" /></Image.RenderTransform>
+                <Image.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" From="1.03" To="1.09" Duration="0:0:12" />
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" From="1.03" To="1.09" Duration="0:0:12" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Image.Triggers>
+            </Image>
+            <Rectangle Grid.ColumnSpan="2">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#FA050507" Offset="0" />
+                        <GradientStop Color="#D908080A" Offset="0.36" />
+                        <GradientStop Color="#5A050507" Offset="0.72" />
+                        <GradientStop Color="#99050507" Offset="1" />
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <StackPanel Width="460" Margin="110,0,0,0" VerticalAlignment="Center" Panel.ZIndex="2">
+                <TextBlock Foreground="{StaticResource AccentBrightBrush}" FontSize="14" FontWeight="SemiBold" Text="İSTANBUL / GECE" />
+                <TextBlock Margin="0,12,0,8" FontSize="54" FontWeight="Light" Text="ZOMBIE" />
+                <TextBlock Margin="0,-16,0,36" FontSize="31" FontWeight="Bold" Text="N I G H T   P R O T O C O L" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ShowPlayMenuCommand}" Content="➦  Oyna" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ShowSettingsCommand}" Content="➦  Ayarlar" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ShowHelpCommand}" Content="➦  Yardım" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ExitCommand}" Content="➦  Çıkış" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Play menu -->
+        <Grid Margin="110,72" Visibility="{Binding IsPlayMenu, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Width="500" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource SectionTitle}" Text="OYUN MENÜSÜ" />
+                <TextBlock Margin="0,12,0,30" Style="{StaticResource Headline}" Text="GECEYE GİR" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding StartNewGameCommand}" Content="➦  Yeni Oyun" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ContinueGameCommand}" Content="{Binding ContinueText}" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ShowSavesCommand}" Content="➦  Kayıtları Yönet" />
+                <Button Style="{StaticResource MenuButton}" Command="{Binding ShowMainMenuCommand}" Content="➦  Ana Menüye Dön" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Character selection -->
+        <Grid Margin="82,45" Visibility="{Binding IsCharacterSelection, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <DockPanel Margin="0,0,0,18">
+                <Button DockPanel.Dock="Right" Style="{StaticResource CompactButton}" Command="{Binding ShowPlayMenuCommand}" Content="Geri" />
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="YENİ OYUN / KARAKTER SEÇİMİ" />
+                    <TextBlock FontSize="31" FontWeight="SemiBold" Text="Bu gece kimin gözlerinden bakacaksın?" />
+                </StackPanel>
+            </DockPanel>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="13*" />
+                    <ColumnDefinition Width="7*" />
+                </Grid.ColumnDefinitions>
+                <ListBox ItemsSource="{Binding Characters}"
+                         SelectedItem="{Binding SelectedCharacter}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid IsItemsHost="True" Columns="4" VerticalAlignment="Top" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="MinWidth" Value="150" />
+                            <Setter Property="Height" Value="225" />
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Card" Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="7" Padding="12">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Card" Property="Background" Value="#242427" />
+                                                <Setter TargetName="Card" Property="BorderBrush" Value="#7B6653" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Card" Property="Background" Value="#302023" />
+                                                <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource AccentBrightBrush}" />
+                                                <Setter TargetName="Card" Property="BorderThickness" Value="2" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type core:CharacterDefinition}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="94" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Border Width="74" Height="86" HorizontalAlignment="Left" Background="#0A0A0C" BorderBrush="#4C4C52" BorderThickness="1" CornerRadius="7" ClipToBounds="True">
+                                    <Grid>
+                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="28" FontWeight="Bold" Foreground="#6F6F75" Text="{Binding Name[0]}" />
+                                        <Image Source="{Binding Id, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                    </Grid>
+                                </Border>
+                                <TextBlock Grid.Row="1" Style="{StaticResource CardTitle}" Text="{Binding Name}" />
+                                <TextBlock Grid.Row="2" Margin="0,1,0,7" FontSize="11" Foreground="{StaticResource AccentBrightBrush}" Text="{Binding Specialty}" />
+                                <StackPanel Grid.Row="3">
+                                    <TextBlock Foreground="{StaticResource MutedTextBrush}" FontSize="10">
+                                        <Run Text="{Binding Age}" /><Run Text=" yaş • " /><Run Text="{Binding Profession}" />
+                                    </TextBlock>
+                                    <TextBlock Margin="0,5,0,0" FontSize="11" LineHeight="15" MaxHeight="32" Text="{Binding CardDescription}" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Border Grid.Column="1" Margin="18,6,0,6" Style="{StaticResource Panel}">
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasSelectedCharacter}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="SemiBold" Text="Bir karakter seç." />
+                            <TextBlock Margin="0,8,0,0" HorizontalAlignment="Center" Foreground="{StaticResource MutedTextBrush}"
+                                       Text="Dosya ayrıntıları burada görüntülenecek." />
+                        </StackPanel>
+                        <ScrollViewer x:Name="CharacterDetailPanel"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ScrollViewer.Style>
+                                <Style TargetType="ScrollViewer">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasSelectedCharacter}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ScrollViewer.Style>
+                        <StackPanel Margin="0,0,12,0" DataContext="{Binding SelectedCharacter}">
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="KARAKTER DOSYASI" />
+                            <Border Width="180" Height="210" Margin="0,10,0,14" HorizontalAlignment="Center" Background="#09090B" BorderBrush="#46464C" BorderThickness="1" CornerRadius="7" ClipToBounds="True">
+                                <Grid>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" FontWeight="Bold" Foreground="#3D3D43" Text="{Binding Name[0], TargetNullValue=Z}" />
+                                    <Image Source="{Binding Id, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                    <Rectangle>
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#00000000" Offset="0.55" />
+                                                <GradientStop Color="#A50A0A0C" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Grid>
+                            </Border>
+                            <TextBlock Margin="0,8,0,0" FontSize="30" FontWeight="SemiBold" Text="{Binding Name}" />
+                            <TextBlock Margin="0,2,0,16" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Role}" />
+                            <UniformGrid Columns="2" Margin="0,0,0,14">
+                                <StackPanel Margin="0,0,8,10"><TextBlock Style="{StaticResource SectionTitle}" Text="YAŞ / CİNSİYET" /><TextBlock FontSize="12"><Run Text="{Binding Age}" /><Run Text=" • " /><Run Text="{Binding Gender}" /></TextBlock></StackPanel>
+                                <StackPanel Margin="0,0,0,10"><TextBlock Style="{StaticResource SectionTitle}" Text="MESLEK" /><TextBlock FontSize="12" Text="{Binding Profession}" /></StackPanel>
+                                <StackPanel Margin="0,0,8,0"><TextBlock Style="{StaticResource SectionTitle}" Text="UZMANLIK" /><TextBlock FontSize="12" Text="{Binding Specialty}" /></StackPanel>
+                                <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="KORKU" /><TextBlock FontSize="12" Text="{Binding Fear}" /></StackPanel>
+                            </UniformGrid>
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="KISA TANITIM" />
+                            <TextBlock Margin="0,5,0,15" Text="{Binding CardDescription}" />
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="KİŞİLİK" />
+                            <TextBlock Margin="0,5,0,15" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Personality}" />
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="ÖZEL YETENEK" />
+                            <TextBlock Margin="0,5,0,0" FontSize="17" Text="{Binding SpecialAbility}" />
+                            <TextBlock Margin="0,3,0,15" Foreground="{StaticResource MutedTextBrush}" Text="{Binding SpecialAbilityDescription}" />
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="GÜÇLÜ YÖNLER" />
+                            <ItemsControl ItemsSource="{Binding Strengths}">
+                                <ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,3" Text="{Binding StringFormat=➦  {0}}" /></DataTemplate></ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Margin="0,14,0,0" Style="{StaticResource SectionTitle}" Text="ZAYIF YÖNLER" />
+                            <ItemsControl ItemsSource="{Binding Weaknesses}">
+                                <ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,3" Foreground="{StaticResource MutedTextBrush}" Text="{Binding StringFormat=⚠  {0}}" /></DataTemplate></ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Margin="0,14,0,0" Style="{StaticResource SectionTitle}" Text="BAŞLANGIÇ EŞYALARI" />
+                            <ItemsControl ItemsSource="{Binding StartingItems}">
+                                <ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,3" Text="{Binding Name, StringFormat=◈  {0}}" /></DataTemplate></ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Margin="0,14,0,0" Style="{StaticResource SectionTitle}" Text="ÖZELLİKLER" />
+                            <ItemsControl ItemsSource="{Binding Stats}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,3">
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="90" /><ColumnDefinition Width="*" /><ColumnDefinition Width="34" /></Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Key}" />
+                                            <ProgressBar Grid.Column="1" Margin="4,5" Maximum="100" Value="{Binding Value, Mode=OneWay}" />
+                                            <TextBlock Grid.Column="2" HorizontalAlignment="Right" Text="{Binding Value}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Margin="0,14,0,0" Style="{StaticResource SectionTitle}" Text="GİZLİ GEÇMİŞ" />
+                            <TextBlock Margin="0,4,0,0" Foreground="{StaticResource MutedTextBrush}" FontStyle="Italic" Text="{Binding HiddenPast}" />
+                            <TextBlock Margin="0,14,0,0" Style="{StaticResource SectionTitle}" Text="OYNANIŞ AVANTAJI" />
+                            <TextBlock Margin="0,4,0,0" Text="{Binding GameplayAdvantage}" />
+                            <TextBlock Margin="0,14,0,0" Style="{StaticResource SectionTitle}" Text="OYNANIŞ TARZI" />
+                            <TextBlock Margin="0,4,0,10" Foreground="{StaticResource MutedTextBrush}" Text="{Binding PlayStyle}" />
+                        </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+            <Button Grid.Row="2" Margin="0,16,0,0" HorizontalAlignment="Right" Width="260" Style="{StaticResource MenuButton}" Command="{Binding RequestCharacterConfirmationCommand}" Content="➦  Bu Karakteri Seç" />
+        </Grid>
+
+        <!-- Save manager -->
+        <Grid Margin="100,65" Visibility="{Binding IsSaves, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Text="KAYIT SİSTEMİ" />
+                <TextBlock Style="{StaticResource Headline}" Text="ÜÇ HAYAT, ÜÇ İZ" />
+            </StackPanel>
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding SaveSlots}" Margin="0,28">
+                <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" Columns="3" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="7" Style="{StaticResource Panel}">
+                            <Grid>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <TextBlock FontSize="19" FontWeight="SemiBold" Text="{Binding Title}" />
+                                <StackPanel Grid.Row="1" Margin="0,20">
+                                    <Border Width="92" Height="92" HorizontalAlignment="Left" CornerRadius="46" Background="#0B0D0F" BorderBrush="#414951" BorderThickness="1">
+                                        <Grid>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="38" Foreground="#3B4248" Text="Z" />
+                                            <Image Source="{Binding CharacterId, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                        </Grid>
+                                    </Border>
+                                    <TextBlock Margin="0,18,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Details}" />
+                                    <TextBlock Margin="0,8,0,0" FontSize="12" Foreground="#7D858C" Text="{Binding SavedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2">
+                                    <Button Style="{StaticResource CompactButton}" IsEnabled="{Binding CanLoad}" Command="{Binding DataContext.LoadSlotCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding Slot}" Content="➦ Yükle" />
+                                    <Button Style="{StaticResource CompactButton}" IsEnabled="{Binding CanLoad}" Command="{Binding DataContext.DeleteSlotCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding Slot}" Content="⚠ Sil" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Grid.Row="2" HorizontalAlignment="Left" Width="220" Style="{StaticResource MenuButton}" Command="{Binding ShowPlayMenuCommand}" Content="➦  Oyun Menüsüne Dön" />
+        </Grid>
+
+        <!-- Settings -->
+        <Grid Margin="105,55" Visibility="{Binding IsSettings, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="SİSTEM" /><TextBlock Style="{StaticResource Headline}" Text="AYARLAR" /></StackPanel>
+            <ScrollViewer Grid.Row="1" Margin="0,24" VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                    <Border Margin="0,0,8,0" Style="{StaticResource Panel}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="SES" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.MasterVolume, StringFormat=Ana Ses: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.MasterVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.MusicVolume, StringFormat=Müzik: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.MusicVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.AmbientVolume, StringFormat=Ambiyans: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.AmbientVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.EffectsVolume, StringFormat=Efekt: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.EffectsVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.VoiceVolume, StringFormat=Ses Kayıtları: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.VoiceVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.NotificationVolume, StringFormat=Bildirim: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.NotificationVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <CheckBox Content="Bildirim Sesleri" IsChecked="{Binding Settings.NotificationSounds}" Click="SettingsControl_Changed" />
+                            <TextBlock Margin="8,18,0,0" Style="{StaticResource SectionTitle}" Text="METİN VE ERİŞİLEBİLİRLİK" />
+                            <TextBlock Margin="8,10,0,0" Text="Metin Animasyonu" />
+                            <ComboBox ItemsSource="{Binding TextAnimationModes}" SelectedItem="{Binding Settings.TextAnimationMode}" SelectionChanged="SettingsCombo_SelectionChanged" />
+                            <TextBlock Margin="8,10,0,0" Text="Animasyon Hızı" />
+                            <ComboBox ItemsSource="{Binding TextSpeeds}" SelectedItem="{Binding Settings.TextSpeed}" SelectionChanged="SettingsCombo_SelectionChanged" />
+                            <CheckBox Content="Ekran Titremesi" IsChecked="{Binding Settings.ScreenShake}" Click="SettingsControl_Changed" />
+                            <CheckBox Content="Parazit Efekti" IsChecked="{Binding Settings.NoiseEffect}" Click="SettingsControl_Changed" />
+                            <CheckBox Content="Üst Mesaj Bildirimleri" IsChecked="{Binding Settings.TopMessageNotifications}" Click="SettingsControl_Changed" />
+                            <TextBlock Margin="8,14,8,0" Foreground="{StaticResource MutedTextBrush}" FontSize="12"
+                                       Text="Metin hızı hikâye yazım animasyonunu anında etkiler. Görsel efektler düşük donanımda kapatılabilir." />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Panel}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="GÖRÜNTÜ VE OYUN" />
+                            <CheckBox Margin="8,15,8,7" Content="Tam Ekran" IsChecked="{Binding Settings.FullScreen}" Click="SettingsControl_Changed" />
+                            <TextBlock Margin="8,12,0,0" Text="Çözünürlük" />
+                            <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding Settings.Resolution}" SelectionChanged="SettingsCombo_SelectionChanged" />
+                            <TextBlock Margin="8,12,0,0" Text="{Binding Settings.UiScale, StringFormat=Arayüz Ölçeği: {0}%}" />
+                            <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="80" Maximum="140" TickFrequency="10" Value="{Binding Settings.UiScale}" ValueChanged="SettingsSlider_ValueChanged" />
+                            <CheckBox Content="Otomatik Kayıt" IsChecked="{Binding Settings.AutoSave}" Click="SettingsControl_Changed" />
+                            <TextBlock Margin="8,16,0,0" Text="Dil: Türkçe" />
+                            <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding Settings.Language}" SelectionChanged="SettingsCombo_SelectionChanged" />
+                            <TextBlock Margin="8,12,8,0" Foreground="{StaticResource MutedTextBrush}" FontSize="12"
+                                       Text="Çözünürlük ve tam ekran seçimi kaydettiğinde uygulanır." />
+                            <Button Margin="4,18,4,0" Style="{StaticResource CompactButton}" Command="{Binding OpenSaveFolderCommand}" Content="Kayıt Klasörünü Aç" />
+                            <Button Style="{StaticResource CompactButton}" Command="{Binding OpenLogFolderCommand}" Content="Log Klasörünü Aç" />
+                            <Button Style="{StaticResource CompactButton}" Command="{Binding ResetSettingsCommand}" Content="Varsayılan Ayarlara Dön" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ScrollViewer>
+            <Grid Grid.Row="2">
+                <Button Width="180" HorizontalAlignment="Right" Command="{Binding ExitSettingsCommand}" Content="Çıkış">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource CompactButton}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSettingsDirty}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                            Visibility="{Binding IsSettingsDirty, Converter={StaticResource BoolToVisibility}}">
+                    <Button Width="180" Style="{StaticResource CompactButton}" Command="{Binding CancelSettingsCommand}" Content="İptal" />
+                    <Button Width="220" Style="{StaticResource CompactButton}" Command="{Binding SaveSettingsCommand}" Content="Ayarları Kaydet" />
+                </StackPanel>
+            </Grid>
+            <Border Grid.RowSpan="3" Margin="0,0,0,66" Padding="14,10" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                    Background="#E528282C" BorderBrush="{StaticResource SuccessBrush}" BorderThickness="1" CornerRadius="6"
+                    Visibility="{Binding IsSettingsToastVisible, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" Text="{Binding SettingsToastText}" />
+            </Border>
+        </Grid>
+
+        <!-- Intro video -->
+        <Grid Background="Black" Visibility="{Binding IsIntro, Converter={StaticResource BoolToVisibility}}">
+            <MediaElement x:Name="IntroMedia"
+                          Source="{Binding IntroVideoSource}"
+                          LoadedBehavior="Manual"
+                          UnloadedBehavior="Stop"
+                          Stretch="UniformToFill"
+                          IsMuted="{Binding IsIntroMuted}"
+                          MediaEnded="IntroMedia_MediaEnded"
+                          MediaFailed="IntroMedia_MediaFailed" />
+            <Rectangle Fill="#66000000" VerticalAlignment="Bottom" Height="130" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,34,30"
+                        Panel.ZIndex="2">
+                <Button Width="150"
+                        Style="{StaticResource CompactButton}"
+                        Command="{Binding ToggleIntroMuteCommand}"
+                        Content="{Binding IntroMuteText}" />
+                <Button Width="170"
+                        Margin="10,0,0,0"
+                        Style="{StaticResource CompactButton}"
+                        Command="{Binding SkipIntroCommand}"
+                        Content="İntroyu Geç" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Help -->
+        <Grid Margin="105,55" Visibility="{Binding IsHelp, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="SAHA KILAVUZU" /><TextBlock Style="{StaticResource Headline}" Text="YARDIM" /></StackPanel>
+            <ScrollViewer Grid.Row="1" Margin="0,25" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding HelpSections}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="500" MinHeight="145" Margin="0,0,12,12" Style="{StaticResource Panel}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="34" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                        <TextBlock FontFamily="Segoe UI Symbol" FontSize="19" Foreground="{StaticResource AccentBrightBrush}" Text="{Binding Icon}" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="{Binding Title}" />
+                                            <TextBlock Margin="0,8,0,0" Foreground="{StaticResource MutedTextBrush}" LineHeight="21" Text="{Binding Body}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <StackPanel Visibility="Collapsed">
+                    <Border Style="{StaticResource Panel}" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="01 / TEMEL DÖNGÜ" />
+                            <TextBlock Margin="0,7,0,5" FontSize="18" Text="Oku, riski tart, karar ver, sonucunu taşı." />
+                            <TextBlock Foreground="{StaticResource MutedTextBrush}"
+                                       Text="Her sahne anlatı, ekip diyaloğu ve seçimlerden oluşur. Kararlar sağlık, yorgunluk, akıl sağlığı, gürültü, tehdit, enfeksiyon riski, envanter ve ekip güvenini değiştirebilir. Bazı sonuçlar hemen görünmez; ileride yeni bir rota, konuşma veya son açar." />
+                        </StackPanel>
+                    </Border>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                        <Border Margin="0,0,6,0" Style="{StaticResource Panel}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="02 / SEÇİM SİMGELERİ" />
+                                <TextBlock Margin="0,8,0,3" Text="➦  Standart karar" />
+                                <TextBlock Margin="0,3" Text="⚠  Yüksek riskli karar" />
+                                <TextBlock Margin="0,3" Text="×  Koşulu sağlanmayan seçenek" />
+                                <TextBlock Margin="0,3" Text="[Teknik]  Karakter özelliği kontrolü" />
+                                <TextBlock Margin="0,8,0,0" Foreground="{StaticResource MutedTextBrush}" Text="Kilitli seçenek açıklaması gereken özellik, eşya veya ilişki eşiğini söyler." />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource Panel}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="03 / SÜRELİ KARARLAR" />
+                                <TextBlock Margin="0,8,0,0" Text="Sayaç sıfıra ulaşırsa sahnenin varsayılan kararı uygulanır. Kritik süreli kararlar geri alınamaz." />
+                                <TextBlock Margin="0,12,0,0" Foreground="{StaticResource WarningBrush}" Text="İpucu: Önce seçeneklerin kilit durumuna bak, sonra kalan sürede riski değerlendir." />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                        <Border Margin="0,0,6,0" Style="{StaticResource Panel}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="04 / DURUM PANELİ" />
+                                <TextBlock Margin="0,8,0,0" Text="Karakter sekmesi fiziksel ve zihinsel durumu; Ekip güven ve yaralanmaları; Envanter kullanım etkilerini; Harita rota durumunu; Görevler ilerlemeyi; Geçmiş ise karar günlüğünü gösterir." />
+                                <TextBlock Margin="0,10,0,0" Foreground="{StaticResource MutedTextBrush}" Text="Gürültü yükseldikçe tehdit daha hızlı büyür. Enfeksiyon riski, enfeksiyon oranından farklıdır." />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource Panel}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="05 / KAYIT SİSTEMİ" />
+                                <TextBlock Margin="0,8,0,0" Text="Üç kayıt yuvasından birini seçebilirsin. Dolu yuvanın üzerine yazmadan önce onay istenir. Beş saniyelik kayıt sürecinde arayüz yanıt vermeye devam eder." />
+                                <TextBlock Margin="0,10,0,0" Foreground="{StaticResource MutedTextBrush}" Text="Otomatik kayıt açıksa normal seçimlerden sonra birinci yuva güncellenir. Bozuk kayıtlar yönetim ekranından silinebilir." />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource Panel}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="06 / KLAVYE VE ZAMAN" />
+                            <TextBlock Margin="0,8,0,0" Text="Tab: odaklar arasında ilerle  •  Shift+Tab: geri dön  •  Enter/Boşluk: seç  •  Esc: açık durum veya kayıt panelini kapat." />
+                            <TextBlock Margin="0,9,0,0" Text="Oyun saati canlı ilerler: 10 gerçek dakika bir oyun gününe eşittir. Sahne zamanı, canlı saatten geriye dönmez." />
+                            <TextBlock Margin="0,12,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding VersionText}" />
+                        </StackPanel>
+                    </Border>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+            <Button Grid.Row="2" Width="220" HorizontalAlignment="Left" Style="{StaticResource MenuButton}" Command="{Binding ShowMainMenuCommand}" Content="➦  Ana Menüye Dön" />
+        </Grid>
+
+        <!-- Game -->
+        <Grid x:Name="GameScreen" DataContext="{Binding Game}" Visibility="{Binding DataContext.IsGame, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}">
+            <Grid.RowDefinitions><RowDefinition Height="72" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+            <Border Grid.Row="0" Background="#E80D1012" BorderBrush="#343A40" BorderThickness="0,0,0,1" Padding="34,0">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock FontSize="18" FontWeight="Bold" Text="ZNP" />
+                        <Border Margin="18,0" Width="1" Height="24" Background="#424950" />
+                        <Border Width="34" Height="42" Margin="0,0,10,0" Background="#0A0A0C" BorderBrush="#46464C" BorderThickness="1" CornerRadius="4" ClipToBounds="True">
+                            <Image Source="{Binding PlayerDefinition.Id, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                        </Border>
+                        <StackPanel Margin="0,0,22,0"><TextBlock Style="{StaticResource SectionTitle}" Text="{Binding PlayerDefinition.Name}" /><TextBlock FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding PlayerDefinition.Specialty}" /></StackPanel>
+                        <StackPanel Margin="0,0,26,0"><TextBlock Style="{StaticResource SectionTitle}" Text="ŞEHİR" /><TextBlock Text="{Binding State.City}" /></StackPanel>
+                        <StackPanel Margin="0,0,26,0"><TextBlock Style="{StaticResource SectionTitle}" Text="MEKÂN" /><TextBlock MaxWidth="300" TextTrimming="CharacterEllipsis" Text="{Binding State.Location}" /></StackPanel>
+                        <StackPanel Margin="0,0,26,0"><TextBlock Style="{StaticResource SectionTitle}" Text="GÜN" /><TextBlock Text="{Binding State.Day}" /></StackPanel>
+                        <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="SAAT" /><TextBlock Text="{Binding TimeText}" /></StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Margin="0,0,10,0"
+                                   MaxWidth="130"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource MutedTextBrush}"
+                                   FontSize="12"
+                                   TextTrimming="CharacterEllipsis"
+                                   Text="{Binding SaveStatus}" />
+                        <Button Style="{StaticResource CompactButton}" Command="{Binding OpenSavePanelCommand}" Content="Kaydet" />
+                        <Button Style="{StaticResource CompactButton}" Command="{Binding ToggleMessagePanelCommand}">
+                            <TextBlock TextWrapping="NoWrap">
+                                <Run Text="Mesajlar (" /><Run Text="{Binding UnreadMessageCount, Mode=OneWay}" /><Run Text=")" />
+                            </TextBlock>
+                        </Button>
+                        <Button Style="{StaticResource CompactButton}" Command="{Binding ToggleInventoryUsePanelCommand}" Content="Envanter" />
+                        <Button Style="{StaticResource CompactButton}" Command="{Binding ToggleStatusPanelCommand}" Content="Durum" />
+                        <Button Style="{StaticResource CompactButton}" Command="{Binding ExitToMenuCommand}" Content="Menü" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="28,18,28,24">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="2*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                <Border Margin="0,0,9,0" Style="{StaticResource Panel}" Padding="20,16">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="1.2*" />
+                            <RowDefinition Height="2.5*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="4*" />
+                        </Grid.RowDefinitions>
+                        <DockPanel>
+                            <Border DockPanel.Dock="Right" Visibility="{Binding IsTimedChoice, Converter={StaticResource BoolToVisibility}}"
+                                    Margin="12,0,0,0" Padding="9,5" Background="#29181A" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="4">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,8,0" Style="{StaticResource SmallLabel}" Text="SÜRELİ KARAR" />
+                                    <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding CountdownSeconds}" />
+                                </StackPanel>
+                            </Border>
+                            <TextBlock FontSize="24" FontWeight="SemiBold" Text="{Binding Scene.Title}" />
+                        </DockPanel>
+                        <ScrollViewer Grid.Row="1" Margin="0,10,0,10" VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="NarrativeText" FontSize="15" LineHeight="23" Text="{Binding DisplayedNarrative}"
+                                       MouseLeftButtonDown="Narrative_MouseLeftButtonDown" Cursor="Hand" />
+                        </ScrollViewer>
+                        <Border Grid.Row="2" Margin="0,0,0,10" Background="#09090B" BorderBrush="#414147" BorderThickness="1" CornerRadius="7" ClipToBounds="True">
+                            <Grid>
+                                <Image x:Name="ScenePreviewImage"
+                                       Source="{Binding ActiveSceneImage, Converter={StaticResource AssetImageConverter}}"
+                                       Stretch="Uniform" />
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#08000000" Offset="0.55" />
+                                            <GradientStop Color="#9B080A08" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <Border HorizontalAlignment="Center" VerticalAlignment="Center" Padding="14,9"
+                                        Background="#C0121215" CornerRadius="5"
+                                        Visibility="{Binding ActiveSceneImage, Converter={StaticResource MissingAssetVisibilityConverter}}">
+                                    <TextBlock Foreground="{StaticResource MutedTextBrush}" FontWeight="SemiBold"
+                                               Text="Görsel hazırlanıyor..." />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="3" Visibility="Collapsed">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <Border Width="38" Height="44" Background="#0A0A0C" BorderBrush="#46464C" BorderThickness="1" CornerRadius="4" ClipToBounds="True">
+                                    <Image Source="{Binding DialogueSpeakerId, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Style="{StaticResource SectionTitle}" Text="{Binding Speaker}" />
+                                    <TextBlock Margin="0,3,0,0" FontSize="14" FontStyle="Italic" Text="{Binding Dialogue}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="3" Margin="0,0,0,10" Padding="14,11" Background="#F2141417"
+                                BorderBrush="#7A4A4E" BorderThickness="1" CornerRadius="8"
+                                Visibility="{Binding HasVoiceMessage, Converter={StaticResource BoolToVisibility}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="46" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <Border Width="36" Height="36" Background="#09090B" BorderBrush="#B45A5A" BorderThickness="1" CornerRadius="18">
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="#D5B5B5" Text="◉" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Right" Foreground="{StaticResource MutedTextBrush}" FontSize="11" Text="{Binding VoiceMessageStateText}" />
+                                        <TextBlock Style="{StaticResource SectionTitle}" Text="SES KAYDI" />
+                                    </DockPanel>
+                                    <TextBlock Margin="0,4,0,2" FontSize="17" FontWeight="SemiBold" Text="{Binding VoiceMessageTitle}" />
+                                    <TextBlock Margin="0,0,0,9" FontSize="11" Foreground="{StaticResource MutedTextBrush}"
+                                               Text="{Binding VoiceMessageHint}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding PlayVoiceMessageCommand}" Content="Dinle" />
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding PauseVoiceMessageCommand}" Content="Duraklat" />
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding RestartVoiceMessageCommand}" Content="Baştan Oynat" />
+                                        <Border Margin="10,0,0,0" Padding="8,5" Background="#101014" BorderBrush="#34343A" BorderThickness="1" CornerRadius="4">
+                                            <TextBlock VerticalAlignment="Center" Foreground="{StaticResource MutedTextBrush}" Text="{Binding VoiceMessageTimeText}" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Margin="0,8,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding VoiceMessageTranscript}"
+                                               Visibility="{Binding IsVoiceTranscriptVisible, Converter={StaticResource BoolToVisibility}}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="4" Margin="0,0,0,8" Padding="10,7" Background="#251D18"
+                                BorderBrush="{StaticResource WarningBrush}" BorderThickness="1" CornerRadius="5"
+                                Visibility="{Binding HasSceneHint, Converter={StaticResource BoolToVisibility}}">
+                            <TextBlock FontSize="12" Foreground="#E3D2B9" Text="{Binding SceneHint}" />
+                        </Border>
+                        <Grid Grid.Row="5">
+                            <Grid.RowDefinitions><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Choices}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource ChoiceButton}"
+                                                    Command="{Binding DataContext.SelectChoiceCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    IsEnabled="{Binding DataContext.AreChoicesEnabled, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="30" /><ColumnDefinition Width="*" /><ColumnDefinition Width="24" /></Grid.ColumnDefinitions>
+                                                    <TextBlock VerticalAlignment="Center" FontFamily="Segoe UI Symbol" FontSize="18" FontWeight="Bold" Foreground="{Binding ToneBrush}" Text="{Binding Symbol}" />
+                                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource ChoiceText}" Text="{Binding Text}" />
+                                                    <TextBlock Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource AccentBrightBrush}"
+                                                               FontSize="17" Text="✓" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibility}}" />
+                                                </Grid>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <Button Grid.Row="1" HorizontalAlignment="Right" Style="{StaticResource CompactButton}"
+                                    Command="{Binding UndoCommand}" IsEnabled="{Binding State.CanUndo}" Content="Geri Al" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Margin="9,0,0,0" Style="{StaticResource Panel}" Padding="18,16">
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasSelectedChoice}" Value="False"><Setter Property="Visibility" Value="Visible" /></DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock HorizontalAlignment="Center" FontSize="24" FontWeight="SemiBold" Text="Bir karar seç." />
+                            <TextBlock Margin="0,8,0,0" HorizontalAlignment="Center" Foreground="{StaticResource MutedTextBrush}" TextAlignment="Center"
+                                       Text="Ayrıntılar burada görünecek." />
+                        </StackPanel>
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasSelectedChoice}" Value="True"><Setter Property="Visibility" Value="Visible" /></DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.RowDefinitions><RowDefinition Height="3*" /><RowDefinition Height="4*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <Border Margin="0,0,0,14" Background="#09090B" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="7"
+                                    ClipToBounds="True">
+                                <Grid>
+                                    <Image Source="{Binding SelectedChoiceImage, Converter={StaticResource AssetImageConverter}, NotifyOnTargetUpdated=True}"
+                                           Stretch="Uniform" TargetUpdated="SelectionPreview_TargetUpdated" />
+                                    <Rectangle>
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#00000000" Offset="0.55" />
+                                                <GradientStop Color="#B0080A08" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <Border HorizontalAlignment="Center" VerticalAlignment="Center" Padding="14,9"
+                                            Background="#C0121215" CornerRadius="5"
+                                            Visibility="{Binding SelectedChoiceImage, Converter={StaticResource MissingAssetVisibilityConverter}}">
+                                        <TextBlock Foreground="{StaticResource MutedTextBrush}" FontWeight="SemiBold"
+                                                   Text="Görsel hazırlanıyor..." />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource SectionTitle}" Text="SEÇİM ÖZETİ" />
+                                    <TextBlock Margin="0,7,0,16" FontSize="16" LineHeight="24" Text="{Binding SelectionSummary}" />
+                                    <Border Padding="12" Background="#201817" BorderBrush="{StaticResource WarningBrush}" BorderThickness="1" CornerRadius="5">
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource SectionTitle}" Text="RİSK SEVİYESİ" />
+                                            <TextBlock Margin="0,5,0,0" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource WarningBrush}" Text="{Binding SelectionRisk}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <TextBlock Margin="0,16,0,0" Style="{StaticResource SectionTitle}" Text="GEREKSİNİM" />
+                                    <TextBlock Margin="0,6,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding SelectionRequirement}" />
+                                    <ItemsControl Margin="0,14,0,0" ItemsSource="{Binding HelpOptions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Margin="0,0,0,7" Padding="10" Style="{StaticResource CompactButton}"
+                                                        Command="{Binding DataContext.RequestHelpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}">
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="SemiBold" Text="{Binding HelpLabel}" />
+                                                        <TextBlock Margin="0,3,0,0" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Reason}" />
+                                                        <TextBlock Margin="0,3,0,0" FontSize="11" Foreground="{StaticResource WarningBrush}"
+                                                                   Text="{Binding SuccessChance, StringFormat=Yardım ihtimali: %{0}}" />
+                                                    </StackPanel>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                            <Grid Grid.Row="2" Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <Button Width="132" Height="48" Margin="0,0,8,0" Style="{StaticResource CompactButton}"
+                                        Command="{Binding ConfirmVoiceChoiceCommand}" Content="✓ Seç"
+                                        Visibility="{Binding ShowVoiceChoiceConfirm, Converter={StaticResource BoolToVisibility}}" />
+                                <Button Grid.Column="1" Height="48" Style="{StaticResource CompactButton}"
+                                        Command="{Binding AdvanceSelectedChoiceCommand}" Content="➦ İlerle" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <ItemsControl Grid.Row="1" Margin="0,12,40,0" Width="380" HorizontalAlignment="Right" VerticalAlignment="Top"
+                          Panel.ZIndex="8" ItemsSource="{Binding VisibleTopMessages}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,7" Padding="10" Background="#F21A1A1D" BorderBrush="{Binding ToneBrush}" BorderThickness="1" CornerRadius="6"
+                                Opacity="0" RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform><TranslateTransform Y="-45" /></Border.RenderTransform>
+                            <Border.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.28" />
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" From="-45" To="0" Duration="0:0:0.28">
+                                                <DoubleAnimation.EasingFunction><QuadraticEase EasingMode="EaseOut" /></DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Border.Triggers>
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="48" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <Border Width="40" Height="40" Background="#09090B" BorderBrush="{Binding ToneBrush}" BorderThickness="1" CornerRadius="20" ClipToBounds="True">
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" FontWeight="SemiBold"
+                                               Foreground="{Binding ToneBrush}" Text="{Binding Icon}" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Right" FontSize="10" Foreground="{Binding ToneBrush}" Text="{Binding AmountText}" />
+                                        <TextBlock FontWeight="SemiBold" Foreground="{Binding ToneBrush}" Text="{Binding Speaker}" />
+                                    </DockPanel>
+                                    <TextBlock Margin="0,3,0,0" FontSize="13" FontWeight="SemiBold" Text="{Binding Text}" TextWrapping="Wrap" />
+                                    <TextBlock Margin="0,3,0,0" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Detail}"
+                                               TextWrapping="Wrap" Visibility="{Binding HasDetail, Converter={StaticResource BoolToVisibility}}" />
+                                    <TextBlock Margin="0,5,0,0" FontSize="10" Foreground="{Binding ToneBrush}" Text="{Binding Footer}"
+                                               Visibility="{Binding HasFooter, Converter={StaticResource BoolToVisibility}}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Status overlay -->
+            <Border Grid.RowSpan="2" Width="570" HorizontalAlignment="Right" Background="#FC111113" BorderBrush="#4A4A50" BorderThickness="1,0,0,0" Padding="22" Visibility="{Binding IsStatusPanelOpen, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource CompactButton}" Command="{Binding ToggleStatusPanelCommand}" Content="Kapat" />
+                        <TextBlock FontSize="25" FontWeight="Light" Text="DURUM PANELİ" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <WrapPanel Grid.Row="1" Margin="0,14">
+                        <ToggleButton Style="{StaticResource StatusTabButton}" IsChecked="{Binding IsCharacterTab, Mode=OneWay}" Command="{Binding SelectStatusTabCommand}" CommandParameter="Karakter" Content="Karakter" />
+                        <ToggleButton Style="{StaticResource StatusTabButton}" IsChecked="{Binding IsTeamTab, Mode=OneWay}" Command="{Binding SelectStatusTabCommand}" CommandParameter="Ekip" Content="Ekip" />
+                        <ToggleButton Style="{StaticResource StatusTabButton}" IsChecked="{Binding IsInventoryTab, Mode=OneWay}" Command="{Binding SelectStatusTabCommand}" CommandParameter="Envanter" Content="Envanter" />
+                        <ToggleButton Style="{StaticResource StatusTabButton}" IsChecked="{Binding IsMapTab, Mode=OneWay}" Command="{Binding SelectStatusTabCommand}" CommandParameter="Harita" Content="Harita" />
+                        <ToggleButton Style="{StaticResource StatusTabButton}" IsChecked="{Binding IsTasksTab, Mode=OneWay}" Command="{Binding SelectStatusTabCommand}" CommandParameter="Görevler" Content="Görevler" />
+                        <ToggleButton Style="{StaticResource StatusTabButton}" IsChecked="{Binding IsHistoryTab, Mode=OneWay}" Command="{Binding SelectStatusTabCommand}" CommandParameter="Geçmiş" Content="Geçmiş" />
+                    </WrapPanel>
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <StackPanel Visibility="{Binding IsCharacterTab, Converter={StaticResource BoolToVisibility}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="92" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                    <Border Width="78" Height="92" Background="#09090B" BorderBrush="#46464C" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
+                                        <Grid>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="34" Foreground="#46464C" Text="{Binding Player.Name[0]}" />
+                                            <Image Source="{Binding PlayerDefinition.Id, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                        </Grid>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock FontSize="28" FontWeight="SemiBold" Text="{Binding Player.Name}" />
+                                        <TextBlock Foreground="{StaticResource AccentBrightBrush}" Text="{Binding PlayerDefinition.Specialty}" />
+                                    </StackPanel>
+                                </Grid>
+                                <UniformGrid Columns="2" Margin="0,12,0,5">
+                                    <Border Margin="0,0,5,0" Style="{StaticResource Panel}" Padding="12"><StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="FİZİKSEL" /><TextBlock Margin="0,5,0,0" Text="{Binding PhysicalAssessment}" /></StackPanel></Border>
+                                    <Border Margin="5,0,0,0" Style="{StaticResource Panel}" Padding="12"><StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="ZİHİNSEL" /><TextBlock Margin="0,5,0,0" Text="{Binding MentalAssessment}" /></StackPanel></Border>
+                                </UniformGrid>
+                                <TextBlock Margin="0,18,0,3" Text="{Binding State.Health, StringFormat=Sağlık  {0}%}" /><ProgressBar Value="{Binding State.Health, Mode=OneWay}" Maximum="100" />
+                                <TextBlock Margin="0,12,0,3" Text="{Binding State.Hunger, StringFormat=Açlık  {0}%}" /><ProgressBar Value="{Binding State.Hunger, Mode=OneWay}" Maximum="100" />
+                                <TextBlock Margin="0,12,0,3" Text="{Binding State.Thirst, StringFormat=Susuzluk  {0}%}" /><ProgressBar Value="{Binding State.Thirst, Mode=OneWay}" Maximum="100" />
+                                <TextBlock Margin="0,12,0,3" Text="{Binding State.Fatigue, StringFormat=Yorgunluk  {0}%}" /><ProgressBar Value="{Binding State.Fatigue, Mode=OneWay}" Maximum="100" />
+                                <TextBlock Margin="0,12,0,3" Text="{Binding State.Infection, StringFormat=Enfeksiyon  {0}%}" /><ProgressBar Value="{Binding State.Infection, Mode=OneWay}" Maximum="100" />
+                                <TextBlock Margin="0,12,0,3" Text="{Binding State.Sanity, StringFormat=Akıl sağlığı  {0}%}" /><ProgressBar Value="{Binding State.Sanity, Mode=OneWay}" Maximum="100" />
+                                <TextBlock Margin="0,12,0,3" Text="{Binding State.Morale, StringFormat=Moral  {0}%}" /><ProgressBar Value="{Binding State.Morale, Mode=OneWay}" Maximum="100" />
+                                <Grid Margin="0,16,0,0">
+                                    <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
+                                    <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="GÜRÜLTÜ" /><TextBlock Text="{Binding NoiseAssessment}" /><TextBlock Foreground="{StaticResource MutedTextBrush}" Text="{Binding State.NoiseLevel, StringFormat={}{0}%}" /></StackPanel>
+                                    <StackPanel Grid.Column="1"><TextBlock Style="{StaticResource SectionTitle}" Text="TEHDİT" /><TextBlock Text="{Binding ThreatAssessment}" /><TextBlock Foreground="{StaticResource MutedTextBrush}" Text="{Binding State.ThreatLevel, StringFormat={}{0}%}" /></StackPanel>
+                                </Grid>
+                                <TextBlock Margin="0,16,0,4" Style="{StaticResource SectionTitle}" Text="ÖZEL YETENEK" />
+                                <TextBlock Text="{Binding PlayerDefinition.SpecialAbility}" FontSize="17" />
+                                <TextBlock Foreground="{StaticResource MutedTextBrush}" Text="{Binding PlayerDefinition.SpecialAbilityDescription}" />
+                            </StackPanel>
+                            <ItemsControl Visibility="{Binding IsTeamTab, Converter={StaticResource BoolToVisibility}}" ItemsSource="{Binding TeamRelationships}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Panel}" Margin="0,0,0,9">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="74" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                                <Border Width="62" Height="76" Background="#09090B" BorderBrush="#46464C" BorderThickness="1" CornerRadius="5" ClipToBounds="True">
+                                                    <Image Source="{Binding Character.Id, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                                </Border>
+                                                <StackPanel Grid.Column="1">
+                                                <TextBlock FontSize="19" FontWeight="SemiBold" Text="{Binding Character.Name}" />
+                                                <TextBlock Foreground="{StaticResource MutedTextBrush}" Text="{Binding Definition.Role}" />
+                                                <TextBlock Foreground="{StaticResource AccentBrightBrush}" Text="{Binding TrustStatus, StringFormat=Sana karşı: {0}}" />
+                                                <ProgressBar Margin="0,5,0,5" Maximum="100" Value="{Binding Trust, Mode=OneWay}" />
+                                                <TextBlock Margin="0,4,0,0" Text="{Binding Character.Mood, StringFormat=Ruh hâli: {0}}" />
+                                                <TextBlock Text="{Binding Character.Injury, StringFormat=Yaralanma: {0}}" />
+                                                <TextBlock Margin="0,7,0,0" Foreground="{StaticResource WarningBrush}" Text="{Binding LastEvent}" />
+                                                <TextBlock Margin="0,7,0,0" FontStyle="Italic" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Character.LastThought}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl Visibility="{Binding IsInventoryTab, Converter={StaticResource BoolToVisibility}}" ItemsSource="{Binding Inventory}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Panel}" Margin="0,0,0,8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock FontSize="17" Text="{Binding Item.Name}" />
+                                                    <TextBlock Foreground="{StaticResource AccentBrightBrush}" Text="{Binding Category}" />
+                                                    <TextBlock Margin="0,4,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Item.Description}" />
+                                                    <TextBlock Margin="0,6,0,0" Text="{Binding Effect}" />
+                                                    <TextBlock Foreground="{StaticResource MutedTextBrush}" FontSize="11" Text="{Binding Usage}" />
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                                                    <TextBlock HorizontalAlignment="Right" FontSize="18" Text="{Binding Item.Quantity, StringFormat=x{0}}" />
+                                                    <TextBlock HorizontalAlignment="Right" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Item.Weight, StringFormat={}{0:0.0} kg}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <StackPanel Visibility="{Binding IsMapTab, Converter={StaticResource BoolToVisibility}}">
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="ESENLER / SAHNE ROTASI" />
+                                <TextBlock Margin="0,7,0,0" FontSize="19" Text="{Binding State.City}" />
+                                <TextBlock Foreground="{StaticResource MutedTextBrush}" Text="{Binding MapLocationLabel}" />
+                                <Border Margin="0,14" Height="315" Background="#09090B" BorderBrush="#45454B" BorderThickness="1" CornerRadius="7" ClipToBounds="True">
+                                    <Viewbox Stretch="Uniform">
+                                        <Canvas Width="720" Height="360">
+                                            <Rectangle Width="720" Height="360" Fill="#09090B" />
+                                            <Path Data="M0,60 H720 M0,120 H720 M0,180 H720 M0,240 H720 M0,300 H720 M90,0 V360 M180,0 V360 M270,0 V360 M360,0 V360 M450,0 V360 M540,0 V360 M630,0 V360"
+                                                  Stroke="#1D1D21" StrokeThickness="1" />
+                                            <Path Data="M75,225 C122,195 151,210 176,202 C221,188 231,161 273,170 C314,179 321,143 363,145 C409,147 431,196 471,197 C526,199 543,151 592,130"
+                                                  Stroke="#6B4245" StrokeThickness="18" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Opacity="0.45" />
+                                            <Path Data="M75,225 C122,195 151,210 176,202 C221,188 231,161 273,170 C314,179 321,143 363,145 C409,147 431,196 471,197 C526,199 543,151 592,130"
+                                                  Stroke="#C76B70" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                                            <Path Data="M112,205 L92,248 L145,253 M238,175 L220,128 L270,109 M435,195 L482,235 L535,220 M575,130 L623,104"
+                                                  Stroke="#B58955" StrokeThickness="3" StrokeDashArray="7,7" StrokeStartLineCap="Round" />
+                                            <Ellipse Canvas.Left="76" Canvas.Top="209" Width="20" Height="20" Fill="#E5787E" />
+                                            <Ellipse Canvas.Left="102" Canvas.Top="195" Width="20" Height="20" Fill="#777780" />
+                                            <Ellipse Canvas.Left="154" Canvas.Top="191" Width="20" Height="20" Fill="#777780" />
+                                            <Ellipse Canvas.Left="228" Canvas.Top="165" Width="20" Height="20" Fill="#777780" />
+                                            <Ellipse Canvas.Left="313" Canvas.Top="138" Width="20" Height="20" Fill="#777780" />
+                                            <Ellipse Canvas.Left="425" Canvas.Top="185" Width="20" Height="20" Fill="#777780" />
+                                            <Ellipse Canvas.Left="565" Canvas.Top="120" Width="20" Height="20" Fill="#777780" />
+                                            <TextBlock Canvas.Left="54" Canvas.Top="235" FontSize="14" FontWeight="SemiBold" Text="Hasta odası" />
+                                            <TextBlock Canvas.Left="92" Canvas.Top="173" FontSize="14" Text="Koridor" />
+                                            <TextBlock Canvas.Left="137" Canvas.Top="215" FontSize="14" Text="Sokak" />
+                                            <TextBlock Canvas.Left="211" Canvas.Top="135" FontSize="14" Text="Apartman" />
+                                            <TextBlock Canvas.Left="294" Canvas.Top="107" FontSize="14" Text="Çatı" />
+                                            <TextBlock Canvas.Left="409" Canvas.Top="214" FontSize="14" Text="Market" />
+                                            <TextBlock Canvas.Left="540" Canvas.Top="91" FontSize="14" Text="Kuzey yolu" />
+                                            <Ellipse Canvas.Left="{Binding MapCurrentX}" Canvas.Top="{Binding MapCurrentY}" Width="26" Height="26" Fill="#3D1519" Stroke="#F2D6B0" StrokeThickness="3" />
+                                            <Ellipse Canvas.Left="{Binding MapCurrentX}" Canvas.Top="{Binding MapCurrentY}" Width="10" Height="10" Fill="#F2D6B0" RenderTransformOrigin="0.5,0.5">
+                                                <Ellipse.RenderTransform><TranslateTransform X="8" Y="8" /></Ellipse.RenderTransform>
+                                            </Ellipse>
+                                            <Border Canvas.Left="35" Canvas.Top="302" Padding="10,6" Background="#18181B" BorderBrush="#414147" BorderThickness="1" CornerRadius="4">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Rectangle Width="24" Height="4" Fill="#C76B70" VerticalAlignment="Center" />
+                                                    <TextBlock Margin="8,0,18,0" FontSize="12" Text="Aktif rota" />
+                                                    <Rectangle Width="24" Height="4" Fill="#B58955" VerticalAlignment="Center" />
+                                                    <TextBlock Margin="8,0,0,0" FontSize="12" Text="Yan geçit / ipucu" />
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Canvas.Left="560" Canvas.Top="24" Padding="9,5" Background="#251417" BorderBrush="#743238" BorderThickness="1" CornerRadius="4">
+                                                <TextBlock FontSize="12" Foreground="#D99398" Text="GÜRÜLTÜ ÇEKER" />
+                                            </Border>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="ROTA DURUMU" />
+                                <TextBlock Margin="0,6,0,0" Text="{Binding MapStatus}" TextWrapping="Wrap" />
+                                <ItemsControl Margin="0,12,0,8" ItemsSource="{Binding MapTimeline}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0,0,0,6" Padding="9" Background="#141416" BorderBrush="{Binding ToneBrush}" BorderThickness="1" CornerRadius="5">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="28" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                                    <TextBlock Foreground="{Binding ToneBrush}" FontSize="15" Text="{Binding Marker}" />
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock FontWeight="SemiBold" Text="{Binding Title}" />
+                                                        <TextBlock FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Description}" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" FontSize="10" Foreground="{Binding ToneBrush}" Text="{Binding StateText}" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <ItemsControl ItemsSource="{Binding State.UnlockedRoutes}"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,4" Text="{Binding StringFormat=➦  {0}}" /></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                            </StackPanel>
+                            <ItemsControl Visibility="{Binding IsTasksTab, Converter={StaticResource BoolToVisibility}}" ItemsSource="{Binding State.Tasks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Panel}" Margin="0,0,0,9">
+                                            <StackPanel>
+                                                <DockPanel><TextBlock DockPanel.Dock="Right" Foreground="{StaticResource WarningBrush}" Text="{Binding Priority}" /><TextBlock FontSize="17" Text="{Binding Title}" /></DockPanel>
+                                                <TextBlock Margin="0,5,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Description}" />
+                                                <ProgressBar Margin="0,9,0,5" Maximum="100" Value="{Binding Progress, Mode=OneWay}" />
+                                                <TextBlock FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Hint, StringFormat=İpucu: {0}}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl Visibility="{Binding IsHistoryTab, Converter={StaticResource BoolToVisibility}}" ItemsSource="{Binding HistoryEntries}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Panel}" Margin="0,0,0,8">
+                                            <StackPanel>
+                                                <DockPanel><TextBlock DockPanel.Dock="Right" Foreground="{StaticResource MutedTextBrush}" Text="{Binding GameTime}" /><TextBlock Style="{StaticResource SectionTitle}" Text="{Binding Category}" /></DockPanel>
+                                                <TextBlock Margin="0,5,0,0" Text="{Binding Text}" />
+                                                <TextBlock Margin="0,7,0,0" FontSize="11" Foreground="{StaticResource MutedTextBrush}">
+                                                    <Run Text="Gün " /><Run Text="{Binding Day}" /><Run Text=" • " /><Run Text="{Binding Location}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Rectangle Grid.RowSpan="2" Panel.ZIndex="3" IsHitTestVisible="False"
+                       Opacity="{Binding NoiseOpacity}"
+                       Visibility="{Binding IsNoiseEffectVisible, Converter={StaticResource BoolToVisibility}}">
+                <Rectangle.Fill>
+                    <DrawingBrush TileMode="Tile" Viewport="0,0,8,8" ViewportUnits="Absolute">
+                        <DrawingBrush.Drawing>
+                            <GeometryDrawing Brush="#DDE5DB" Geometry="M0,1 L1,1 1,2 0,2Z M5,6 L6,6 6,7 5,7Z" />
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+
+            <!-- Message center -->
+            <Border Grid.RowSpan="2" Panel.ZIndex="20" Width="510" HorizontalAlignment="Right"
+                    Background="#FC111113" BorderBrush="#4A4A50" BorderThickness="1,0,0,0" Padding="22"
+                    Visibility="{Binding IsMessagePanelOpen, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <DockPanel Margin="0,0,0,16">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource CompactButton}" Command="{Binding ToggleMessagePanelCommand}" Content="Kapat" />
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="EKİP HABERLEŞMESİ" />
+                            <TextBlock FontSize="27" FontWeight="Light" Text="Mesajlar" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding MessageHistory}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,9" Padding="12" Background="#171719" BorderBrush="{Binding ToneBrush}" BorderThickness="1" CornerRadius="6">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="58" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                            <Border Width="46" Height="52" Background="#09090B" BorderBrush="#46464C" BorderThickness="1" CornerRadius="5" ClipToBounds="True">
+                                                <Image Source="{Binding CharacterId, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                            </Border>
+                                            <StackPanel Grid.Column="1">
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Right" FontSize="10" Foreground="{StaticResource MutedTextBrush}" Text="{Binding ReadState}" />
+                                                    <TextBlock FontWeight="SemiBold" Text="{Binding CharacterName}" />
+                                                </DockPanel>
+                                                <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" Text="{Binding Text}" />
+                                                <DockPanel Margin="0,7,0,0">
+                                                    <TextBlock DockPanel.Dock="Right" FontSize="10" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Timestamp}" />
+                                                    <TextBlock Margin="0,0,10,0" FontSize="10" Foreground="{Binding ToneBrush}" Text="{Binding Tone}" />
+                                                    <TextBlock FontSize="10" Foreground="{StaticResource AccentBrightBrush}" Text="{Binding RelationshipContext}" />
+                                                </DockPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Manual inventory use -->
+            <Grid Grid.RowSpan="2" Panel.ZIndex="21" Background="#E608080A"
+                  Visibility="{Binding IsInventoryUsePanelOpen, Converter={StaticResource BoolToVisibility}}">
+                <Border Width="720" MaxHeight="610" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Panel}" Padding="24">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                        <DockPanel Margin="0,0,0,16">
+                            <Button DockPanel.Dock="Right" Style="{StaticResource CompactButton}" Command="{Binding ToggleInventoryUsePanelCommand}" Content="Kapat" />
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="SAHNE ETKİLEŞİMİ" />
+                                <TextBlock FontSize="27" FontWeight="Light" Text="Envanterden Kullan" />
+                            </StackPanel>
+                        </DockPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding UsableInventory}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource CompactButton}" Margin="0,0,0,8" Padding="0" Background="Transparent" BorderThickness="0"
+                                                Command="{Binding DataContext.UseInventoryItemCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}">
+                                            <Border Style="{StaticResource Panel}" Padding="13">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding Item.Name}" />
+                                                        <TextBlock Margin="0,4,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Item.Description}" />
+                                                        <TextBlock Margin="0,5,0,0" Foreground="{StaticResource AccentBrightBrush}" Text="{Binding Effect}" />
+                                                        <TextBlock FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Durability}" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="1" Margin="16,0,0,0" FontSize="18" Text="{Binding Item.Quantity, StringFormat=x{0}}" />
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        <TextBlock Grid.Row="2" Margin="0,14,0,0" HorizontalAlignment="Center" Foreground="{StaticResource WarningBrush}" Text="{Binding InventoryFeedback}" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Save overlay -->
+            <Grid Grid.RowSpan="2" Background="#E608080A" Visibility="{Binding IsSavePanelOpen, Converter={StaticResource BoolToVisibility}}">
+                <Border Width="850" MaxHeight="650" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Panel}" Padding="26">
+                    <Grid>
+                        <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource CompactButton}" IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBooleanConverter}, FallbackValue=True}" Command="{Binding CloseSavePanelCommand}" Content="Kapat" />
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionTitle}" Text="KAYIT PROTOKOLÜ" />
+                                <TextBlock FontSize="29" FontWeight="Light" Text="Bir kayıt yuvası seç" />
+                            </StackPanel>
+                        </DockPanel>
+                        <ItemsControl Grid.Row="1" Margin="0,22" ItemsSource="{Binding SaveSlots}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" Columns="3" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="6" Padding="0" Background="Transparent" BorderThickness="0"
+                                            IsEnabled="{Binding DataContext.IsSaving, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource InverseBooleanConverter}, FallbackValue=True}"
+                                            Command="{Binding DataContext.RequestSaveSlotCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Slot}">
+                                        <Border Style="{StaticResource Panel}" MinHeight="230">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SectionTitle}" Text="{Binding Slot, StringFormat=YUVA {0}}" />
+                                                <Border Width="62" Height="72" Margin="0,10,0,0" HorizontalAlignment="Left" Background="#09090B" BorderBrush="#46464C" BorderThickness="1" CornerRadius="5" ClipToBounds="True">
+                                                    <Image Source="{Binding CharacterId, Converter={StaticResource AssetImageConverter}, ConverterParameter=character}" Stretch="UniformToFill" />
+                                                </Border>
+                                                <TextBlock Margin="0,10,0,0" FontSize="18" FontWeight="SemiBold" Text="{Binding Title}" />
+                                                <TextBlock Margin="0,12,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Details}" />
+                                                <TextBlock Margin="0,10,0,0" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding SavedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <StackPanel Grid.Row="2">
+                            <ProgressBar Height="9" Maximum="100" Value="{Binding SaveProgress, Mode=OneWay}" />
+                            <TextBlock Margin="0,9,0,0" HorizontalAlignment="Center" Foreground="{StaticResource MutedTextBrush}" Text="{Binding SaveProgressText}" />
+                            <Border Margin="0,15,0,0" Padding="14" Background="#342326" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1" CornerRadius="5"
+                                    Visibility="{Binding IsConfirmingOverwrite, Converter={StaticResource BoolToVisibility}}">
+                                <DockPanel>
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding CancelOverwriteCommand}" Content="Vazgeç" />
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding ConfirmOverwriteCommand}" Content="Üzerine Yaz" />
+                                    </StackPanel>
+                                    <TextBlock VerticalAlignment="Center" Text="Bu yuva dolu. Mevcut kayıt kalıcı olarak değiştirilecek." />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Ending -->
+        <Grid Margin="110,70" Visibility="{Binding IsEnding, Converter={StaticResource BoolToVisibility}}">
+            <Border Width="760" HorizontalAlignment="Center" Style="{StaticResource Panel}">
+                <StackPanel DataContext="{Binding Game}">
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="GECE RAPORU" />
+                    <TextBlock Margin="0,10,0,0" FontSize="40" FontWeight="Light" Text="{Binding EndingTitle}" />
+                    <TextBlock Margin="0,12,0,28" FontSize="18" Foreground="{StaticResource MutedTextBrush}" Text="{Binding EndingSummary}" />
+                    <UniformGrid Columns="3" Margin="0,0,0,24">
+                        <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="SÜRE" /><TextBlock FontSize="22" Text="{Binding PlayedTimeText}" /></StackPanel>
+                        <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="KARAR" /><TextBlock FontSize="22" Text="{Binding State.ChoiceCount}" /></StackPanel>
+                        <StackPanel><TextBlock Style="{StaticResource SectionTitle}" Text="HAYATTA" /><TextBlock FontSize="22" Text="{Binding AliveCount}" /></StackPanel>
+                    </UniformGrid>
+                    <TextBlock Margin="0,0,0,18" Text="{Binding State.LastChoiceText, StringFormat=Son karar: {0}}" />
+                    <Button Style="{StaticResource MenuButton}" IsEnabled="{Binding CanRestoreCheckpoint}" Command="{Binding DataContext.ReturnToCheckpointCommand, RelativeSource={RelativeSource AncestorType=Window}}" Content="➦  Son Kontrol Noktasından Devam Et" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding DataContext.RestartAfterEndingCommand, RelativeSource={RelativeSource AncestorType=Window}}" Content="➦  Yeni Oyun" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding DataContext.ShowMainMenuCommand, RelativeSource={RelativeSource AncestorType=Window}}" Content="➦  Ana Menü" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Required update -->
+        <Grid Margin="110,70" Visibility="{Binding IsUpdateRequired, Converter={StaticResource BoolToVisibility}}">
+            <Border Width="720" HorizontalAlignment="Center" Style="{StaticResource Panel}">
+                <StackPanel>
+                    <TextBlock Foreground="{StaticResource WarningBrush}" Style="{StaticResource SectionTitle}" Text="ZORUNLU GÜNCELLEME MEVCUT" />
+                    <TextBlock Margin="0,10,0,18" FontSize="36" Text="{Binding RequiredUpdate.Version, StringFormat=Sürüm {0}}" />
+                    <TextBlock FontSize="17" Text="{Binding RequiredUpdate.ReleaseNotes}" />
+                    <TextBlock Margin="0,8,0,24" Foreground="{StaticResource MutedTextBrush}" Text="{Binding RequiredUpdate.DownloadSize, StringFormat=İndirme boyutu: {0:N0} bayt}" />
+                    <ProgressBar Margin="0,0,0,8" Maximum="100" Value="{Binding UpdateProgress, Mode=OneWay}" />
+                    <TextBlock Margin="0,0,0,18" Foreground="{StaticResource MutedTextBrush}" Text="{Binding UpdateStatus}" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding DownloadUpdateCommand}" Content="➦  Güncellemeyi İndir" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding ExitCommand}" Content="➦  Oyundan Çık" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Error -->
+        <Grid Margin="110,70" Visibility="{Binding IsError, Converter={StaticResource BoolToVisibility}}">
+            <Border Width="720" HorizontalAlignment="Center" Style="{StaticResource Panel}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="BEKLENMEYEN HATA" />
+                    <TextBlock Margin="0,12,0,25" FontSize="22" Text="{Binding StatusMessage}" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding OpenLogFolderCommand}" Content="➦  Log Klasörünü Aç" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding ExitCommand}" Content="➦  Oyundan Çık" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Confirmation overlay -->
+        <Grid Background="#D9080A0C" Visibility="{Binding IsConfirmingCharacter, Converter={StaticResource BoolToVisibility}}">
+            <Border Width="520" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Panel}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource SectionTitle}" Text="SEÇİMİ ONAYLA" />
+                    <TextBlock Margin="0,14,0,8" FontSize="25" Text="Bu karakteri seçmek istediğine emin misin?" />
+                    <TextBlock Margin="0,0,0,24" Foreground="{StaticResource MutedTextBrush}" Text="{Binding SelectedCharacter.Name, StringFormat={}{0} ana karakter olacak; diğer altı kişi ekipte kalacak.}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Width="150" Style="{StaticResource CompactButton}" Command="{Binding CancelCharacterConfirmationCommand}" Content="Vazgeç" />
+                        <Button Width="200" Style="{StaticResource CompactButton}" Command="{Binding ConfirmCharacterCommand}" Content="➦ Onayla" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

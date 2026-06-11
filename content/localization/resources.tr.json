@@ -1,0 +1,13 @@
+{
+  "menu.play": "Oyna",
+  "menu.settings": "Ayarlar",
+  "menu.help": "Yardım",
+  "menu.exit": "Çıkış",
+  "play.new": "Yeni Oyun",
+  "play.continue": "Devam Et",
+  "play.saves": "Kayıtları Yönet",
+  "common.back": "Ana Menüye Dön",
+  "game.undo": "Son Seçimi Geri Al",
+  "game.instant": "Metni Anında Göster",
+  "game.status": "Durum Paneli"
+}

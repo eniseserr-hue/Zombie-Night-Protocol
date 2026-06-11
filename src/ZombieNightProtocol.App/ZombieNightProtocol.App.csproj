@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZombieNightProtocol.Core\ZombieNightProtocol.Core.csproj" />
+    <ProjectReference Include="..\ZombieNightProtocol.Infrastructure\ZombieNightProtocol.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\content\**\*" Exclude="..\..\content\images\zombie-splash.png;..\..\content\images\loading-skull.png">
+      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="..\..\content\images\zombie-splash.png">
+      <Link>Assets\zombie-splash.png</Link>
+    </Resource>
+    <Resource Include="..\..\content\images\loading-skull.png">
+      <Link>Assets\loading-skull.png</Link>
+    </Resource>
+    <Content Include="update-config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon />
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <AssemblyName>ZombieNightProtocol</AssemblyName>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,11 @@
+{
+  "id": "chapter-01",
+  "seasonId": "season-02",
+  "title": "Bölüm 1",
+  "order": 1,
+  "startSceneId": "scene-001",
+  "sceneFile": "scenes.json",
+  "summary": "Kullanıcı tarafından daha sonra doldurulacak bölüm içeriği.",
+  "availableIf": [],
+  "defaultCheckpointId": "checkpoint-001"
+}

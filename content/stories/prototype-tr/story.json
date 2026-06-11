@@ -1,0 +1,268 @@
+{
+  "id": "prototype-tr",
+  "version": "1.0.0",
+  "startSceneId": "apartment_01",
+  "scenes": [
+    {
+      "id": "apartment_01",
+      "chapterId": "chapter_01",
+      "city": "İstanbul",
+      "location": "Esenler - Terk Edilmiş Apartman",
+      "day": 1,
+      "time": "22:45",
+      "isNight": true,
+      "title": "Merdivendeki Ses",
+      "sceneImage": "images/scenes/istanbul/staircase_sound.webp",
+      "backgroundSceneImage": "images/scenes/city_night.webp",
+      "oneShotSounds": ["audio/sfx/metal_scrape.wav"],
+      "noiseIntensity": 0.035,
+      "topMessages": [
+        {"speaker":"Büşra","text":"Burada kalırsak sabaha çıkamayız.","tone":"Uyarı"},
+        {"speaker":"Yesking","text":"Servis kapısının kilidi elektrikli olabilir.","tone":"Bilgi"},
+        {"speaker":"Bedo","text":"Merdivende bir şey hareket etti.","tone":"Tehlike"}
+      ],
+      "content": [
+        {"type":"narration","text":"Koridorun sonundan metalik bir sürtünme sesi geliyor. Nefesini tutuyorsun. Arkanda bekleyen ekip, karar vermen için sana bakıyor."},
+        {"type":"dialogue","speaker":"Büşra","text":"Burada kalırsak sabaha çıkamayız.","dialogueImage":"images/characters/busra.webp"}
+      ],
+      "choices": [
+        {"id":"search_room","text":"Daireyi sessizce ara.","nextSceneId":"apartment_search","previewImage":"images/scenes/istanbul/apartment_search.webp","selectionSummary":"Daireyi sessizce araştıracaksın. Gürültü riski düşük; yararlı kaynak bulma ihtimali var.","riskLevel":"Düşük","effects":[{"type":"ChangeNoise","amount":-5}]},
+        {"id":"check_stairs","text":"Merdiven boşluğunu kontrol et.","nextSceneId":"stairwell","previewImage":"images/scenes/istanbul/stairwell_check.webp","selectionSummary":"Sesin kaynağına yaklaşacaksın. Ekip erken uyarı kazanabilir ama fark edilme ihtimali yüksek.","riskLevel":"Yüksek","isDangerous":true,"effects":[{"type":"ChangeNoise","amount":10},{"type":"ChangeThreat","amount":8}]},
+        {"id":"force_door","text":"[Güç] Arka servis kapısını zorla.","nextSceneId":"service_door","previewImage":"images/scenes/istanbul/service_door_force.webp","selectionSummary":"Servis kapısını zorlayarak kısa bir kaçış hattı açacaksın. Gürültü binadaki tehdidi üzerine çekebilir.","riskLevel":"Çok Yüksek","lockedReason":"Bu seçenek için 70 Güç gerekli.","conditions":[{"type":"SkillCondition","key":"Güç","operator":">=","amount":70}],"effects":[{"type":"ChangeNoise","amount":20}]},
+        {"id":"force_door_crowbar","text":"[Levye Kullan] Servis kapısını zorla.","nextSceneId":"service_door","previewImage":"images/scenes/istanbul/service_door_force.webp","selectionSummary":"Levyeyi kilit boşluğuna sokarak kapıyı daha kontrollü açacaksın.","riskLevel":"Yüksek","conditions":[{"type":"InventoryCondition","operator":"==","value":"crowbar"}],"lockedReason":"Bu seçenek için levye gerekli.","effects":[{"type":"ChangeNoise","amount":12},{"type":"ChangeItemDurability","key":"crowbar","amount":-15}]}
+      ]
+    },
+    {
+      "id":"apartment_search",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - 4. Kat Dairesi","day":1,"time":"22:50","isNight":true,
+      "title":"Karanlık Odalar",
+      "sceneImage":"images/scenes/istanbul/apartment_search.webp",
+      "content":[
+        {"type":"narration","text":"Dolapların arasında kuru kan izleri var. Mutfak çekmecesinde hâlâ ambalajında bir pil buluyorsun."},
+        {"type":"dialogue","speaker":"Yesking","text":"Onu al. Telsiz sandığımızdan daha önemli olabilir."}
+      ],
+      "choices":[
+        {"id":"take_battery","text":"Pili çantana koy.","nextSceneId":"radio_room","previewImage":"images/scenes/radio_room_preview.webp","effects":[{"type":"AddItem","item":{"id":"fresh_battery","name":"Yeni pil","description":"Askerî telsize uygun güçlü pil.","category":"tool","quantity":1,"weight":0.1,"storyTag":"radio_power"}},{"type":"ChangeRelationship","target":"yesking","amount":6}]},
+        {"id":"leave_battery","text":"Zaman kaybetmeden telsiz odasına geç.","nextSceneId":"radio_room","previewImage":"images/scenes/radio_room_preview.webp","effects":[{"type":"ChangeThreat","amount":-2}]}
+      ]
+    },
+    {
+      "id":"stairwell",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Merdiven Boşluğu","day":1,"time":"22:50","isNight":true,
+      "title":"Aşağıdan Gelen Nefes",
+      "sceneImage":"images/scenes/istanbul/stairwell_check.webp",
+      "oneShotSounds":["audio/sfx/infected.wav"],
+      "noiseIntensity":0.05,
+      "content":[
+        {"type":"narration","text":"Korkuluğun ardından baktığında iki kat aşağıda eğri bir gölge görüyorsun. Başını ani bir hareketle sana çeviriyor."},
+        {"type":"dialogue","speaker":"Bedo","text":"Bizi duydu. Hemen karar ver!"}
+      ],
+      "timedChoiceSeconds":8,
+      "defaultChoiceId":"run_up",
+      "choices":[
+        {"id":"silent_retreat","text":"Sessizce geri çekil.","nextSceneId":"radio_room","previewImage":"images/scenes/radio_room_preview.webp","isCriticalTimed":true,"conditions":[{"type":"SkillCondition","key":"Çeviklik","operator":">=","amount":60}],"lockedReason":"Bu seçenek için 60 Çeviklik gerekli.","effects":[{"type":"ChangeNoise","amount":-8}]},
+        {"id":"run_up","text":"Üst kata koş.","nextSceneId":"roof_trap","previewImage":"images/scenes/rooftop.webp","isDangerous":true,"isCriticalTimed":true,"effects":[{"type":"ChangeNoise","amount":25},{"type":"ChangeHealth","amount":-8}]},
+        {"id":"hold_line","text":"Büşra'nın ateş hattını koru.","nextSceneId":"radio_room","previewImage":"images/scenes/istanbul/stairwell_check.webp","isCriticalTimed":true,"conditions":[{"type":"SkillCondition","key":"Taktik","operator":">=","amount":65}],"lockedReason":"Bu seçenek için 65 Taktik gerekli.","effects":[{"type":"ChangeNoise","amount":15},{"type":"ChangeRelationship","target":"busra","amount":8}]}
+      ]
+    },
+    {
+      "id":"service_door",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Servis Koridoru","day":1,"time":"22:53","isNight":true,
+      "title":"Kırılan Kilit",
+      "sceneImage":"images/scenes/istanbul/service_door_force.webp",
+      "oneShotSounds":["audio/sfx/metal_scrape.wav"],
+      "screenShakeIntensity":8,
+      "noiseIntensity":0.07,
+      "content":[
+        {"type":"narration","text":"Omzunu kapıya verdiğinde kilit parçalanıyor. Gürültü binada yankılanıyor ama önünüzde kısa bir yol açılıyor."},
+        {"type":"dialogue","speaker":"Ambatukam","text":"Artık geri dönüş yok."}
+      ],
+      "choices":[
+        {"id":"service_to_radio","text":"➦ Telsiz odasına ilerle.","nextSceneId":"radio_room","effects":[{"type":"SetFlag","value":"service_route_open"},{"type":"ChangeRelationship","target":"ambatukam","amount":6}]}
+      ]
+    },
+    {
+      "id":"roof_trap",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Çatı Kapısı","day":1,"time":"22:56","isNight":true,
+      "title":"Kilitli Çatı",
+      "sceneImage":"images/scenes/rooftop.webp",
+      "content":[
+        {"type":"narration","text":"Çatı kapısı kaynakla kapatılmış. Alt kattaki ayak sesleri çoğalıyor. Karanlık seni duvara sıkıştırıyor."}
+      ],
+      "choices":[
+        {"id":"roof_death","text":"⚠ Kapıyı kırmayı dene.","nextSceneId":"death_roof","isDangerous":true,"effects":[{"type":"ChangeNoise","amount":35}]},
+        {"id":"roof_escape","text":"➦ [Teknik] Yangın alarmının servis kilidini aç.","nextSceneId":"radio_room","conditions":[{"type":"SkillCondition","key":"Teknik","operator":">=","amount":70}],"lockedReason":"Bu seçenek için 70 Teknik gerekli.","effects":[{"type":"ChangeHealth","amount":-12},{"type":"SetFlag","value":"escaped_roof"}]}
+      ]
+    },
+    {
+      "id":"death_roof",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Çatı Kapısı","day":1,"time":"23:00","isNight":true,
+      "title":"Yolculuğun İstanbul'da Sona Erdi",
+      "sceneImage":"images/scenes/rooftop.webp",
+      "content":[{"type":"narration","text":"Kapı bir santim bile oynamıyor. Arkandaki ilk çığlığı duyduğunda artık çok geç olduğunu biliyorsun."}],
+      "choices":[
+        {"id":"accept_roof_death","text":"➦ Sonucu kabul et.","effects":[{"type":"TriggerEnding","key":"death","value":"Çatı kapısında enfekteler tarafından kuşatıldın."}]}
+      ]
+    },
+    {
+      "id":"radio_room",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Yönetici Dairesi","day":1,"time":"23:05","isNight":true,
+      "title":"Kesik Yayın",
+      "sceneImage":"images/scenes/radio_room.webp",
+      "noiseIntensity":0.065,
+      "isCheckpoint":true,
+      "content":[
+        {"type":"narration","text":"Askerî telsiz masanın üzerinde ölü gibi duruyor. Yesking kapağını açarken odada yalnızca enfektelerin uzaktaki çığlıkları duyuluyor."},
+        {"type":"dialogue","speaker":"Yesking","text":"Güç verirsek frekansı yakalarım. Ama tek deneme hakkımız olabilir."}
+      ],
+      "choices":[
+        {"id":"use_fresh_battery","text":"Yeni pili telsize tak.","nextSceneId":"broadcast_clear","previewImage":"images/scenes/radio_room_preview.webp","conditions":[{"type":"InventoryCondition","operator":"==","value":"fresh_battery"}],"lockedReason":"Yeni bir pil gerekli.","effects":[{"type":"RemoveItem","key":"fresh_battery"},{"type":"SetFlag","value":"clear_broadcast"},{"type":"UnlockCharacterInfo","target":"busra"}]},
+        {"id":"technical_fix","text":"[Teknik] Güç devresini geçici olarak onar.","nextSceneId":"broadcast_clear","previewImage":"images/scenes/radio_room_preview.webp","conditions":[{"type":"SkillCondition","key":"Teknik","operator":">=","amount":75}],"lockedReason":"Bu seçenek için 75 Teknik gerekli.","effects":[{"type":"UseSpecialAbility","target":"yesking"},{"type":"SetFlag","value":"clear_broadcast"}]},
+        {"id":"weak_signal","text":"Zayıf pille yayını dinlemeyi dene.","nextSceneId":"broadcast_weak","previewImage":"images/scenes/radio_room_preview.webp","effects":[{"type":"ChangeSanity","amount":-3}]}
+      ]
+    },
+    {
+      "id":"broadcast_clear",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Yönetici Dairesi","day":1,"time":"23:12","isNight":true,
+      "title":"Güvenli Koridor",
+      "sceneImage":"images/scenes/radio_room.webp",
+      "content":[
+        {"type":"narration","text":"Parazitin içinden net bir askerî ses yükseliyor: Ankara üzerinden Sivas'a, oradan Malatya'ya uzanan tahliye koridoru. Yayın her gece aynı saatte tekrarlanacak."},
+        {"type":"dialogue","speaker":"Büşra","text":"Bu frekansı biliyorum. Ama size anlatmadığım şeyler var."}
+      ],
+      "choices":[
+        {"id":"ask_busra","text":"➦ Büşra'dan gerçeği anlatmasını iste.","nextSceneId":"busra_secret","conditions":[{"type":"RelationshipCondition","target":"busra","operator":">=","amount":50}],"lockedReason":"Büşra sana henüz yeterince güvenmiyor.","effects":[{"type":"UnlockCharacterInfo","target":"busra"},{"type":"ChangeRelationship","target":"busra","amount":5}]},
+        {"id":"plan_exit_clear","text":"➦ Rotayı haritada işaretle.","nextSceneId":"exit_plan","effects":[{"type":"UnlockRoute","value":"İstanbul ➦ Ankara ➦ Sivas ➦ Malatya"},{"type":"AddJournalEntry","value":"Askerî yayın Ankara, Sivas ve Malatya üzerinden güvenli bir koridordan söz ediyor."}]}
+      ]
+    },
+    {
+      "id":"broadcast_weak",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Yönetici Dairesi","day":1,"time":"23:12","isNight":true,
+      "title":"Parazitteki Şehirler",
+      "sceneImage":"images/scenes/radio_room.webp",
+      "content":[
+        {"type":"narration","text":"Yayından yalnızca üç kelime seçebiliyorsun: Ankara, Sivas, Malatya. Ardından cihaz tamamen susuyor."},
+        {"type":"dialogue","speaker":"Enes","text":"En azından bir yönümüz var. Buradan çıkarsak gerisini buluruz."}
+      ],
+      "choices":[
+        {"id":"plan_exit_weak","text":"➦ İstanbul'dan çıkış planı yap.","nextSceneId":"exit_plan","effects":[{"type":"UnlockRoute","value":"İstanbul ➦ Ankara"},{"type":"AddJournalEntry","value":"Zayıf yayında Ankara, Sivas ve Malatya adları duyuldu."}]}
+      ]
+    },
+    {
+      "id":"busra_secret",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Yönetici Dairesi","day":1,"time":"23:16","isNight":true,
+      "title":"Saklanan Emir",
+      "sceneImage":"images/scenes/radio_room.webp",
+      "content":[
+        {"type":"dialogue","speaker":"Büşra","text":"O koridor ilk günden beri vardı. Birliklere sivilleri değil, numuneleri taşımaları emredildi. Malatya'da ne olduğunu bilmiyorum."},
+        {"type":"narration","text":"Odadaki sessizlik yayının parazitinden daha ağır geliyor."}
+      ],
+      "choices":[
+        {"id":"accept_secret","text":"➦ Şimdilik Büşra'ya güven.","nextSceneId":"exit_plan","effects":[{"type":"SetFlag","value":"busra_secret_known"},{"type":"ChangeRelationship","target":"busra","amount":10},{"type":"AddJournalEntry","value":"Büşra, askerî koridorun numune taşımak için kurulduğunu itiraf etti."}]},
+        {"id":"challenge_secret","text":"⚠ Bunu neden sakladığını sorgula.","nextSceneId":"exit_plan","isDangerous":true,"effects":[{"type":"SetFlag","value":"busra_secret_known"},{"type":"ChangeRelationship","target":"busra","amount":-8},{"type":"ChangeMorale","amount":-5}]}
+      ]
+    },
+    {
+      "id":"exit_plan",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Yönetici Dairesi","day":1,"time":"23:25","isNight":true,
+      "title":"Çıkış Yolu",
+      "sceneImage":"images/scenes/city_night.webp",
+      "content":[
+        {"type":"narration","text":"Haritayı yere seriyorsun. Otogar tüneli kısa ama karanlık; ara sokaklar uzun ama sessiz. Bedo, karşı binanın çatısından geçebileceğini söylüyor."}
+      ],
+      "choices":[
+        {"id":"take_tunnel","text":"Otogar tüneline ilerle.","nextSceneId":"tunnel","previewImage":"images/scenes/tunnel.webp","effects":[{"type":"SetFlag","value":"tunnel_route"},{"type":"ChangeThreat","amount":12}]},
+        {"id":"take_rooftops","text":"Çatı rotasını kullan.","nextSceneId":"rooftops","previewImage":"images/scenes/rooftop.webp","conditions":[{"type":"CharacterAliveCondition","target":"bedo","operator":"==","value":"true"}],"lockedReason":"Bu rota için Bedo'nun hayatta olması gerekli.","effects":[{"type":"SetFlag","value":"rooftop_route"},{"type":"ChangeRelationship","target":"bedo","amount":6}]},
+        {"id":"take_streets","text":"Sessiz ara sokaklardan git.","nextSceneId":"alley","previewImage":"images/scenes/alley.webp","effects":[{"type":"ChangeNoise","amount":-5},{"type":"AdvanceTime","amount":25}]}
+      ]
+    },
+    {
+      "id":"tunnel",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler Otogar Tüneli","day":1,"time":"23:40","isNight":true,
+      "title":"Karanlığın İçinde",
+      "sceneImage":"images/scenes/tunnel.webp",
+      "content":[
+        {"type":"narration","text":"Tüneldeki su ayak bileğine kadar yükseliyor. Önünüzde devrilmiş bir minibüs yolu kapatıyor. İçinden tırnak sesleri geliyor."}
+      ],
+      "choices":[
+        {"id":"lift_van","text":"➦ [Güç] Minibüsü yana it.","nextSceneId":"bedos_fall","conditions":[{"type":"SkillCondition","key":"Güç","operator":">=","amount":75}],"lockedReason":"Bu seçenek için 75 Güç gerekli.","effects":[{"type":"ChangeNoise","amount":18}]},
+        {"id":"crawl_van","text":"➦ Minibüsün altından sürün.","nextSceneId":"tunnel_bite","effects":[{"type":"ChangeInfection","amount":35},{"type":"ChangeHealth","amount":-20}]},
+        {"id":"return_street","text":"➦ Geri dönüp ara sokağa çık.","nextSceneId":"alley","effects":[{"type":"AdvanceTime","amount":15}]}
+      ]
+    },
+    {
+      "id":"tunnel_bite",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler Otogar Tüneli","day":2,"time":"00:02","isNight":true,
+      "title":"Suyun Altındaki El",
+      "sceneImage":"images/scenes/tunnel.webp",
+      "content":[{"type":"narration","text":"Soğuk bir el bileğini yakalıyor. Kurtuluyorsun ama diş izleri derine işlemiş. Nebi yüzüne baktığında söylemesine gerek kalmıyor."}],
+      "choices":[
+        {"id":"bite_death","text":"⚠ Ekibi riske atma.","nextSceneId":"death_infection","isDangerous":true},
+        {"id":"bite_treat","text":"➦ [Tıp] Yarayı hemen temizle.","nextSceneId":"bus_escape","conditions":[{"type":"SkillCondition","key":"Tıp","operator":">=","amount":75},{"type":"InventoryCondition","operator":"==","value":"medkit"}],"lockedReason":"Bu seçenek için 75 Tıp ve ilk yardım çantası gerekli.","effects":[{"type":"ChangeInfection","amount":-30},{"type":"ChangeHealth","amount":10},{"type":"ChangeItemQuantity","key":"medkit","amount":-1}]}
+      ]
+    },
+    {
+      "id":"death_infection",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler Otogar Tüneli","day":2,"time":"00:18","isNight":true,
+      "title":"Yolculuğun İstanbul'da Sona Erdi",
+      "sceneImage":"images/scenes/tunnel.webp",
+      "content":[{"type":"narration","text":"Ateş dakikalar içinde yükseliyor. Ekibin senden uzaklaşırken gözlerini kaçırıyor. Son duyduğun şey tünelde yankılanan tek bir silah sesi."}],
+      "choices":[{"id":"accept_infection_death","text":"➦ Sonucu kabul et.","effects":[{"type":"TriggerEnding","key":"death","value":"Tünelde enfeksiyona yenik düştün."}]}]
+    },
+    {
+      "id":"rooftops",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Çatılar","day":1,"time":"23:42","isNight":true,
+      "title":"Boşluğun Üzerinde",
+      "sceneImage":"images/scenes/rooftop.webp",
+      "content":[
+        {"type":"narration","text":"Bedo karşı binaya ilk atlayan oluyor. Eski reklam panosu ağırlığı altında kırılıyor; genç adam kenara tutunuyor."},
+        {"type":"dialogue","speaker":"Bedo","text":"Elimi bırakma!"}
+      ],
+      "choices":[
+        {"id":"save_bedo","text":"➦ Bedo'yu yukarı çek.","nextSceneId":"bedos_fall","effects":[{"type":"InjureCharacter","target":"bedo","value":"Sol kolunda derin kesik"},{"type":"ChangeCharacterMood","target":"bedo","value":"Sarsılmış"},{"type":"ChangeCharacterThought","target":"bedo","value":"Beni bırakabilirdin ama bırakmadın."},{"type":"ChangeRelationship","target":"bedo","amount":15}]},
+        {"id":"leave_bedo","text":"⚠ Ekibi kurtarmak için elini bırak.","nextSceneId":"bus_escape","isDangerous":true,"effects":[{"type":"KillCharacter","target":"bedo","value":"Çatıdan düşme"},{"type":"ChangeMorale","amount":-20},{"type":"ChangeRelationship","target":"enes","amount":-12},{"type":"AddJournalEntry","value":"Bedo, çatı geçişinde hayatını kaybetti."}]}
+      ]
+    },
+    {
+      "id":"alley",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Arka Sokaklar","day":2,"time":"00:05","isNight":true,
+      "title":"Sessiz Sürü",
+      "sceneImage":"images/scenes/alley.webp",
+      "content":[
+        {"type":"narration","text":"Sokağın sonunda hareketsiz duran onlarca enfekte var. Gece onları daha hızlı ve daha dikkatli yapıyor. Bir araba alarmı tek çıkışınızı kapatıyor."}
+      ],
+      "choices":[
+        {"id":"disable_alarm","text":"➦ [Teknik] Alarmı devre dışı bırak.","nextSceneId":"bus_escape","conditions":[{"type":"SkillCondition","key":"Teknik","operator":">=","amount":70}],"lockedReason":"Bu seçenek için 70 Teknik gerekli.","effects":[{"type":"ChangeNoise","amount":-10}]},
+        {"id":"trust_bedo_scout","text":"➦ Bedo'nun sessiz rotasını izle.","nextSceneId":"bedos_fall","conditions":[{"type":"RelationshipCondition","target":"bedo","operator":">=","amount":50},{"type":"CharacterAliveCondition","target":"bedo","operator":"==","value":"true"}],"lockedReason":"Bedo sana bu rota için yeterince güvenmiyor.","effects":[{"type":"ChangeNoise","amount":-15},{"type":"ChangeCharacterThought","target":"bedo","value":"Bu kez beni gerçekten dinledi."}]},
+        {"id":"trigger_alarm","text":"⚠ Alarmı öteki sokağa yem olarak kullan.","nextSceneId":"bus_escape","isDangerous":true,"effects":[{"type":"ChangeNoise","amount":30},{"type":"ChangeThreat","amount":15},{"type":"ChangeHealth","amount":-10}]}
+      ]
+    },
+    {
+      "id":"bedos_fall",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler - Otogar Yakını","day":2,"time":"00:20","isNight":true,
+      "title":"Kırık Cam",
+      "sceneImage":"images/scenes/bus_escape.webp",
+      "content":[
+        {"type":"narration","text":"Son engeli geçerken cam patlıyor. Bedo'nun kolu kesiliyor; kan kokusu gece havasına karışıyor. Önünüzde çalışır gibi görünen bir servis otobüsü var."},
+        {"type":"dialogue","speaker":"Nebi","text":"Yarayı sararım. Siz aracı hazırlayın."}
+      ],
+      "choices":[
+        {"id":"treat_bedo","text":"➦ Bedo'nun yarasını sar.","nextSceneId":"bus_escape","conditions":[{"type":"InventoryCondition","operator":"==","value":"bandage"}],"lockedReason":"Bandaj gerekli.","effects":[{"type":"HealCharacter","target":"bedo","amount":20},{"type":"ChangeItemQuantity","key":"bandage","amount":-1},{"type":"ChangeRelationship","target":"bedo","amount":8}]},
+        {"id":"rush_bus","text":"➦ Kanamayı bastırıp otobüse koş.","nextSceneId":"bus_escape","effects":[{"type":"InjureCharacter","target":"bedo","value":"Sol kolunda ciddi kanama"},{"type":"ChangeCharacterMood","target":"bedo","value":"Acı içinde"}]}
+      ]
+    },
+    {
+      "id":"bus_escape",
+      "chapterId":"chapter_01","city":"İstanbul","location":"Esenler Otogarı","day":2,"time":"00:35","isNight":true,
+      "title":"Motorun İlk Sesi",
+      "sceneImage":"images/scenes/bus_escape.webp",
+      "content":[
+        {"type":"narration","text":"Motor üçüncü denemede çalışıyor. Enfekteler sese dönüyor ama otobüs çoktan perondan kopmuş durumda. İstanbul'un karanlık silueti arkada küçülüyor."},
+        {"type":"dialogue","speaker":"Enes","text":"Ankara'ya giden yol uzun. Ama artık bir yolumuz var."}
+      ],
+      "choices":[
+        {"id":"finish_chapter","text":"➦ Ankara rotasına çık.","effects":[{"type":"CompleteTask","key":"escape_istanbul"},{"type":"UnlockRoute","value":"İstanbul ➦ Ankara"},{"type":"TriggerEnding","key":"chapterComplete","value":"İstanbul'dan çıktın. Ankara yolu açıldı."}]}
+      ]
+    }
+  ]
+}
