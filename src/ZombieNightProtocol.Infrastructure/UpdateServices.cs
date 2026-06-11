@@ -12,6 +12,7 @@ public sealed class UpdateConfiguration
     public string Repository { get; init; } = "Zombie-Night-Protocol";
     public string ManifestUrl { get; init; } = "https://raw.githubusercontent.com/eniseserr-hue/Zombie-Night-Protocol/main/update-manifest.json";
     public string Channel { get; init; } = "stable";
+    public string ReportEndpoint { get; init; } = "";
     public int TimeoutSeconds { get; init; } = 8;
 }
 

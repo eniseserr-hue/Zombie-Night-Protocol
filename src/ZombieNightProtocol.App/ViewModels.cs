@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -37,6 +38,8 @@ public sealed partial class MainViewModel : ObservableObject
     private readonly PatchDownloader _patchDownloader;
     private readonly ApplicationPaths _paths;
     private readonly AudioService _audio;
+    private readonly HttpClient _httpClient;
+    private readonly UpdateConfiguration _updateConfiguration;
     private StoryPackage? _story;
     private IReadOnlyList<CharacterDefinition> _characters = [];
     private GameSettings? _settingsSnapshot;
@@ -73,7 +76,9 @@ public sealed partial class MainViewModel : ObservableObject
         GitHubUpdateService updateService,
         PatchDownloader patchDownloader,
         ApplicationPaths paths,
-        AudioService audio)
+        AudioService audio,
+        HttpClient httpClient,
+        UpdateConfiguration updateConfiguration)
     {
         _storyRepository = storyRepository;
         _characterRepository = characterRepository;
@@ -84,6 +89,8 @@ public sealed partial class MainViewModel : ObservableObject
         _patchDownloader = patchDownloader;
         _paths = paths;
         _audio = audio;
+        _httpClient = httpClient;
+        _updateConfiguration = updateConfiguration;
     }
 
     public ObservableCollection<CharacterDefinition> Characters { get; } = [];
@@ -465,7 +472,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void ShowReport()
     {
-        ReportStatus = "";
+        ResetReportForm();
         Screen = AppScreen.Report;
     }
 
@@ -480,30 +487,44 @@ public sealed partial class MainViewModel : ObservableObject
         "https://www.instagram.com/bullukespor/") { UseShellExecute = true });
 
     [RelayCommand(CanExecute = nameof(CanSendReport))]
-    private void SendReport()
+    private async Task SendReportAsync()
     {
         var body = BuildReportBody();
-        var subject = $"Zombie Night Protocol Raporu - {ReportCategory} - {GameConstants.Version}";
-        var mailto = $"mailto:eniseserr@gmail.com?subject={Uri.EscapeDataString(subject)}&body={Uri.EscapeDataString(body)}";
+        var endpoint = _updateConfiguration.ReportEndpoint;
+        if (string.IsNullOrWhiteSpace(endpoint))
+        {
+            ReportStatus = "Rapor hattı henüz açılmadı. Bunu kaybetmemek için metni notlarına kopyala.";
+            return;
+        }
 
         try
         {
-            Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
-            ReportStatus = "Mail uygulaması açıldı. Gönder'e basmayı unutma.";
+            ReportStatus = "Rapor gönderiliyor...";
+            var values = new Dictionary<string, string>
+            {
+                ["_subject"] = $"ZNP Rapor - {ReportCategory} - {GameConstants.Version}",
+                ["_template"] = "table",
+                ["_captcha"] = "false",
+                ["oyun"] = GameConstants.ApplicationName,
+                ["kategori"] = ReportCategory,
+                ["surum"] = GameConstants.Version,
+                ["rapor"] = body
+            };
+
+            using var content = new FormUrlEncodedContent(values);
+            using var response = await _httpClient.PostAsync(endpoint, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Rapor servisi {((int)response.StatusCode)} döndü.");
+            }
+
+            ResetReportForm();
+            ReportStatus = "Rapor gönderildi. Eyvallah, bunu kontrol edeceğiz.";
         }
         catch (Exception exception)
         {
             _diagnostics.Error(exception.ToString());
-            try
-            {
-                Clipboard.SetText(body);
-                ReportStatus = "Mail uygulaması açılamadı. Rapor panoya kopyalandı; eniseserr@gmail.com adresine yapıştırıp gönderebilirsin.";
-            }
-            catch (Exception clipboardException)
-            {
-                _diagnostics.Error(clipboardException.ToString());
-                ReportStatus = "Mail uygulaması açılamadı. Ayrıntılar log dosyasına yazıldı.";
-            }
+            ReportStatus = "Rapor gönderilemedi. Bağlantıyı kontrol edip tekrar dene.";
         }
     }
 
@@ -528,6 +549,13 @@ public sealed partial class MainViewModel : ObservableObject
             "",
             "İstersen ekran görüntüsü de ekleyebilirsin."
         ]);
+    }
+
+    private void ResetReportForm()
+    {
+        ReportCategory = "Bug / Hata";
+        ReportBody = "";
+        ReportStatus = "";
     }
 
     [RelayCommand]

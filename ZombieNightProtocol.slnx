@@ -3,6 +3,7 @@
     <Project Path="src/ZombieNightProtocol.App/ZombieNightProtocol.App.csproj" />
     <Project Path="src/ZombieNightProtocol.Core/ZombieNightProtocol.Core.csproj" />
     <Project Path="src/ZombieNightProtocol.Infrastructure/ZombieNightProtocol.Infrastructure.csproj" />
+    <Project Path="src/ZombieNightProtocol.Installer/ZombieNightProtocol.Installer.csproj" />
     <Project Path="src/ZombieNightProtocol.Updater/ZombieNightProtocol.Updater.csproj" />
   </Folder>
   <Folder Name="/tests/">

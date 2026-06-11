@@ -583,7 +583,7 @@
                 <TextBlock Style="{StaticResource Headline}" Text="RAPOR GÖNDER" />
                 <TextBlock Width="760" Margin="0,10,0,0" HorizontalAlignment="Left"
                            Foreground="{StaticResource MutedTextBrush}"
-                           Text="Bug, yazım hatası, kötü hissettiren bir sahne, bozuk ses veya yanlış görünen herhangi bir şeyi yaz. Gönder dediğinde mail uygulaman hazır raporla açılır." />
+                           Text="Bir şey ters geldiyse buraya yaz. Bozuk sahne, kötü görünen arayüz, yanlış metin, ses sorunu ya da can sıkan ne varsa direkt bana düşer." />
             </StackPanel>
 
             <Border Grid.Row="1" Width="860" Margin="0,28,0,20" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource Panel}">
@@ -606,14 +606,14 @@
                         <ComboBox Margin="0,8,0,0"
                                   ItemsSource="{Binding ReportCategories}"
                                   SelectedItem="{Binding ReportCategory}" />
-                        <TextBlock Margin="0,22,0,0" Style="{StaticResource SmallLabel}" Text="Gönderilecek adres" />
-                        <TextBlock Margin="0,8,0,0" Foreground="{StaticResource AccentBrightBrush}" Text="eniseserr@gmail.com" />
+                        <TextBlock Margin="0,22,0,0" Style="{StaticResource SmallLabel}" Text="Nereye gidiyor?" />
+                        <TextBlock Margin="0,8,0,0" Foreground="{StaticResource AccentBrightBrush}" Text="Geliştirici rapor kutusu" />
                         <TextBlock Margin="0,22,0,0" Foreground="{StaticResource MutedTextBrush}" LineHeight="21"
-                                   Text="Not: Oyun mail şifresi saklamaz. Mail senin cihazındaki varsayılan mail uygulamasıyla açılır." />
+                                   Text="Rapor oyundan gönderilir. Mail uygulaması açılmaz, oyuncunun hesabı kullanılmaz." />
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,18,0,0">
-                        <TextBlock Style="{StaticResource SmallLabel}" Text="Ne yanlış, bozuk veya kötü geldi?" />
+                        <TextBlock Style="{StaticResource SmallLabel}" Text="Ne oldu?" />
                         <TextBox Margin="0,8,0,0"
                                  MinHeight="260"
                                  AcceptsReturn="True"
@@ -622,7 +622,7 @@
                                  Text="{Binding ReportBody, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock Margin="0,10,0,0"
                                    Foreground="{StaticResource MutedTextBrush}"
-                                   Text="İstersen sahneyi, seçtiğin karakteri ve ekran görüntüsü bilgisini yaz. Sürüm ve aktif ekran otomatik eklenecek." />
+                                   Text="Kısa yazman yeter. Oyun sürümünü, açık ekranı ve sahne bilgisini otomatik ekler." />
                     </StackPanel>
 
                     <Border Grid.Row="3" Grid.ColumnSpan="2" Margin="0,22,0,0" Padding="14"
@@ -634,7 +634,7 @@
             </Border>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button Width="220" Style="{StaticResource MenuButton}" Command="{Binding SendReportCommand}" Content="➦  Maili Hazırla" />
+                <Button Width="220" Style="{StaticResource MenuButton}" Command="{Binding SendReportCommand}" Content="➦  Raporu Gönder" />
                 <Button Width="220" Margin="18,3,0,3" Style="{StaticResource MenuButton}" Command="{Binding ShowMainMenuCommand}" Content="➦  Ana Menüye Dön" />
             </StackPanel>
         </Grid>

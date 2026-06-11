@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "1.0.3",
+    [string]$Version = "1.0.4",
     [string]$Runtime = "win-x64"
 )
 
@@ -32,6 +32,7 @@ $manifest = [ordered]@{
     version = $Version
     mandatory = $true
     releaseNotes = @(
+        "Kolay kurulum icin masaustu kisayolu olusturan Setup paketi eklendi."
         "Oyuncu rapor ekrani eklendi; bug ve geri bildirimler mail olarak hazirlanir."
         "Oyun simgesi eklendi; exe, pencere ve gorev cubugu artik ZNP ikonunu kullanir."
         "Bölüm sonu credits yazısı yenilendi ve sesli anlatım progress barı iyileştirildi."

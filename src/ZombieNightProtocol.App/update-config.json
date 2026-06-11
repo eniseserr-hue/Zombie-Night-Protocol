@@ -2,6 +2,7 @@
   "owner": "eniseserr-hue",
   "repository": "Zombie-Night-Protocol",
   "manifestUrl": "https://raw.githubusercontent.com/eniseserr-hue/Zombie-Night-Protocol/main/update-manifest.json",
+  "reportEndpoint": "https://formsubmit.co/ajax/eniseserr@gmail.com",
   "channel": "stable",
   "timeoutSeconds": 8
 }
