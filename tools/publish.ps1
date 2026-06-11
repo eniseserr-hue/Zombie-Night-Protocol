@@ -41,5 +41,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Copy-Item -LiteralPath (Join-Path $updaterOutput "ZombieNightProtocol.Updater.exe") -Destination (Join-Path $appOutput "ZombieNightProtocol.Updater.exe")
-Copy-Item -LiteralPath (Join-Path $root "content\updates\manifest.json") -Destination (Join-Path $appOutput "manifest.json")
+if (Test-Path -LiteralPath (Join-Path $root "update-manifest.json")) {
+    Copy-Item -LiteralPath (Join-Path $root "update-manifest.json") -Destination (Join-Path $appOutput "update-manifest.json")
+}
 Write-Host "Release hazır: $appOutput"

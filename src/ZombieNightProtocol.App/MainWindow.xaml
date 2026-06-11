@@ -115,6 +115,17 @@
                 <Button Style="{StaticResource MenuButton}" Command="{Binding ShowHelpCommand}" Content="➦  Yardım" />
                 <Button Style="{StaticResource MenuButton}" Command="{Binding ExitCommand}" Content="➦  Çıkış" />
             </StackPanel>
+            <Button Width="235" Height="48" Margin="28" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    Panel.ZIndex="3" Style="{StaticResource CompactButton}" Command="{Binding OpenInstagramCommand}"
+                    ToolTip="Büllük Espor Instagram">
+                <StackPanel Orientation="Horizontal">
+                    <Grid Width="24" Height="24" Margin="0,0,10,0">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Text="◎" />
+                        <Image Source="{Binding InstagramIconPath, Converter={StaticResource AssetImageConverter}, ConverterParameter=social}" Stretch="Uniform" />
+                    </Grid>
+                    <TextBlock VerticalAlignment="Center" Text="Büllük Espor Instagram" />
+                </StackPanel>
+            </Button>
         </Grid>
 
         <!-- Play menu -->
@@ -372,8 +383,10 @@
                             <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.MusicVolume}" ValueChanged="AudioSlider_ValueChanged" />
                             <TextBlock Margin="8,12,0,0" Text="{Binding Settings.AmbientVolume, StringFormat=Ambiyans: {0}%}" />
                             <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.AmbientVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,-2,8,2" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="Sahne ortamı, rüzgâr ve mekân seslerini ayarlar." />
                             <TextBlock Margin="8,12,0,0" Text="{Binding Settings.EffectsVolume, StringFormat=Efekt: {0}%}" />
                             <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.EffectsVolume}" ValueChanged="AudioSlider_ValueChanged" />
+                            <TextBlock Margin="8,-2,8,2" FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="Buton, eşya ve kısa oyun efektlerini ayarlar." />
                             <TextBlock Margin="8,12,0,0" Text="{Binding Settings.VoiceVolume, StringFormat=Ses Kayıtları: {0}%}" />
                             <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="0" Maximum="100" Value="{Binding Settings.VoiceVolume}" ValueChanged="AudioSlider_ValueChanged" />
                             <TextBlock Margin="8,12,0,0" Text="{Binding Settings.NotificationVolume, StringFormat=Bildirim: {0}%}" />
@@ -384,8 +397,6 @@
                             <ComboBox ItemsSource="{Binding TextAnimationModes}" SelectedItem="{Binding Settings.TextAnimationMode}" SelectionChanged="SettingsCombo_SelectionChanged" />
                             <TextBlock Margin="8,10,0,0" Text="Animasyon Hızı" />
                             <ComboBox ItemsSource="{Binding TextSpeeds}" SelectedItem="{Binding Settings.TextSpeed}" SelectionChanged="SettingsCombo_SelectionChanged" />
-                            <CheckBox Content="Ekran Titremesi" IsChecked="{Binding Settings.ScreenShake}" Click="SettingsControl_Changed" />
-                            <CheckBox Content="Parazit Efekti" IsChecked="{Binding Settings.NoiseEffect}" Click="SettingsControl_Changed" />
                             <CheckBox Content="Üst Mesaj Bildirimleri" IsChecked="{Binding Settings.TopMessageNotifications}" Click="SettingsControl_Changed" />
                             <TextBlock Margin="8,14,8,0" Foreground="{StaticResource MutedTextBrush}" FontSize="12"
                                        Text="Metin hızı hikâye yazım animasyonunu anında etkiler. Görsel efektler düşük donanımda kapatılabilir." />
@@ -396,7 +407,10 @@
                             <TextBlock Style="{StaticResource SectionTitle}" Text="GÖRÜNTÜ VE OYUN" />
                             <CheckBox Margin="8,15,8,7" Content="Tam Ekran" IsChecked="{Binding Settings.FullScreen}" Click="SettingsControl_Changed" />
                             <TextBlock Margin="8,12,0,0" Text="Çözünürlük" />
-                            <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding Settings.Resolution}" SelectionChanged="SettingsCombo_SelectionChanged" />
+                            <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding Settings.Resolution}" SelectionChanged="SettingsCombo_SelectionChanged"
+                                      IsEnabled="{Binding Settings.FullScreen, Converter={StaticResource InverseBooleanConverter}}" />
+                            <TextBlock Margin="8,0,8,4" FontSize="11" Foreground="{StaticResource MutedTextBrush}"
+                                       Text="Tam ekran açıkken masaüstünün geçerli çözünürlüğü kullanılır." />
                             <TextBlock Margin="8,12,0,0" Text="{Binding Settings.UiScale, StringFormat=Arayüz Ölçeği: {0}%}" />
                             <app:JumpSlider Style="{StaticResource HorrorSlider}" Minimum="80" Maximum="140" TickFrequency="10" Value="{Binding Settings.UiScale}" ValueChanged="SettingsSlider_ValueChanged" />
                             <CheckBox Content="Otomatik Kayıt" IsChecked="{Binding Settings.AutoSave}" Click="SettingsControl_Changed" />
@@ -591,7 +605,8 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" Margin="28,18,28,24">
+            <Grid Grid.Row="1" Margin="28,18,28,24"
+                  Visibility="{Binding IsChapterEndingScene, Converter={StaticResource InverseBooleanToVisibility}}">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="2*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                 <Border Margin="0,0,9,0" Style="{StaticResource Panel}" Padding="20,16">
                     <Grid>
@@ -1010,13 +1025,12 @@
                                 </ItemsControl>
                                 <ItemsControl ItemsSource="{Binding State.UnlockedRoutes}"><ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,4" Text="{Binding StringFormat=➦  {0}}" /></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
                             </StackPanel>
-                            <ItemsControl Visibility="{Binding IsTasksTab, Converter={StaticResource BoolToVisibility}}" ItemsSource="{Binding State.Tasks}">
+                            <ItemsControl Visibility="{Binding IsTasksTab, Converter={StaticResource BoolToVisibility}}" ItemsSource="{Binding ScenarioTasks}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource Panel}" Margin="0,0,0,9">
                                             <StackPanel>
-                                                <DockPanel><TextBlock DockPanel.Dock="Right" Foreground="{StaticResource WarningBrush}" Text="{Binding Priority}" /><TextBlock FontSize="17" Text="{Binding Title}" /></DockPanel>
-                                                <TextBlock Margin="0,5,0,0" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Description}" />
+                                                <DockPanel><TextBlock DockPanel.Dock="Right" Foreground="{Binding ToneBrush}" Text="{Binding StatusText}" /><TextBlock FontSize="17" Text="{Binding Title}" /></DockPanel>
                                                 <ProgressBar Margin="0,9,0,5" Maximum="100" Value="{Binding Progress, Mode=OneWay}" />
                                                 <TextBlock FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Hint, StringFormat=İpucu: {0}}" />
                                             </StackPanel>
@@ -1142,6 +1156,76 @@
                 </Border>
             </Grid>
 
+            <!-- Chapter ending: only scene 16 uses this cinematic layout. -->
+            <Grid Grid.Row="1" Margin="40,22,40,30"
+                  Visibility="{Binding IsChapterEndingScene, Converter={StaticResource BoolToVisibility}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Border Margin="0,0,12,0" Style="{StaticResource Panel}" Padding="0" ClipToBounds="True">
+                    <Grid>
+                        <Image Source="{Binding ActiveSceneImage, Converter={StaticResource AssetImageConverter}}" Stretch="UniformToFill" />
+                        <Rectangle>
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#16000000" Offset="0" />
+                                    <GradientStop Color="#EC08080A" Offset="1" />
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <StackPanel Margin="34" VerticalAlignment="Bottom">
+                            <TextBlock Style="{StaticResource SectionTitle}" Text="SEZON 1 / BÖLÜM 1" />
+                            <TextBlock Margin="0,8,0,5" FontSize="38" FontWeight="Light" Text="Bölüm Sonu" />
+                            <TextBlock FontSize="15" Foreground="{StaticResource MutedTextBrush}" Text="Derya'nın izi artık söylenti değil. Bu gecenin sonuçları bir sonraki bölüme taşınacak." />
+                            <Border Margin="0,22,0,0" Padding="16" Background="#E817171A" BorderBrush="#754247" BorderThickness="1" CornerRadius="7">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Right" Foreground="{StaticResource MutedTextBrush}" Text="{Binding VoiceMessageTimeText}" />
+                                        <TextBlock Style="{StaticResource SectionTitle}" Text="BÖLÜM SONU ANLATIMI" />
+                                    </DockPanel>
+                                    <TextBlock Margin="0,6,0,10" FontSize="19" FontWeight="SemiBold" Text="{Binding VoiceMessageTitle}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding PlayVoiceMessageCommand}" Content="Dinle" />
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding PauseVoiceMessageCommand}" Content="Duraklat" />
+                                        <Button Style="{StaticResource CompactButton}" Command="{Binding RestartVoiceMessageCommand}" Content="Kaydı Tekrar Dinle" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <Border Grid.Column="1" Margin="12,0,0,0" Style="{StaticResource Panel}" ClipToBounds="True">
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center" TextBlock.TextAlignment="Center">
+                            <StackPanel.RenderTransform><TranslateTransform Y="360" /></StackPanel.RenderTransform>
+                            <StackPanel.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                                             From="360" To="-420" Duration="0:0:30" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </StackPanel.Triggers>
+                            <TextBlock FontSize="20" Margin="0,18" Text="Bizi dinlediğiniz için teşekkürler." />
+                            <TextBlock Margin="0,12" Text="Verdiğin her karar, bu gecenin izini değiştirdi." />
+                            <TextBlock Margin="0,12" Text="Derya hâlâ uzakta." />
+                            <TextBlock Margin="0,12" Text="İstanbul hâlâ karanlık." />
+                            <TextBlock Margin="0,12" Text="Ve yol henüz bitmedi." />
+                            <TextBlock Margin="0,38,0,8" FontSize="27" FontWeight="Bold" Text="Zombie Night Protocol" />
+                            <TextBlock Margin="0,24,0,8" Foreground="{StaticResource MutedTextBrush}" Text="Yapımcı" />
+                            <TextBlock FontSize="30" FontWeight="SemiBold" Foreground="{StaticResource AccentBrightBrush}" Text="Bedirhan Eser" />
+                        </StackPanel>
+                        <StackPanel VerticalAlignment="Bottom">
+                            <Button Style="{StaticResource MenuButton}" Command="{Binding ReturnFromChapterEndingCommand}" Content="➦  Ana Menüye Dön" />
+                            <Button Style="{StaticResource MenuButton}" IsEnabled="False" Content="Sonraki Bölüm Yakında" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
             <!-- Save overlay -->
             <Grid Grid.RowSpan="2" Background="#E608080A" Visibility="{Binding IsSavePanelOpen, Converter={StaticResource BoolToVisibility}}">
                 <Border Width="850" MaxHeight="650" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource Panel}" Padding="26">
@@ -1219,13 +1303,17 @@
         <Grid Margin="110,70" Visibility="{Binding IsUpdateRequired, Converter={StaticResource BoolToVisibility}}">
             <Border Width="720" HorizontalAlignment="Center" Style="{StaticResource Panel}">
                 <StackPanel>
-                    <TextBlock Foreground="{StaticResource WarningBrush}" Style="{StaticResource SectionTitle}" Text="ZORUNLU GÜNCELLEME MEVCUT" />
-                    <TextBlock Margin="0,10,0,18" FontSize="36" Text="{Binding RequiredUpdate.Version, StringFormat=Sürüm {0}}" />
-                    <TextBlock FontSize="17" Text="{Binding RequiredUpdate.ReleaseNotes}" />
-                    <TextBlock Margin="0,8,0,24" Foreground="{StaticResource MutedTextBrush}" Text="{Binding RequiredUpdate.DownloadSize, StringFormat=İndirme boyutu: {0:N0} bayt}" />
+                    <TextBlock Foreground="{StaticResource WarningBrush}" Style="{StaticResource SectionTitle}" Text="ZORUNLU GÜNCELLEME KONTROLÜ" />
+                    <TextBlock Margin="0,10,0,5" FontSize="20" Foreground="{StaticResource MutedTextBrush}" Text="{Binding VersionText, StringFormat=Mevcut {0}}" />
+                    <TextBlock Margin="0,0,0,18" FontSize="36" Text="{Binding RequiredUpdate.Version, StringFormat=Yeni sürüm {0}}" />
+                    <TextBlock FontSize="17" Text="{Binding UpdateReleaseNotes}" />
+                    <TextBlock Margin="0,8,0,24" Foreground="{StaticResource MutedTextBrush}" Text="{Binding UpdatePackageSize, StringFormat=Paket boyutu: {0}}" />
                     <ProgressBar Margin="0,0,0,8" Maximum="100" Value="{Binding UpdateProgress, Mode=OneWay}" />
                     <TextBlock Margin="0,0,0,18" Foreground="{StaticResource MutedTextBrush}" Text="{Binding UpdateStatus}" />
-                    <Button Style="{StaticResource MenuButton}" Command="{Binding DownloadUpdateCommand}" Content="➦  Güncellemeyi İndir" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding DownloadUpdateCommand}" Content="➦  Güncellemeyi İndir"
+                            Visibility="{Binding IsUpdateCheckFailed, Converter={StaticResource InverseBooleanToVisibility}}" />
+                    <Button Style="{StaticResource MenuButton}" Command="{Binding RetryUpdateCheckCommand}" Content="➦  Yeniden Dene"
+                            Visibility="{Binding IsUpdateCheckFailed, Converter={StaticResource BoolToVisibility}}" />
                     <Button Style="{StaticResource MenuButton}" Command="{Binding ExitCommand}" Content="➦  Oyundan Çık" />
                 </StackPanel>
             </Border>

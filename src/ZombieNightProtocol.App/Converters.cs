@@ -24,6 +24,15 @@ public sealed class InverseBooleanConverter : IValueConverter
         value is not true;
 }
 
+public sealed class InverseBooleanToVisibilityConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        value is true ? Visibility.Collapsed : Visibility.Visible;
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        throw new NotSupportedException();
+}
+
 public sealed class AssetImageConverter : IValueConverter
 {
     private static readonly object LogLock = new();
@@ -53,6 +62,11 @@ public sealed class AssetImageConverter : IValueConverter
         }
 
         LogMissing(preferredPath);
+        if (assetKind == "social")
+        {
+            return null;
+        }
+
         var fallback = assetKind == "character"
             ? Path.Combine(contentRoot, "images", "characters", "fallback.webp")
             : Path.Combine(contentRoot, "images", "scenes", "fallback.webp");

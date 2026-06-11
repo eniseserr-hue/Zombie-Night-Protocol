@@ -7,6 +7,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <local:StringToVisibilityConverter x:Key="StringToVisibility" />
         <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <local:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibility" />
         <local:AssetImageConverter x:Key="AssetImageConverter" />
         <local:MissingAssetVisibilityConverter x:Key="MissingAssetVisibilityConverter" />
 

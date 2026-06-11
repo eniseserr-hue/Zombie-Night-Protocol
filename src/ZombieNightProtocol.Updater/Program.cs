@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.Json;
 using ZombieNightProtocol.Infrastructure;
 
@@ -19,7 +20,7 @@ public static class Program
         }
         catch (Exception exception)
         {
-            Console.Error.WriteLine($"Güncelleme uygulanamadı: {exception.Message}");
+            Console.Error.WriteLine($"Güncelleme uygulanamadı: {exception}");
             return 1;
         }
     }
@@ -33,29 +34,36 @@ public static class Program
 
     private static async Task WaitForGameAsync(int processId)
     {
-        if (processId <= 0)
-        {
-            return;
-        }
-
+        if (processId <= 0) return;
         try
         {
             using var process = Process.GetProcessById(processId);
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(45));
             await process.WaitForExitAsync(timeout.Token);
         }
         catch (ArgumentException)
         {
-            // Oyun zaten kapanmış.
         }
     }
 
     private static async Task ApplyAsync(UpdaterOptions options, UpdateManifest manifest)
     {
+        if (!await HashService.VerifyAsync(options.PackagePath, manifest.Sha256))
+        {
+            throw new InvalidDataException("Paket SHA-256 doğrulaması başarısız.");
+        }
+
+        var extractedRoot = Path.Combine(options.StagingRoot, "extracted");
+        if (Directory.Exists(extractedRoot))
+        {
+            Directory.Delete(extractedRoot, true);
+        }
+        Directory.CreateDirectory(extractedRoot);
+        ZipFile.ExtractToDirectory(options.PackagePath, extractedRoot, overwriteFiles: true);
+
         var backupRoot = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "ZombieNightProtocol",
-            "Updates",
             "Backup",
             DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
         Directory.CreateDirectory(backupRoot);
@@ -63,44 +71,24 @@ public static class Program
 
         try
         {
-            foreach (var entry in manifest.Files)
+            foreach (var staged in Directory.EnumerateFiles(extractedRoot, "*", SearchOption.AllDirectories))
             {
-                var target = SafePath.ValidateRelativeFile(options.ApplicationRoot, entry.Path);
-                var backup = SafePath.ValidateRelativeFile(backupRoot, entry.Path);
+                var relative = Path.GetRelativePath(extractedRoot, staged);
+                var target = SafePath.ValidateRelativeFile(options.ApplicationRoot, relative);
+                var backup = SafePath.ValidateRelativeFile(backupRoot, relative);
                 var existed = File.Exists(target);
                 if (existed)
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(backup)!);
-                    File.Copy(target, backup, overwrite: true);
+                    File.Copy(target, backup, true);
                 }
-
                 changed.Add((target, existed ? backup : null, existed));
-                if (entry.Delete)
-                {
-                    if (existed)
-                    {
-                        File.Delete(target);
-                    }
-                    continue;
-                }
-
-                var staged = SafePath.ValidateRelativeFile(options.StagingRoot, entry.Path);
-                if (!await HashService.VerifyAsync(staged, entry.Sha256))
-                {
-                    throw new InvalidDataException($"Staging hash doğrulaması başarısız: {entry.Path}");
-                }
-
                 Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-                File.Copy(staged, target, overwrite: true);
-                if (!await HashService.VerifyAsync(target, entry.Sha256))
-                {
-                    throw new InvalidDataException($"Uygulanan dosya hash doğrulaması başarısız: {entry.Path}");
-                }
+                File.Copy(staged, target, true);
             }
 
-            var localManifest = Path.Combine(options.ApplicationRoot, "manifest.json");
-            await AtomicFile.WriteJsonAsync(localManifest, manifest);
-            Directory.Delete(options.StagingRoot, recursive: true);
+            await AtomicFile.WriteJsonAsync(Path.Combine(options.ApplicationRoot, "update-manifest.json"), manifest);
+            Directory.Delete(options.StagingRoot, true);
         }
         catch
         {
@@ -116,7 +104,7 @@ public static class Program
             if (item.Existed && item.Backup is not null && File.Exists(item.Backup))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(item.Target)!);
-                File.Copy(item.Backup, item.Target, overwrite: true);
+                File.Copy(item.Backup, item.Target, true);
             }
             else if (!item.Existed && File.Exists(item.Target))
             {
@@ -128,10 +116,6 @@ public static class Program
     private static void RestartGame(string applicationRoot)
     {
         var executable = Path.Combine(applicationRoot, "ZombieNightProtocol.exe");
-        if (!File.Exists(executable))
-        {
-            executable = Path.Combine(applicationRoot, "ZombieNightProtocol.App.exe");
-        }
         if (File.Exists(executable))
         {
             Process.Start(new ProcessStartInfo(executable) { UseShellExecute = true });
@@ -143,7 +127,8 @@ public sealed record UpdaterOptions(
     int ProcessId,
     string ApplicationRoot,
     string StagingRoot,
-    string ManifestPath)
+    string ManifestPath,
+    string PackagePath)
 {
     public static UpdaterOptions Parse(string[] args)
     {
@@ -155,16 +140,17 @@ public sealed record UpdaterOptions(
 
         if (!values.TryGetValue("--app", out var app) ||
             !values.TryGetValue("--staging", out var staging) ||
-            !values.TryGetValue("--manifest", out var manifest))
+            !values.TryGetValue("--manifest", out var manifest) ||
+            !values.TryGetValue("--package", out var package))
         {
-            throw new ArgumentException("Kullanım: --process <pid> --app <klasör> --staging <klasör> --manifest <dosya>");
+            throw new ArgumentException("Eksik updater argümanı.");
         }
-
         _ = values.TryGetValue("--process", out var process);
         return new UpdaterOptions(
             int.TryParse(process, out var processId) ? processId : 0,
             Path.GetFullPath(app),
             Path.GetFullPath(staging),
-            Path.GetFullPath(manifest));
+            Path.GetFullPath(manifest),
+            Path.GetFullPath(package));
     }
 }

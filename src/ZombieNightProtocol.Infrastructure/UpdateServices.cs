@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 
 namespace ZombieNightProtocol.Infrastructure;
@@ -9,7 +10,7 @@ public sealed class UpdateConfiguration
 {
     public string Owner { get; init; } = "eniseserr-hue";
     public string Repository { get; init; } = "Zombie-Night-Protocol";
-    public string ManifestUrl { get; init; } = "https://raw.githubusercontent.com/eniseserr-hue/Zombie-Night-Protocol/main/content/updates/manifest.json";
+    public string ManifestUrl { get; init; } = "https://raw.githubusercontent.com/eniseserr-hue/Zombie-Night-Protocol/main/update-manifest.json";
     public string Channel { get; init; } = "stable";
     public int TimeoutSeconds { get; init; } = 8;
 }
@@ -17,10 +18,21 @@ public sealed class UpdateConfiguration
 public sealed class UpdateManifest
 {
     public string Version { get; init; } = "1.0.0";
+    public bool Mandatory { get; init; }
+    public List<string> ReleaseNotes { get; init; } = [];
+    public string DownloadUrl { get; init; } = "";
+    public string Sha256 { get; init; } = "";
+    public long PackageSize { get; init; }
+    public DateTimeOffset PublishedAt { get; init; }
+    [JsonIgnore]
     public bool IsRequired { get; init; }
+    [JsonIgnore]
     public long DownloadSize { get; init; }
-    public string ReleaseNotes { get; init; } = "";
     public List<UpdateFileEntry> Files { get; init; } = [];
+    [JsonIgnore]
+    public bool RequiresUpdate => Mandatory || IsRequired;
+    [JsonIgnore]
+    public long EffectivePackageSize => PackageSize > 0 ? PackageSize : DownloadSize;
 }
 
 public sealed class UpdateFileEntry
@@ -39,7 +51,7 @@ public sealed record UpdatePlan(IReadOnlyList<UpdateFileEntry> Download, IReadOn
     public bool HasChanges => Download.Count > 0 || Delete.Count > 0;
 }
 
-public sealed record UpdateCheckResult(bool IsAvailable, bool IsRequired, UpdateManifest? Manifest, string Message);
+public sealed record UpdateCheckResult(bool IsAvailable, bool IsRequired, UpdateManifest? Manifest, string Message, bool CheckFailed = false);
 
 public static class HashService
 {
@@ -106,18 +118,55 @@ public sealed class GitHubUpdateService(
             var manifest = await JsonSerializer.DeserializeAsync<UpdateManifest>(stream, JsonDefaults.Options, timeout.Token)
                 ?? throw new InvalidDataException("Uzak manifest boş.");
             var available = Version.TryParse(manifest.Version, out var remoteVersion) && remoteVersion > currentVersion;
-            return new UpdateCheckResult(available, available && manifest.IsRequired, manifest, available ? "Yeni sürüm bulundu." : "Oyun güncel.");
+            return new UpdateCheckResult(available, available && manifest.RequiresUpdate, manifest, available ? "Yeni sürüm bulundu." : "Oyun güncel.");
         }
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or JsonException or InvalidDataException)
         {
-            logger.LogWarning(exception, "Güncelleme kontrolü yapılamadı; çevrimdışı devam ediliyor.");
-            return new UpdateCheckResult(false, false, null, "Güncelleme sunucusuna ulaşılamadı. Çevrimdışı devam ediliyor.");
+            logger.LogWarning(exception, "Güncelleme kontrolü yapılamadı.");
+            return new UpdateCheckResult(false, false, null, "Güncelleme sunucusuna ulaşılamadı.", true);
         }
     }
 }
 
 public sealed class PatchDownloader(HttpClient client, ILogger<PatchDownloader> logger)
 {
+    public async Task<string> DownloadPackageAsync(
+        UpdateManifest manifest,
+        string stagingRoot,
+        IProgress<(long Downloaded, long Total)>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(manifest.DownloadUrl) || string.IsNullOrWhiteSpace(manifest.Sha256))
+        {
+            throw new InvalidDataException("Paket URL veya SHA-256 değeri eksik.");
+        }
+
+        Directory.CreateDirectory(stagingRoot);
+        var destination = Path.Combine(stagingRoot, $"ZombieNightProtocol-{manifest.Version}.zip");
+        using var response = await client.GetAsync(manifest.DownloadUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var total = response.Content.Headers.ContentLength ?? manifest.EffectivePackageSize;
+        await using var source = await response.Content.ReadAsStreamAsync(cancellationToken);
+        await using var target = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true);
+        var buffer = new byte[81920];
+        long downloaded = 0;
+        int read;
+        while ((read = await source.ReadAsync(buffer, cancellationToken)) > 0)
+        {
+            await target.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+            downloaded += read;
+            progress?.Report((downloaded, Math.Max(1, total)));
+        }
+        await target.FlushAsync(cancellationToken);
+        if (!await HashService.VerifyAsync(destination, manifest.Sha256, cancellationToken))
+        {
+            File.Delete(destination);
+            throw new InvalidDataException("İndirilen güncelleme paketinin SHA-256 doğrulaması başarısız.");
+        }
+        logger.LogInformation("Güncelleme paketi indirildi ve doğrulandı: {Path}", destination);
+        return destination;
+    }
+
     public async Task DownloadAsync(
         UpdatePlan plan,
         string stagingRoot,
@@ -152,13 +201,13 @@ public sealed class PatchDownloader(HttpClient client, ILogger<PatchDownloader> 
         }
     }
 
-    public static void StartUpdater(string updaterPath, string applicationRoot, string stagingRoot, string manifestPath, int processId)
+    public static void StartUpdater(string updaterPath, string applicationRoot, string stagingRoot, string manifestPath, string packagePath, int processId)
     {
         Process.Start(new ProcessStartInfo
         {
             FileName = updaterPath,
             UseShellExecute = true,
-            Arguments = $"--process {processId} --app \"{applicationRoot}\" --staging \"{stagingRoot}\" --manifest \"{manifestPath}\""
+            Arguments = $"--process {processId} --app \"{applicationRoot}\" --staging \"{stagingRoot}\" --manifest \"{manifestPath}\" --package \"{packagePath}\""
         });
     }
 }

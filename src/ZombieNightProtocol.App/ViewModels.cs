@@ -55,6 +55,7 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private int _updateProgress;
     [ObservableProperty] private string _updateStatus = "";
     [ObservableProperty] private bool _isUpdating;
+    [ObservableProperty] private bool _isUpdateCheckFailed;
     [ObservableProperty] private bool _isSettingsToastVisible;
     [ObservableProperty] private string _settingsToastText = "";
     [ObservableProperty] private bool _isSettingsDirty;
@@ -89,6 +90,7 @@ public sealed partial class MainViewModel : ObservableObject
     public IReadOnlyList<string> Resolutions { get; } = ["1024x768", "1280x800", "1600x900", "1920x1080"];
     public IReadOnlyList<string> Languages { get; } = ["Türkçe"];
     public string VersionText => $"Sürüm {GameConstants.Version}";
+    public string InstagramIconPath => "images/ui/social/instagram_icon.png";
     public string ContinueText => HasSave ? "➦  Kaldığın Yerden Devam Et" : "➦  Devam Et";
 
     public bool IsLoading => Screen == AppScreen.Loading;
@@ -105,6 +107,8 @@ public sealed partial class MainViewModel : ObservableObject
     public bool IsError => Screen == AppScreen.Error;
     public bool HasSave => SaveSlots.Any(slot => !slot.IsEmpty && !slot.IsCorrupted);
     public bool HasSelectedCharacter => SelectedCharacter is not null;
+    public string UpdateReleaseNotes => RequiredUpdate is null ? "" : string.Join(Environment.NewLine, RequiredUpdate.ReleaseNotes.Select(note => $"• {note}"));
+    public string UpdatePackageSize => RequiredUpdate is null ? "" : $"{RequiredUpdate.EffectivePackageSize / 1024d / 1024d:N1} MB";
     public Uri IntroVideoSource => new(Path.Combine(AppContext.BaseDirectory, "content", "video", "intro.mov"));
     public string IntroMuteText => IsIntroMuted ? "Sesi Aç" : "Sesi Kapat";
 
@@ -127,7 +131,14 @@ public sealed partial class MainViewModel : ObservableObject
     partial void OnIsIntroMutedChanged(bool value) => OnPropertyChanged(nameof(IntroMuteText));
 
     partial void OnRequiredUpdateChanged(UpdateManifest? value) =>
+        OnRequiredUpdateChangedCore();
+
+    private void OnRequiredUpdateChangedCore()
+    {
+        OnPropertyChanged(nameof(UpdateReleaseNotes));
+        OnPropertyChanged(nameof(UpdatePackageSize));
         DownloadUpdateCommand.NotifyCanExecuteChanged();
+    }
 
     public async Task InitializeAsync()
     {
@@ -157,7 +168,17 @@ public sealed partial class MainViewModel : ObservableObject
 
             await loadingTimeline;
             LoadingProgress = 100;
-            if (update.IsRequired)
+            if (update.CheckFailed)
+            {
+#if DEBUG
+                Screen = AppScreen.MainMenu;
+#else
+                IsUpdateCheckFailed = true;
+                UpdateStatus = "Güncelleme sunucusuna bağlanılamadı. Bağlantıyı kontrol edip yeniden dene.";
+                Screen = AppScreen.UpdateRequired;
+#endif
+            }
+            else if (update.IsRequired)
             {
                 RequiredUpdate = update.Manifest;
                 Screen = AppScreen.UpdateRequired;
@@ -439,6 +460,10 @@ public sealed partial class MainViewModel : ObservableObject
     private void OpenLogFolder() => OpenFolder(_settingsService.LogsFolder);
 
     [RelayCommand]
+    private void OpenInstagram() => Process.Start(new ProcessStartInfo(
+        "https://www.instagram.com/bullukespor/") { UseShellExecute = true });
+
+    [RelayCommand]
     private void Exit() => Application.Current.Shutdown();
 
     [RelayCommand(CanExecute = nameof(CanDownloadUpdate))]
@@ -453,14 +478,17 @@ public sealed partial class MainViewModel : ObservableObject
         DownloadUpdateCommand.NotifyCanExecuteChanged();
         try
         {
-            var plan = await new UpdatePlanner().CreateAsync(AppContext.BaseDirectory, RequiredUpdate);
-            var total = Math.Max(1L, plan.Download.Sum(file => file.Size));
-            var progress = new Progress<(string File, long Downloaded, long Total)>(value =>
+            var timer = Stopwatch.StartNew();
+            var progress = new Progress<(long Downloaded, long Total)>(value =>
             {
                 UpdateProgress = (int)Math.Clamp(value.Downloaded * 100L / Math.Max(1L, value.Total), 0, 100);
-                UpdateStatus = $"{value.File} • {value.Downloaded / 1024d / 1024d:N1} / {total / 1024d / 1024d:N1} MB";
+                var speed = value.Downloaded / Math.Max(0.2, timer.Elapsed.TotalSeconds);
+                var remaining = Math.Max(0, value.Total - value.Downloaded);
+                var eta = TimeSpan.FromSeconds(remaining / Math.Max(1, speed));
+                UpdateStatus = $"İndiriliyor • %{UpdateProgress} • {speed / 1024d / 1024d:N1} MB/sn • kalan {eta:mm\\:ss}";
             });
-            await _patchDownloader.DownloadAsync(plan, _paths.Staging, progress);
+            var packagePath = await _patchDownloader.DownloadPackageAsync(RequiredUpdate, _paths.Staging, progress);
+            UpdateStatus = "Paket doğrulandı. Güncelleyici hazırlanıyor...";
             var manifestPath = Path.Combine(_paths.Staging, "manifest.json");
             await AtomicFile.WriteJsonAsync(manifestPath, RequiredUpdate);
             var updaterPath = Path.Combine(AppContext.BaseDirectory, "ZombieNightProtocol.Updater.exe");
@@ -468,7 +496,10 @@ public sealed partial class MainViewModel : ObservableObject
             {
                 throw new FileNotFoundException("Güncelleyici bulunamadı.", updaterPath);
             }
-            PatchDownloader.StartUpdater(updaterPath, AppContext.BaseDirectory, _paths.Staging, manifestPath, Environment.ProcessId);
+            var temporaryUpdater = Path.Combine(_paths.Updates, "ZombieNightProtocol.Updater.exe");
+            Directory.CreateDirectory(_paths.Updates);
+            File.Copy(updaterPath, temporaryUpdater, true);
+            PatchDownloader.StartUpdater(temporaryUpdater, AppContext.BaseDirectory, _paths.Staging, manifestPath, packagePath, Environment.ProcessId);
             Application.Current.Shutdown();
         }
         catch (Exception exception)
@@ -481,6 +512,27 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     private bool CanDownloadUpdate() => RequiredUpdate is not null && !IsUpdating;
+
+    [RelayCommand]
+    private async Task RetryUpdateCheckAsync()
+    {
+        IsUpdateCheckFailed = false;
+        UpdateStatus = "Güncelleme sunucusu yeniden kontrol ediliyor...";
+        var update = await _updateService.CheckAsync(Version.Parse(GameConstants.Version));
+        if (update.CheckFailed)
+        {
+            IsUpdateCheckFailed = true;
+            UpdateStatus = "Sunucuya hâlâ ulaşılamıyor. İnternet bağlantısını kontrol et.";
+            return;
+        }
+        if (update.IsRequired)
+        {
+            RequiredUpdate = update.Manifest;
+            UpdateStatus = "Zorunlu güncelleme hazır.";
+            return;
+        }
+        Screen = AppScreen.MainMenu;
+    }
 
     [RelayCommand]
     private void ReturnToCheckpoint()
@@ -568,8 +620,6 @@ public sealed partial class MainViewModel : ObservableObject
         FullScreen = source.FullScreen,
         Resolution = source.Resolution,
         UiScale = source.UiScale,
-        ScreenShake = source.ScreenShake,
-        NoiseEffect = source.NoiseEffect,
         TextAnimation = source.TextAnimation,
         TextAnimationMode = source.TextAnimationMode,
         TopMessageNotifications = source.TopMessageNotifications,
@@ -590,8 +640,6 @@ public sealed partial class MainViewModel : ObservableObject
         left.FullScreen == right.FullScreen &&
         left.Resolution == right.Resolution &&
         left.UiScale == right.UiScale &&
-        left.ScreenShake == right.ScreenShake &&
-        left.NoiseEffect == right.NoiseEffect &&
         left.TextAnimation == right.TextAnimation &&
         left.TextAnimationMode == right.TextAnimationMode &&
         left.TopMessageNotifications == right.TopMessageNotifications &&
@@ -770,6 +818,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
         .Select(message => new MessageDisplay(message));
     public int UnreadMessageCount => State.Messages.Count(message => !message.IsRead);
     public IEnumerable<JournalEntry> HistoryEntries => State.Journal.OrderByDescending(entry => entry.Timestamp);
+    public IReadOnlyList<ScenarioTaskDisplay> ScenarioTasks => CreateScenarioTasks();
     public bool IsCharacterTab => StatusTab == "Karakter";
     public bool IsTeamTab => StatusTab == "Ekip";
     public bool IsInventoryTab => StatusTab == "Envanter";
@@ -783,6 +832,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
     public int AliveCount => State.Characters.Count(character => character.IsAlive && (character.IsPlayer || IsCharacterKnown(character.Id)));
     public bool CanRestoreCheckpoint => State.CheckpointSnapshot is not null;
     public bool HasSelectedChoice => SelectedChoice is not null;
+    public bool IsChapterEndingScene => Scene?.Id == "s01c01_scene16_ending_narration";
     public string SelectedChoiceImage =>
         string.IsNullOrWhiteSpace(SelectedChoice?.PreviewImage)
             ? ActiveSceneImage
@@ -896,6 +946,12 @@ public sealed partial class GameSessionViewModel : ObservableObject
         PauseVoiceMessageCommand.NotifyCanExecuteChanged();
         RestartVoiceMessageCommand.NotifyCanExecuteChanged();
         ConfirmVoiceChoiceCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnSceneChanged(StoryScene? value)
+    {
+        OnPropertyChanged(nameof(IsChapterEndingScene));
+        OnPropertyChanged(nameof(ScenarioTasks));
     }
 
     partial void OnStatusTabChanged(string value)
@@ -1105,6 +1161,13 @@ public sealed partial class GameSessionViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void ReturnFromChapterEnding()
+    {
+        Stop();
+        _onExit();
+    }
+
+    [RelayCommand]
     private void ToggleVoiceTranscript() => IsVoiceTranscriptVisible = !IsVoiceTranscriptVisible;
 
     [RelayCommand]
@@ -1233,12 +1296,12 @@ public sealed partial class GameSessionViewModel : ObservableObject
         Dialogue = dialogue?.Text ?? "";
         DialogueSpeakerId = ResolveCharacterId(Speaker);
         _audio.EnterScene(Scene);
-        ShakeIntensity = _settings.ScreenShake ? Math.Clamp(Scene.ScreenShakeIntensity, 0, 12) : 0;
+        ShakeIntensity = Math.Clamp(Scene.ScreenShakeIntensity, 0, 12);
         if (ShakeIntensity > 0)
         {
             ShakeRequestToken++;
         }
-        NoiseOpacity = _settings.NoiseEffect ? Math.Clamp(Scene.NoiseIntensity, 0, 0.16) : 0;
+        NoiseOpacity = Math.Clamp(Scene.NoiseIntensity, 0, 0.16);
         IsNoiseEffectVisible = NoiseOpacity > 0;
         SceneHint = CreateInventorySuggestion(firstVisit);
         QueueSceneMessages(firstVisit, dialogue);
@@ -1258,6 +1321,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(MapLocationLabel));
         OnPropertyChanged(nameof(MapStatus));
         OnPropertyChanged(nameof(MapTimeline));
+        OnPropertyChanged(nameof(ScenarioTasks));
         _ = SaveEmergencySnapshotAsync();
     }
 
@@ -1488,6 +1552,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
 
         var speakerId = Scene.Id switch
         {
+            "s01c01_scene05_exit_together" or "s01c01_scene06_silent_istanbul" or "s01c01_scene10_apartment_fall" => "hakan",
             "s01c01_scene07_first_shelter" or "s01c01_scene08_power_antenna" or "s01c01_scene09_derya_recording" => "yesking",
             "s01c01_scene11_bedo_arrives" or "s01c01_scene12_first_night_team" or "s01c01_scene13_first_supply_run" => "bedo",
             "s01c01_scene14_meet_busra" or "s01c01_scene15_chapter_finale" => "busra",
@@ -1748,6 +1813,12 @@ public sealed partial class GameSessionViewModel : ObservableObject
         var text = string.IsNullOrWhiteSpace(originalText)
             ? ComposeCharacterMessage(characterId, trust)
             : originalText;
+        var recent = State.Messages.TakeLast(10).ToList();
+        if (recent.Any(message => message.Text.Equals(text, StringComparison.OrdinalIgnoreCase)) ||
+            recent.TakeLast(2).Count(message => message.CharacterId.Equals(characterId, StringComparison.OrdinalIgnoreCase)) == 2)
+        {
+            return;
+        }
         State.Messages.Add(new CharacterMessageState
         {
             CharacterId = characterId,
@@ -1772,11 +1843,46 @@ public sealed partial class GameSessionViewModel : ObservableObject
 
         return characterId switch
         {
-            "yesking" => State.Flags.Contains("yesking.joinCandidate") || State.Flags.Contains("yesking.joined") || State.Flags.Contains("party.yeskingPresent") || SceneIndex() >= 7,
-            "bedo" => State.Flags.Contains("bedo.joinCandidate") || State.Flags.Contains("bedo.joined") || State.Flags.Contains("bedo.joinedReluctant") || State.Flags.Contains("party.bedoPresent") || SceneIndex() >= 11,
-            "busra" => State.Flags.Contains("busra.encountered") || State.Flags.Contains("busra.joinedLater") || SceneIndex() >= 14,
+            "hakan" => State.Flags.Contains("party.hakanPresent") || State.Flags.Contains("hakan.status.withPlayer") || State.Flags.Contains("hakan.status.rescued"),
+            "yesking" => State.Flags.Contains("yesking.joined") || State.Flags.Contains("party.yeskingPresent"),
+            "bedo" => State.Flags.Contains("bedo.joined") || State.Flags.Contains("bedo.joinedReluctant") || State.Flags.Contains("party.bedoPresent"),
+            "busra" => State.Flags.Contains("busra.joinedLater") || State.Flags.Contains("busra.joinCandidate"),
             _ => false
         };
+    }
+
+    private IReadOnlyList<ScenarioTaskDisplay> CreateScenarioTasks()
+    {
+        var groups = new[]
+        {
+            new ScenarioTaskGroup(1, 2, "Sağlık merkezinden çık", "Telefonu ve ilk kaynakları kontrol et|Koridordaki tehdidi aş"),
+            new ScenarioTaskGroup(3, 3, "İlk enfekte karşılaşmasını atlat", "Gürültüyü kontrol altında tut|Güvenli çıkışı belirle"),
+            new ScenarioTaskGroup(4, 5, "Hakan hakkında karar ver", "Yarasını değerlendir|Yanına al, söz ver veya geride bırak"),
+            new ScenarioTaskGroup(6, 6, "Sessiz İstanbul'da iz bul", "Kırmızı işaretleri takip et|Güvenli sığınak ara"),
+            new ScenarioTaskGroup(7, 9, "Telsiz bağlantısını kur", "Yesking ile güven oluştur|Anteni çalıştır|Derya'nın kaydını çöz"),
+            new ScenarioTaskGroup(10, 11, "Çatı hattından sağ çık", "Düşüşün sonuçlarını yönet|Bedo ile karşılaş"),
+            new ScenarioTaskGroup(12, 14, "İlk gece için erzak topla", "Market rotasını seç|Büşra ve yaralı için ilaç kararı ver"),
+            new ScenarioTaskGroup(15, 16, "Kuzey yoluna hazırlan", "Son rotayı belirle|Bölüm sonu kaydını dinle")
+        };
+        var current = SceneIndex();
+        var result = new List<ScenarioTaskDisplay>();
+        foreach (var group in groups)
+        {
+            var status = current > group.End ? "Tamamlandı" : current >= group.Start ? "Aktif" : "Gizli";
+            if (status == "Gizli" && group.Start > current + 2)
+            {
+                continue;
+            }
+            var progress = status == "Tamamlandı" ? 100 : status == "Aktif"
+                ? Math.Clamp((current - group.Start + 1) * 100 / (group.End - group.Start + 1), 15, 95)
+                : 0;
+            result.Add(new ScenarioTaskDisplay(group.Title, "Ana görev", status, progress, "Hikâye ilerledikçe alt hedefler açılır."));
+            foreach (var subtask in group.Subtasks.Split('|'))
+            {
+                result.Add(new ScenarioTaskDisplay(subtask, "Alt görev", status, progress, ""));
+            }
+        }
+        return result;
     }
 
     private string TeamLastEvent(CharacterState character)
@@ -1788,6 +1894,8 @@ public sealed partial class GameSessionViewModel : ObservableObject
 
         return character.Id switch
         {
+            "hakan" when State.Flags.Contains("hakan.status.rescued") => "Verdiğin sözü tutup onu geri aldın.",
+            "hakan" => "Yarası hareketini yavaşlatıyor; çevreyi polis dikkatiyle izliyor.",
             "yesking" when State.Flags.Contains("party.yeskingPresent") => "Apartmandaki telsiz işiyle ekibe bağlandı.",
             "yesking" => "Sığınağın üst katında temkinli şekilde yanında duruyor.",
             "bedo" when State.Flags.Contains("party.bedoPresent") => "Çatı hattında sana yetişti; hızlı ama mesafeli.",
@@ -1804,6 +1912,9 @@ public sealed partial class GameSessionViewModel : ObservableObject
         var pressure = State.ThreatLevel >= 65 || State.NoiseLevel >= 60;
         return characterId switch
         {
+            "hakan" when pressure => "Bu kadar sesle ilerlersek çıkış değil, hedef oluruz. Sağ tarafı ben kontrol ederim.",
+            "hakan" when trust < 40 => "Söz vermek kolay. Bir sonraki kapıda gerçekten yanımda mısın, onu göreceğim.",
+            "hakan" => "Köşeleri açık bırakmayın. Sessiz gidiyoruz ama düzensiz değil.",
             "yesking" when pressure => "Ses çok yayıldı. Bir dahaki kapıyı açmadan önce iki saniye dinle, tamam mı?",
             "yesking" when trust < 40 => "Bana doğruyu söylemediğin yerde devre de plan da patlar. Bunu not ettim.",
             "yesking" => "Telsizde parazit var ama boş değil. Bir kelime daha yakalarsam rota netleşir.",
@@ -2228,6 +2339,7 @@ public sealed partial class GameSessionViewModel : ObservableObject
         OnPropertyChanged(nameof(MapLocationLabel));
         OnPropertyChanged(nameof(MapStatus));
         OnPropertyChanged(nameof(MapTimeline));
+        OnPropertyChanged(nameof(ScenarioTasks));
         OnPropertyChanged(nameof(PhysicalAssessment));
         OnPropertyChanged(nameof(MentalAssessment));
         OnPropertyChanged(nameof(ThreatAssessment));
@@ -2374,6 +2486,20 @@ public sealed record MapTimelineItem(
     public string Marker => IsCurrent ? "●" : IsUnlocked ? "◆" : "○";
     public string ToneBrush => IsCurrent ? "#D3A66B" : IsUnlocked ? "#B45A5A" : "#5A5A61";
     public string StateText => IsCurrent ? "Şu an buradasın" : IsUnlocked ? "Geçildi" : "Kilitli";
+}
+
+public sealed record ScenarioTaskGroup(int Start, int End, string Title, string Subtasks);
+
+public sealed record ScenarioTaskDisplay(string Title, string Priority, string Status, int Progress, string Hint)
+{
+    public string StatusText => $"{Priority} • {Status}";
+    public string ToneBrush => Status switch
+    {
+        "Tamamlandı" => "#7D8D68",
+        "Aktif" => "#B58955",
+        "Başarısız" => "#B45A5A",
+        _ => "#626269"
+    };
 }
 
 public sealed class InventoryDisplay

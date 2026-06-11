@@ -739,7 +739,7 @@ public interface ISettingsService
 public sealed class GameSettings
 {
     public int MasterVolume { get; set; } = 80;
-    public int MusicVolume { get; set; } = 55;
+    public int MusicVolume { get; set; } = 50;
     public int AmbientVolume { get; set; } = 70;
     public int EffectsVolume { get; set; } = 75;
     public int VoiceVolume { get; set; } = 80;
@@ -749,8 +749,6 @@ public sealed class GameSettings
     public bool FullScreen { get; set; }
     public string Resolution { get; set; } = "1280x800";
     public int UiScale { get; set; } = 100;
-    public bool ScreenShake { get; set; } = true;
-    public bool NoiseEffect { get; set; } = true;
     public bool TextAnimation { get; set; } = true;
     public string TextAnimationMode { get; set; } = "Daktilo";
     public bool TopMessageNotifications { get; set; } = true;
